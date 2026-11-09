@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS الشامل لتدمير أي لون أبيض في الجداول والمربعات بالكامل
+# تخصيص التصميم والـ CSS الشامل لتدمير أي لون أبيض في المنصة بالكامل
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
@@ -55,43 +55,6 @@ st.markdown("""
         color: #ffffff !important;
         font-weight: 700 !important;
         background-color: transparent !important;
-    }
-
-    /* --- القضاء على البياض في الجداول (Dataframes & Tables) بالكامل --- */
-    [data-testid="stDataFrame"], [data-testid="stTable"], .dataframe, table {
-        background-color: #1e293b !important;
-        color: #ffffff !important;
-        border-radius: 12px !important;
-        border: 1px solid #38bdf8 !important;
-    }
-
-    /* صفوف وخلايا الجدول الداكنة */
-    thead tr th, tbody tr td, tr, th, td {
-        background-color: #1e293b !important;
-        color: #ffffff !important;
-        border-color: rgba(56, 189, 248, 0.2) !important;
-        text-align: right !important;
-        font-size: 18px !important;
-    }
-
-    /* رأس الجدول بلون مميز وفخم */
-    thead tr th {
-        background-color: #0f172a !important;
-        color: #38bdf8 !important;
-        font-weight: 900 !important;
-    }
-
-    /* ألوان صفوف الجدول بالتبادل لوضوح رؤية البيانات */
-    tbody tr:nth-child(even) {
-        background-color: #172033 !important;
-    }
-    tbody tr:hover {
-        background-color: #334155 !important;
-    }
-
-    /* الحاويات الخاصة بالجداول وعناصر الإدخال */
-    div[data-testid="stVerticalBlock"] [data-testid="element-container"] {
-        color: #ffffff !important;
     }
 
     /* --- القضاء على أي خلفية بيضاء في المربعات أو الأوتوفيل --- */
@@ -220,31 +183,19 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# كود جافاسكريبت لضمان تدمير أي بياض في الجداول وعناصر الـ DOM لحظياً
+# كود جافاسكريبت عام لتنظيف أي بقايا واجهات قديمة
 components.html("""
     <script>
     const doc = window.parent.document;
-    
-    function removeTableWhiteBackgrounds() {
-        const tables = doc.querySelectorAll('table, [data-testid="stDataFrame"], [data-testid="stTable"]');
-        tables.forEach(tbl => {
-            tbl.style.backgroundColor = '#1e293b';
-            tbl.style.color = '#ffffff';
-        });
-        
-        const cells = doc.querySelectorAll('th, td');
-        cells.forEach(cell => {
-            cell.style.backgroundColor = '#1e293b';
-            cell.style.color = '#ffffff';
-            cell.style.borderColor = 'rgba(56, 189, 248, 0.2)';
+    function cleanUI() {
+        const elements = doc.querySelectorAll('iframe');
+        elements.forEach(el => {
+            if(el.style.backgroundColor === 'white') {
+                el.style.backgroundColor = '#0b0f19';
+            }
         });
     }
-
-    const observer = new MutationObserver(() => {
-        removeTableWhiteBackgrounds();
-    });
-    observer.observe(doc.body, { childList: true, subtree: true });
-    setInterval(removeTableWhiteBackgrounds, 100);
+    setInterval(cleanUI, 100);
     </script>
 """, height=0)
 
@@ -652,8 +603,28 @@ else:
         st.title("⚙️ لوحة تحكم المالك (طارق)")
         st.markdown('<div class="fancy-card"><p>لوحة التحكم السيادية الخاصة بالأونر لإدارة الحسابات، الأرصدة، والمستخدمين.</p></div>', unsafe_allow_html=True)
         
-        st.subheader("📊 قاعدة بيانات المستخدمين المسجلين:")
-        st.dataframe(users_df.drop(columns=["Password"]), use_container_width=True)
+        st.subheader("📊 سجل المستخدمين المسجلين (بدون جداول بيضاء):")
+        
+        # عرض المستخدمين في كروت داكنة فخمة بدل جداول ستريمليت البيضاء المزعجة
+        for idx, row in users_df.iterrows():
+            st.markdown(f"""
+                <div class="fancy-card" style="padding: 20px; margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <div>
+                            <span style="color: #38bdf8; font-weight: bold;">👤 الاسم:</span> {row['Full_Name']} <br>
+                            <span style="color: #38bdf8; font-weight: bold;">🔑 المعرف:</span> {row['Login_ID']} <br>
+                            <span style="color: #38bdf8; font-weight: bold;">📧 البريد/الهاتف:</span> {row['Email_Phone']}
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <span style="background: #0f172a; padding: 6px 14px; border-radius: 8px; border: 1px solid #38bdf8; color: #38bdf8; font-weight: bold;">
+                                نوع الحساب: {row['Account_Type']}
+                            </span><br><br>
+                            <span style="color: #34d399; font-weight: bold;">💰 كوينز: {row['Coins']}</span> | 
+                            <span style="color: #38bdf8; font-weight: bold;">💎 ماسات: {row['Diamonds']}</span>
+                        </div>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
         
         st.subheader("💰 شحن رصيد فوري لأي مستخدم")
         t_id = st.text_input("أدخل معرف المستخدم (Login ID):")
