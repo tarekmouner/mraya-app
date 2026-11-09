@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS القوي لقتل أي لون أبيض في الجذور
+# تخصيص التصميم والـ CSS الشامل للقضاء النهائي على أي لون أبيض
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
@@ -181,6 +181,26 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+# حقن كود جافاسكريبت برمجى لتثبيت الخلفيات الداكنة وإزالة أي تداخل فوراً
+components.html("""
+    <script>
+    const doc = window.parent.document;
+    const style = doc.createElement('style');
+    style.innerHTML = `
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+    `;
+    if (!doc.getElementById('fix-autofill')) {
+        style.id = 'fix-autofill';
+        doc.head.appendChild(style);
+    }
+    </script>
+""", height=0)
 
 USERS_FILE = "mraya_users.csv"
 
@@ -351,7 +371,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             st.session_state.view = "register"
             st.rerun()
 
-# --- 2. صفحة تسجيل الدخول (مصممة بـ HTML نقي لمنع أي خلفية بيضاء أو أوتوفيل مزعج) ---
+# --- 2. صفحة تسجيل الدخول (باستخدام مدخلات ستريمليت النظامية بدون أي عك HTML نصوص) ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
     if st.button("⬅️ العودة للصفحة الرئيسية"):
         st.session_state.view = "landing"
@@ -360,24 +380,8 @@ elif not st.session_state.logged_in and st.session_state.view == "login":
     col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
     with col_l2:
         st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🔑 تسجيل الدخول إلى مراية</h2>", unsafe_allow_html=True)
-        
-        # نموذج HTML نقي يتحكم في الألوان والخلفيات تماماً بعيداً عن قيود ستريمليت
-        login_form_html = """
-        <div class="fancy-card" style="margin-top: 10px;">
-            <form action="/" method="get">
-                <label style="color: #38bdf8; font-weight: bold; display: block; margin-bottom: 8px;">معرف مراية (Login ID) أو البريد الإلكتروني:</label>
-                <input type="text" id="login_id_field" name="lid" placeholder="" style="width: 100%; background-color: #1e293b !important; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; border: 2px solid #38bdf8 !important; border-radius: 12px !important; padding: 12px; font-size: 18px; margin-bottom: 20px;">
-                
-                <label style="color: #38bdf8; font-weight: bold; display: block; margin-bottom: 8px;">كلمة المرور:</label>
-                <input type="password" id="login_pass_field" name="lpass" placeholder="" style="width: 100%; background-color: #1e293b !important; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; border: 2px solid #38bdf8 !important; border-radius: 12px !important; padding: 12px; font-size: 18px; margin-bottom: 20px;">
-            </form>
-        </div>
-        """
-        st.markdown(login_form_html, unsafe_allow_html=True)
-        
-        # حقول ستريمليت المخفية لربط البيانات بالمنطق البرمجي
-        login_input = st.text_input("معرف مراية (Login ID) أو البريد الإلكتروني:", key="real_lid")
-        login_pass = st.text_input("كلمة المرور:", type="password", key="real_lpass")
+        login_input = st.text_input("معرف مراية (Login ID) أو البريد الإلكتروني:")
+        login_pass = st.text_input("كلمة المرور:", type="password")
         
         if st.button("دخول آمن", type="primary", use_container_width=True):
             users_df = pd.read_csv(USERS_FILE)
