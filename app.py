@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# تخصيص التصميم والـ CSS الجديد المخصص لدلع الكروت والمربعات باحترافية
+# تخصيص التصميم والخطوط بحجم أكبر ووضوح عالي لراحة العين
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار */
@@ -24,21 +24,22 @@ st.markdown("""
     .main { background-color: #0b0f19; color: #f1f5f9; }
     .stApp { background: linear-gradient(135deg, #070913 0%, #0f172a 50%, #1e1b4b 100%); color: #f1f5f9; }
     
-    /* تكبير وتوضيح الخطوط لراحة القراءة */
+    /* تكبير وتوضيح الخطوط بدرجة ممتازة وواضحة جداً للقراءة */
     body, p, span, li, label, div {
-        font-size: 18px !important;
-        color: #cbd5e1 !important;
-        line-height: 1.9 !important;
+        font-size: 20px !important;
+        color: #e2e8f0 !important;
+        line-height: 2.0 !important;
+        font-weight: 500 !important;
     }
     
-    /* أزرار عصرية وراقية */
+    /* أزرار عصرية وراقية بخط واضح */
     .stButton>button {
         background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
         color: #ffffff !important;
         border: 1px solid rgba(255, 255, 255, 0.15) !important;
         border-radius: 14px !important;
         font-weight: 700 !important;
-        font-size: 16px !important;
+        font-size: 18px !important;
         padding: 12px 28px !important;
         transition: all 0.3s ease !important;
         box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
@@ -51,14 +52,14 @@ st.markdown("""
         transform: translateY(-2px);
     }
 
-    /* === التصميم الاحترافي الجديد للمربعات والكروت (دلع الكروت) === */
+    /* التصميم الاحترافي للمربعات والكروت مع خطوط واضحة */
     .fancy-card {
-        background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.85));
-        padding: 35px;
+        background: linear-gradient(145deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.9));
+        padding: 40px;
         border-radius: 24px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         margin-bottom: 25px;
-        border: 1px solid rgba(139, 92, 246, 0.2);
+        border: 1px solid rgba(139, 92, 246, 0.25);
         backdrop-filter: blur(12px);
         text-align: right !important;
         transition: all 0.4s ease;
@@ -66,14 +67,12 @@ st.markdown("""
         overflow: hidden;
     }
     
-    /* تأثير إضاءة النيون والارتفاع عند الوقوف بالماوس */
     .fancy-card:hover {
         transform: translateY(-6px);
         border-color: #38bdf8;
         box-shadow: 0 15px 35px rgba(56, 189, 248, 0.25), inset 0 0 15px rgba(56, 189, 248, 0.1);
     }
 
-    /* شريط تزييني مضيء أعلى الكارت */
     .fancy-card::before {
         content: '';
         position: absolute;
@@ -84,11 +83,11 @@ st.markdown("""
         background: linear-gradient(90deg, #38bdf8, #8b5cf6, #ec4899);
     }
     
-    /* عناوين واضحة وبراقة */
+    /* عناوين واضحة وكبيرة */
     .section-title {
         color: #38bdf8;
         font-weight: 900;
-        font-size: 32px !important;
+        font-size: 34px !important;
         text-align: center;
         margin-top: 60px;
         margin-bottom: 30px;
@@ -216,20 +215,20 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     st.markdown("<h2 class='section-title'>لماذا مرايا؟</h2>", unsafe_allow_html=True)
     st.markdown("""
         <div class="fancy-card" style="text-align: center;">
-            <p style="font-size: 20px !important; color: #f8fafc !important; line-height: 1.9; margin: 0;">
+            <p style="font-size: 22px !important; color: #f8fafc !important; line-height: 2.0; margin: 0;">
                 لأننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج.<br><br>
                 <b>لهذا لم نصمم مرايا لتكون مجرد نافذة محادثة، بل تجربة متكاملة تمنحك خيارات متعددة للتواصل والتعبير والتطور.</b>
             </p>
         </div>
     """, unsafe_allow_html=True)
     
-    # مميزات المنصة (الكروت المزخرفة الجديدة)
+    # مميزات المنصة
     col_m1, col_m2 = st.columns(2)
     with col_m1:
         st.markdown("""
             <div class="fancy-card">
-                <h3 style='color: #38bdf8; margin-bottom: 20px;'>🌟 مميزات أساسية</h3>
-                <ul style='color: #cbd5e1; font-size: 18px !important; line-height: 2.3; list-style-type: none; padding: 0;'>
+                <h3 style='color: #38bdf8; font-size: 24px !important; margin-bottom: 20px;'>🌟 مميزات أساسية</h3>
+                <ul style='color: #cbd5e1; font-size: 20px !important; line-height: 2.4; list-style-type: none; padding: 0;'>
                     <li>🔹 مساحة شخصية مستقلة لكل مستخدم.</li>
                     <li>🔹 جلسات فردية خاصة مصممة حولك.</li>
                     <li>🔹 محادثات كتابية، صوتية، ومرئية متطورة.</li>
@@ -240,8 +239,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with col_m2:
         st.markdown("""
             <div class="fancy-card">
-                <h3 style='color: #34d399; margin-bottom: 20px;'>💎 تجربة مجتمعية متكاملة</h3>
-                <ul style='color: #cbd5e1; font-size: 18px !important; line-height: 2.3; list-style-type: none; padding: 0;'>
+                <h3 style='color: #34d399; font-size: 24px !important; margin-bottom: 20px;'>💎 تجربة مجتمعية متكاملة</h3>
+                <ul style='color: #cbd5e1; font-size: 20px !important; line-height: 2.4; list-style-type: none; padding: 0;'>
                     <li>🔹 إمكانية اختيار المشاركة المجتمعية أو البقاء بمفردك.</li>
                     <li>🔹 نظام عضويات ومزايا قابل للتخصيص.</li>
                     <li>🔹 تجربة شخصية قابلة للتطوير والتغيير.</li>
@@ -257,8 +256,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with t1:
         st.markdown("""
             <div class="fancy-card">
-                <h3 style='color: #38bdf8; font-size: 22px !important; margin-bottom: 15px;'>🧘 جلسات فردية</h3>
-                <p style='color: #cbd5e1; font-size: 17px !important; line-height: 1.8;'>
+                <h3 style='color: #38bdf8; font-size: 24px !important; margin-bottom: 15px;'>🧘 جلسات فردية</h3>
+                <p style='color: #cbd5e1; font-size: 19px !important; line-height: 1.9;'>
                     كل شخص مختلف، وكل تجربة تستحق الاهتمام. ابدأ جلسة فردية خاصة بك ومشاركة ما تشعر به ومناقشة تحدياتك في سرية تامة.
                 </p>
             </div>
@@ -266,8 +265,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with t2:
         st.markdown("""
             <div class="fancy-card">
-                <h3 style='color: #34d399; font-size: 22px !important; margin-bottom: 15px;'>🎙️ طرق تواصل متعددة</h3>
-                <p style='color: #cbd5e1; font-size: 17px !important; line-height: 1.8;'>
+                <h3 style='color: #34d399; font-size: 24px !important; margin-bottom: 15px;'>🎙️ طرق تواصل متعددة</h3>
+                <p style='color: #cbd5e1; font-size: 19px !important; line-height: 1.9;'>
                     <b>كتابية:</b> اكتب أفكارك بحرية.<br><b>صوتية:</b> تحدث بصوتك لتجربة طبيعية.<br><b>مرئية:</b> تواصل مرئي ضمن التجارب المدعومة.
                 </p>
             </div>
@@ -275,8 +274,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with t3:
         st.markdown("""
             <div class="fancy-card">
-                <h3 style='color: #a78bfa; font-size: 22px !important; margin-bottom: 15px;'>🧠 ذاكرة ذكية</h3>
-                <p style='color: #cbd5e1; font-size: 17px !important; line-height: 1.8;'>
+                <h3 style='color: #a78bfa; font-size: 24px !important; margin-bottom: 15px;'>🧠 ذاكرة ذكية</h3>
+                <p style='color: #cbd5e1; font-size: 19px !important; line-height: 1.9;'>
                     لا تبدأ من الصفر أبداً. ذاكرتك الشخصية تساعد المساعد الذكي على استيعاب السياق السابق والأهداف والتحديات.
                 </p>
             </div>
@@ -285,8 +284,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     # مجتمع مراية والأمان
     st.markdown("""
         <div class="fancy-card" style="border-right: 6px solid #34d399; margin-top: 20px;">
-            <h3 style='color: #34d399; font-size: 22px !important; margin-top: 0; margin-bottom: 15px;'>👥 مجتمع مراية | لست مضطرًا للبقاء وحدك</h3>
-            <p style='color: #e2e8f0; font-size: 18px !important; line-height: 1.9;'>
+            <h3 style='color: #34d399; font-size: 24px !important; margin-top: 0; margin-bottom: 15px;'>👥 مجتمع مراية | لست مضطرًا للبقاء وحدك</h3>
+            <p style='color: #e2e8f0; font-size: 20px !important; line-height: 2.0;'>
                 توفير تجربة مجتمعية اختيارية تتيح لك المشاركة في جلسات جماعية صوتية مع أشخاص آخرين باستخدام <b>هويات مستعارة</b>. مشاركة اختيارية بالكامل، لا اسم حقيقي يظهر، لا تظهر جلساتك الفردية أبداً، مع نظام بلاغات ومراجعة صارم.
             </p>
         </div>
@@ -297,8 +296,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with c_s1:
         st.markdown("""
             <div class="fancy-card">
-                <h3 style='color: #fbbf24; font-size: 22px !important; margin-bottom: 15px;'>🎨 شخصيتك الرقمية والمتجر</h3>
-                <p style='color: #cbd5e1; font-size: 17px !important; line-height: 1.8;'>
+                <h3 style='color: #fbbf24; font-size: 24px !important; margin-bottom: 15px;'>🎨 شخصيتك الرقمية والمتجر</h3>
+                <p style='color: #cbd5e1; font-size: 19px !important; line-height: 1.9;'>
                     طور مظهر هويتك بإطارات ثابتة ومتحركة، أشكال وألوان مميزة للأسماء، تصاميم معرفات ID، وخلفيات شخصية ومؤثرات صوتية وبصرية.
                 </p>
             </div>
@@ -306,8 +305,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with c_s2:
         st.markdown("""
             <div class="fancy-card">
-                <h3 style='color: #f472b6; font-size: 22px !important; margin-bottom: 15px;'>🎁 الهدايا ونظام العملات</h3>
-                <p style='color: #cbd5e1; font-size: 17px !important; line-height: 1.8;'>
+                <h3 style='color: #f472b6; font-size: 24px !important; margin-bottom: 15px;'>🎁 الهدايا ونظام العملات</h3>
+                <p style='color: #cbd5e1; font-size: 19px !important; line-height: 1.9;'>
                     أرسل هدية لأي صديق بمعرفه الفريد لتظهر في لوحة أكثر الأصدقاء كرمًا.<br>
                     <b>الكوينز (COINS):</b> للشحن والمزايا المدفوعة.<br>
                     <b>الماسات (DIAMONDS):</b> مكاسب الفعاليات والأنشطة.
@@ -318,8 +317,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     # الأمان والرؤية والرسالة
     st.markdown("""
         <div class="fancy-card" style="border-right: 6px solid #38bdf8;">
-            <h3 style='color: #ffffff; font-size: 22px !important; margin-top: 0; margin-bottom: 15px;'>🛡️ الأمان والخصوصية والرؤية</h3>
-            <p style='color: #e2e8f0; font-size: 18px !important; line-height: 1.9;'>
+            <h3 style='color: #ffffff; font-size: 24px !important; margin-top: 0; margin-bottom: 15px;'>🛡️ الأمان والخصوصية والرؤية</h3>
+            <p style='color: #e2e8f0; font-size: 20px !important; line-height: 2.0;'>
                 <b>رؤيتنا:</b> أن تصبح مراية مساحة رقمية رائدة تمنح الإنسان فرصة أفضل للتعبير عن نفسه وفهم مشاعره.<br>
                 <b>رسالتنا:</b> توفير تجربة تجمع بين الذكاء الاصطناعي والتكنولوجيا والتواصل الإنساني ببيئة تراعي الخصوصية التامة.<br>
                 نحن نؤمن أن الثقة أساس المشاعر؛ حسابات مستقلة، معرفات فريدة، وفصل تام لبيانات الجلسات الشخصية.
@@ -353,7 +352,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
 
     st.markdown("<br><hr>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #38bdf8; font-weight: bold;'>MIRAYA — Your Space. Your Story. Your Reflection.</p>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>جميع الحقوق محفوظة منصة مراية © 2026</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 15px;'>جميع الحقوق محفوظة منصة مراية © 2026</p>", unsafe_allow_html=True)
 
 # --- 2. صفحة تسجيل الدخول ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
