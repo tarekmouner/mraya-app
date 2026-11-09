@@ -11,10 +11,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS لإلغاء أي مربعات بيضاء وتوحيد المظهر الداكن الفخم
+# تخصيص التصميم والـ CSS القوي لحل جميع مشاكل المربعات البيضاء وتداخل النص نهائياً
 st.markdown("""
     <style>
-    /* فرض اتجاه اللغة العربية من اليمين لليسار */
+    /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
     html, body, [class*="css"] {
         direction: rtl !important;
         text-align: right !important;
@@ -24,7 +24,7 @@ st.markdown("""
     .main { background-color: #0b0f19; color: #ffffff; }
     .stApp { background: linear-gradient(135deg, #070913 0%, #0f172a 50%, #1e1b4b 100%); color: #ffffff; }
     
-    /* --- تنسيق القائمة الجانبية (Sidebar) --- */
+    /* --- تنسيق القائمة الجانبية (Sidebar) بالكامل --- */
     section[data-testid="stSidebar"] {
         background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%) !important;
         border-left: 1px solid rgba(139, 92, 246, 0.3);
@@ -40,54 +40,51 @@ st.markdown("""
         font-weight: 600 !important;
     }
     
-    /* صندوق حساب الأونر في السايدبار (جعلناه داكن وبكلام أبيض واضح) */
-    section[data-testid="stSidebar"] .stSuccess,
+    /* القضاء النهائي على المربع الأبيض في السايدبار (حساب الأونر) وتعديله للون داكن فخم */
+    section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] div.stSuccess,
+    section[data-testid="stSidebar"] .stAlert,
     section[data-testid="stSidebar"] div[data-baseweb="notification"] {
         background-color: #1e293b !important;
         border: 1px solid #38bdf8 !important;
         color: #ffffff !important;
     }
-    section[data-testid="stSidebar"] .stSuccess p,
+    section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] div.stSuccess *,
+    section[data-testid="stSidebar"] .stAlert *,
     section[data-testid="stSidebar"] div[data-baseweb="notification"] * {
         color: #ffffff !important;
         font-weight: 700 !important;
+        background-color: transparent !important;
     }
-    
-    /* --- الحل الجذري لكل مربعات الإدخال والأرقام والنصوص في السيستم --- */
-    input[type="text"], input[type="password"], input[type="number"], textarea {
+
+    /* --- الحل القاطع لمربعات الإدخال (Text/Number Inputs) وتداخل النص --- */
+    .stTextInput input, .stNumberInput input, .stPasswordInput input {
         background-color: #1e293b !important;
         color: #ffffff !important;
-        border: 2px solid #6d28d9 !important;
+        -webkit-text-fill-color: #ffffff !important;
+        border: 2px solid #38bdf8 !important;
         border-radius: 12px !important;
         font-size: 20px !important;
         font-weight: 700 !important;
         padding: 10px 15px !important;
-        -webkit-text-fill-color: #ffffff !important;
     }
     
-    div[data-baseweb="input"], div[data-baseweb="base-input"] {
-        background-color: #1e293b !important;
-        border-radius: 12px !important;
-        border: 2px solid #38bdf8 !important;
-        color: #ffffff !important;
+    /* إخفاء النص الإرشادي المتداخل تماماً من حقول الإدخال لضمان عدم تداخل الحروف */
+    .stTextInput div[data-baseweb="base-input"] div, 
+    .stTextInput small, 
+    .stNumberInput small {
+        color: #94a3b8 !important;
     }
-    
-    div[data-baseweb="input"] input, div[data-baseweb="base-input"] input {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-        font-size: 20px !important;
-        font-weight: 700 !important;
-    }
-    
-    /* إزالة الخلفيات البيضاء لرسائل التنبيه والنجاح في الصفحة الرئيسية */
-    div.stSuccess, div.stInfo, div.stWarning, div.stError {
+
+    /* القضاء على أي خلفية بيضاء لرسائل التنبيه والنجاح والخطأ في الصفحة بالكامل */
+    div.stSuccess, div.stInfo, div.stWarning, div.stError, div.stAlert {
         background-color: #1e293b !important;
         color: #ffffff !important;
         border: 1px solid #38bdf8 !important;
     }
-    div.stSuccess p, div.stInfo p, div.stWarning p, div.stError p {
+    div.stSuccess *, div.stInfo *, div.stWarning *, div.stError *, div.stAlert * {
         color: #ffffff !important;
         font-weight: 700 !important;
+        background-color: transparent !important;
     }
 
     /* تكبير وتوضيح الخطوط في المنصة ككل */
