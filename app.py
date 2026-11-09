@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS الشامل لحل مشكلة تداخل النصوص في مربعات الإدخال نهائياً
+# تخصيص التصميم والـ CSS لإلغاء أي مربعات بيضاء وتوحيد المظهر الداكن الفخم
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار */
@@ -40,6 +40,7 @@ st.markdown("""
         font-weight: 600 !important;
     }
     
+    /* صندوق حساب الأونر في السايدبار (جعلناه داكن وبكلام أبيض واضح) */
     section[data-testid="stSidebar"] .stSuccess,
     section[data-testid="stSidebar"] div[data-baseweb="notification"] {
         background-color: #1e293b !important;
@@ -52,8 +53,8 @@ st.markdown("""
         font-weight: 700 !important;
     }
     
-    /* --- الحل الجذري لمربعات الإدخال وتداخل النصوص --- */
-    input[type="text"], input[type="password"], textarea {
+    /* --- الحل الجذري لكل مربعات الإدخال والأرقام والنصوص في السيستم --- */
+    input[type="text"], input[type="password"], input[type="number"], textarea {
         background-color: #1e293b !important;
         color: #ffffff !important;
         border: 2px solid #6d28d9 !important;
@@ -61,24 +62,32 @@ st.markdown("""
         font-size: 20px !important;
         font-weight: 700 !important;
         padding: 10px 15px !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
     
-    div[data-baseweb="input"] {
+    div[data-baseweb="input"], div[data-baseweb="base-input"] {
         background-color: #1e293b !important;
         border-radius: 12px !important;
         border: 2px solid #38bdf8 !important;
+        color: #ffffff !important;
     }
     
-    div[data-baseweb="input"] input {
+    div[data-baseweb="input"] input, div[data-baseweb="base-input"] input {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
         font-size: 20px !important;
         font-weight: 700 !important;
     }
     
-    /* إخفاء رسالة الـ Press Enter المزعجة لتجنب التداخل تماماً */
-    .stTextInput small {
-        display: none !important;
+    /* إزالة الخلفيات البيضاء لرسائل التنبيه والنجاح في الصفحة الرئيسية */
+    div.stSuccess, div.stInfo, div.stWarning, div.stError {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        border: 1px solid #38bdf8 !important;
+    }
+    div.stSuccess p, div.stInfo p, div.stWarning p, div.stError p {
+        color: #ffffff !important;
+        font-weight: 700 !important;
     }
 
     /* تكبير وتوضيح الخطوط في المنصة ككل */
