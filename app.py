@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS الشامل للقضاء النهائي على أي خلفية بيضاء أو أوتوفيل
+# تخصيص التصميم والـ CSS الشامل لمنع أي تداخل وتوحيد المظهر الداكن الفخم
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
@@ -57,7 +57,7 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* --- القضاء على الأوتوفيل الأبيض وخلفيات مربعات الإدخال نهائياً --- */
+    /* --- تنسيق مربعات الإدخال ومنع الأوتوفيل الأبيض --- */
     input, textarea, select {
         background-color: #1e293b !important;
         color: #ffffff !important;
@@ -68,7 +68,6 @@ st.markdown("""
         font-weight: 700 !important;
     }
 
-    /* منع المتصفح من تلوين حقول الحفظ التلقائي باللون الأبيض */
     input:-webkit-autofill,
     input:-webkit-autofill:hover, 
     input:-webkit-autofill:focus, 
@@ -92,12 +91,7 @@ st.markdown("""
         -webkit-text-fill-color: #ffffff !important;
     }
 
-    /* إخفاء أيقونة إظهار كلمة المرور البيضاء المزعجة أو توحيد خلفيتها */
-    button[kind="header"] {
-        background-color: transparent !important;
-    }
-
-    /* إخفاء النص الإرشادي الافتراضي لمنع التداخل */
+    /* إخفاء النص الإرشادي تماماً من الوجود */
     .stTextInput small, .stNumberInput small, .stPasswordInput small {
         display: none !important;
     }
@@ -188,7 +182,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# حقن كود جافاسكريبت متطور لإخفاء النص الافتراضي وتتبع حقول الإدخال
+# حقن كود جافاسكريبت فائق الذكاء: يمسح النص من داخل الحقل نهائياً ويظهره فوقه عند التركيز فقط
 components.html("""
     <script>
     const doc = window.parent.document;
@@ -199,14 +193,14 @@ components.html("""
             position: absolute;
             background: #1e293b;
             color: #38bdf8;
-            padding: 3px 10px;
-            border-radius: 6px;
+            padding: 4px 12px;
+            border-radius: 8px;
             font-size: 13px;
             font-weight: bold;
             border: 1px solid #38bdf8;
             z-index: 99999;
             pointer-events: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             display: none;
         }
     `;
@@ -218,6 +212,11 @@ components.html("""
     function setupSmartInputs() {
         const inputs = doc.querySelectorAll('input[type="text"], input[type="password"], input[type="number"]');
         inputs.forEach(input => {
+            // مسح أي نص افتراضي مزعج من جوه المربع مباشرة لمنع التكرار
+            if (input.hasAttribute('placeholder')) {
+                input.removeAttribute('placeholder');
+            }
+
             if (input.dataset.smartBound) return;
             input.dataset.smartBound = 'true';
 
@@ -234,7 +233,7 @@ components.html("""
 
             input.addEventListener('focus', () => {
                 const rect = input.getBoundingClientRect();
-                hint.style.top = (rect.top + window.parent.scrollY - 32) + 'px';
+                hint.style.top = (rect.top + window.parent.scrollY - 34) + 'px';
                 hint.style.left = (rect.left + window.parent.scrollX) + 'px';
                 hint.style.display = 'block';
             });
@@ -245,7 +244,7 @@ components.html("""
             
             input.addEventListener('input', () => {
                 const rect = input.getBoundingClientRect();
-                hint.style.top = (rect.top + window.parent.scrollY - 32) + 'px';
+                hint.style.top = (rect.top + window.parent.scrollY - 34) + 'px';
                 hint.style.left = (rect.left + window.parent.scrollX) + 'px';
             });
         });
