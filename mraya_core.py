@@ -14,9 +14,19 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
-DB_PATH = os.getenv("MIRAYA_DB_PATH", "miraya.sqlite3")
-OWNER_LOGIN = os.getenv("MIRAYA_OWNER_LOGIN", "tarek")
-OWNER_PASSWORD = os.getenv("MIRAYA_OWNER_INITIAL_PASSWORD", "")
+def _setting(name: str, default: str = "") -> str:
+    value = os.getenv(name)
+    if value is not None:
+        return value
+    try:
+        import streamlit as st
+        return str(st.secrets.get(name, default))
+    except Exception:
+        return default
+
+DB_PATH = _setting("MIRAYA_DB_PATH", "miraya.sqlite3")
+OWNER_LOGIN = _setting("MIRAYA_OWNER_LOGIN", "tarek")
+OWNER_PASSWORD = _setting("MIRAYA_OWNER_INITIAL_PASSWORD", "")
 PBKDF2_ITERATIONS = 310_000
 
 def now() -> str:
