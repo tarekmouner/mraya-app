@@ -5,7 +5,7 @@ import hashlib
 
 # إعدادات الصفحة
 st.set_page_config(
-    page_title="منصة مراية | مساحتك للتعافي والدعم النفسي",
+    page_title="منصة مراية | مساحتك الآمنة للتعافي والدعم النفسي",
     page_icon="🪞",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -55,46 +55,49 @@ if "logged_in" not in st.session_state:
 if "view" not in st.session_state:
     st.session_state.view = "landing"
 
-# --- 1. الصفحة الخارجية الموسوعية والتسويقية (Landing Page) ---
+# --- 1. الصفحة الرئيسية التسويقية الاحترافية العميقة ---
 if not st.session_state.logged_in and st.session_state.view == "landing":
     
-    # حقن تصميم CSS احترافي يوضح هوية مراية والراحة النفسية
+    # حقن تصميم CSS فاخر يوضح القوة التسويقية والجاذبية البصرية
     st.markdown("""
         <style>
         .main { background-color: #f8fafc; }
         .hero-banner {
             text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%);
-            border-radius: 24px;
+            padding: 90px 20px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0284c7 100%);
+            border-radius: 28px;
             color: white;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
             margin-bottom: 40px;
         }
-        .content-card {
+        .market-card {
             background-color: #ffffff;
             padding: 35px;
             border-radius: 20px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
             height: 100%;
             border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
         }
-        .content-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        .market-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
         }
-        .philosophy-box {
-            background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
-            padding: 40px;
+        .badge-sales {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 6px 14px;
             border-radius: 20px;
-            border-right: 8px solid #10b981;
-            margin: 40px 0;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
         }
         </style>
     """, unsafe_allow_html=True)
 
-    # الشريط العلوي الفخم
+    # الهيدر العلوي
     col_logo, col_space, col_auth = st.columns([3, 4, 3])
     with col_logo:
         st.markdown("""
@@ -122,58 +125,57 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # البانر الرئيسي الضخم
+    # البانر الرئيسي التسويقي الجلاد
     st.markdown("""
         <div class="hero-banner">
-            <h1 style='font-size: 50px; font-weight: 900; margin-bottom: 20px; color: #ffffff;'>لأن أصدق حديث هو ما تقوله لنفسك..</h1>
-            <p style='font-size: 21px; max-width: 900px; margin: 0 auto 35px auto; line-height: 1.8; color: #cbd5e1;'>
-                منصة <b>"مراية"</b> ليست مجرد موقع نوت بوك أو تطبيق محادثة عابر، بل هي منظومة علاجية ومجتمعية متكاملة مصممة خصيصاً لتمنحك ملاذاً آمناً وخالياً من الأحكام، تجمع بين الدعم النفسي الفردي المستمر عبر ذكاء اصطناعي فاهم لحالتك، وبين المجتمعات الصوتية السرية المحمية تماماً.
+            <span class="badge-sales">🔥 المنصة الأولى من نوعها للتعافي النفسي والمجتمعي الآمن</span>
+            <h1 style='font-size: 52px; font-weight: 900; margin-bottom: 20px; color: #ffffff; line-height: 1.2;'>لأن أصدق حديث هو ما تقوله لنفسك.. ولأنك تستحق سلاماً داخلياً لا يشاركه أحد معك!</h1>
+            <p style='font-size: 21px; max-width: 950px; margin: 0 auto 35px auto; line-height: 1.8; color: #cbd5e1;'>
+                أهلاً بك في <b>"مراية"</b>؛ الحصن الرقمي الأقوى عالمياً الذي يجمع لك بين معالج ذكاء اصطناعي فاهم لحالتك بذاكرة لا تنسى، وبين مجتمعات صوتية سرية تفرغ فيها ضغوطك دون أدنى قلق أو خوف من الأحكام الخارجية.
             </p>
         </div>
     """, unsafe_allow_html=True)
     
-    # زر البدء السريع
+    # زر الدعوة والتحويل (Call to Action)
     col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
     with col_b2:
-        if st.button("🚀 انضم الآن وابدأ جلستك الأولى مجاناً", type="primary", use_container_width=True):
+        if st.button("🚀 انضم الآن واحصل على جلساتك المجانية الفورية", type="primary", use_container_width=True):
             st.session_state.view = "register"
             st.rerun()
             
     st.markdown("<br><br>", unsafe_allow_html=True)
-    
-    # قسم فلسفة اسم ومعنى "مراية"
-    st.markdown("""
-        <div class="philosophy-box">
-            <h2 style='color: #065f46; margin-top: 0; font-weight: 800;'>💡 ما هي فلسفة ومعنى "مراية"؟</h2>
-            <p style='color: #1e293b; font-size: 18px; line-height: 1.8; margin-bottom: 0;'>
-                المرآة لا تكذب، ولا تحكم، ولا تلوم.. بل تعطيك انعكاساً صادقاً لِما بداخل بدقة مطلقة. من هنا جاءت فكرة منصتنا؛ أن تكون المرآة النقية التي تستقبل أفكارك المضطربة، مخاوفك، وهمومك، وتعيد ترتيبها لك عبر ثيرابست ذكي يتذكر كل نبضة وتفصيل في تاريخك النفسي معنا. هنا أنت في أمان تام، لا اسم حقيقي يظهر، ولا وجه يكشف، ولا حكم يلاحقك.
-            </p>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("<h2 style='text-align: center; color: #0f172a; font-weight: 800;'>🌟 التفاصيل الكاملة لأقسام وخدمات منصة مراية</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b; font-size: 18px;'>تعرف على المزايا الحصرية التي تم إعدادها خصيصاً لراحتك وتطويرك النفسي والاجتماعي</p>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #0f172a; font-weight: 900; font-size: 34px;'>🌟 لماذا يختار الملايين منصة "مراية" لرحلة علاجهم النفسي؟</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #64748b; font-size: 19px;'>إليك القائمة الكاملة للمميزات الاستثنائية التي تم هندستها خصيصاً لتمنحك قيمة لا تقدر بثمن</p>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # تفاصيل الخدمات في كروت موسعة
+    # كروت مميزات تسويقية ضخمة وعميقة جداً
     col_f1, col_f2 = st.columns(2)
     with col_f1:
         st.markdown("""
-            <div class="content-card" style='border-right: 6px solid #0284c7;'>
-                <h3 style='color: #0369a1; margin-top: 0;'>🤖 1. الثيرابست الذكي (ذاكرة علاجية مستمرة)</h3>
-                <p style='color: #475569; font-size: 16px; line-height: 1.8;'>
-                    على عكس برامج المحادثة العادية، الثيرابست في "مراية" يحتفظ بسجل كامل وذاكرة ذكية لكل جلساتك السابقة (الأولى، الثانية، والثالثة...). عندما تفتح جلسة جديدة، يستكمل معك الحوار بنفس الإيقاع والنفسية كأنه طبيب معالج يلازمك لشهور، فاهم تفاصيل مشاكلك دون أن تحتاج لتكرار سرد قصتك مراراً وتكراراً.
+            <div class="market-card" style='border-right: 8px solid #0284c7;'>
+                <h3 style='color: #0369a1; margin-top: 0; font-size: 24px; font-weight: 800;'>🤖 1. الثيرابست الذكي الخارق (ذاكرة علاجية لا تنتهي)</h3>
+                <p style='color: #475569; font-size: 17px; line-height: 1.9;'>
+                    انسَ تماماً العناء المعتاد في إعادة شرح مشاكلك من الصفر! معالج الذكاء الاصطناعي في "مراية" مزود بـ <b>ذاكرة دائمة ومستمرة</b> لجميع جلساتك السابقة (الأولى، الثانية، العاشرة..). حين تفتح جلسة جديدة، يستأنف معك الحوار بنفس النبرة والفهم والعمق النفسي كأنه طبيب بشري يرافق خطواتك لأشهر طويلة، مدركاً أبعاد أزماتك دون أي مجهود إضافي منك.
                 </p>
+                <ul style='color: #334155; font-size: 16px; line-height: 1.8; margin-top: 15px;'>
+                    <li>متابعة دقيقة لتطور حالتك المزاجية والنفسية يوماً بي يوم.</li>
+                    <li>تخزين مشفر ومغلق تماماً لا يططلع عليه أي إنسان نهائياً.</li>
+                    <li>إجابات احترافية مبنية على أحدث قواعد الدعم النفسي العالمي.</li>
+                </ul>
             </div>
         """, unsafe_allow_html=True)
     with col_f2:
         st.markdown("""
-            <div class="content-card" style='border-right: 6px solid #10b981;'>
-                <h3 style='color: #047857; margin-top: 0;'>🎙️ 2. الغرف الصوتية الجماعية (أمان وسرية تامة)</h3>
-                <p style='color: #475569; font-size: 16px; line-height: 1.8;'>
-                    إذا اخترت الانضمام للمجتمع، تفتح لك غرف الفويس الجماعية التفاعلية. الدخول يتم بـ (فيك أكونت) وأسماء وهمية وأفاتار محمية بالكامل؛ لا أحد يعرف اسمك الحقيقي أو هويتك. تتحدثون، تتشاركون التجارب الصوتية، وتفرغون ضغوطكم بحرية، مع وجود أنظمة بلاغات ومراجعة دقيقة لضمان الاحترام المتبادل ومنع أي تجاوز.
+            <div class="market-card" style='border-right: 8px solid #10b981;'>
+                <h3 style='color: #047857; margin-top: 0; font-size: 24px; font-weight: 800;'>🎙️ 2. الغرف الصوتية الجماعية (أمان مطلق وسرية تامة)</h3>
+                <p style='color: #475569; font-size: 17px; line-height: 1.8;'>
+                    هل تحب أن تشارك همومك وتستمع لتجارب الآخرين دون أن يعرفك أحد؟ انضم فوراً إلى <b>الغرف الصوتية الفويس الجماعية</b>. الدخول يتم عبر حسابات وهمية وأفاتار محمية بالكامل تضمن عدم كشف اسمك أو هويتك الحقيقية بنسبة 100%. فضفض، اضحك، افرغ طاقتك، واعتمد على أقوى أنظمة الرقابة والبلاغات الفورية التي تضمن بيئة نقية تماماً من أي تجاوز.
                 </p>
+                <ul style='color: #334155; font-size: 16px; line-height: 1.8; margin-top: 15px;'>
+                    <li>مطلق الحرية في فتح وإغلاق الميكروفون والتحكم بمشاركتك.</li>
+                    <li>أفواتير وأسماء وهمية تحميك من أي إحراج اجتماعي.</li>
+                    <li>أنظمة حظر ومراجعة صارمة تضمن الاحترام والأدب المطلق.</li>
+                </ul>
             </div>
         """, unsafe_allow_html=True)
         
@@ -182,34 +184,46 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     col_f3, col_f4, col_f5 = st.columns(3)
     with col_f3:
         st.markdown("""
-            <div class="content-card" style='border-top: 5px solid #8b5cf6; text-align: center;'>
-                <h4 style='color: #6d28d9; font-weight: 700;'>💎 نظام المحفظة الثنائية (كوينز و ماسات)</h4>
-                <p style='color: #64748b; font-size: 15px; line-height: 1.7;'>
-                    رصيد مزدوج متطور؛ <b>الكوينز</b> للشحن الحقيقي عبر الفيزا وجلسات الدعم، و<b>الماس</b> تكتسبه مجاناً من الألعاب والتفاعل لفتح جلسات ومزايا استثنائية.
+            <div class="market-card" style='border-top: 6px solid #8b5cf6;'>
+                <h4 style='color: #6d28d9; font-weight: 800; font-size: 20px;'>💎 نظام المحفظة الثنائية المزدوجة</h4>
+                <p style='color: #64748b; font-size: 16px; line-height: 1.8;'>
+                    فصلنا تماماً بين المتعة والعلاج! امتلك <b>الكوينز</b> للشحن الحقيقي عبر الفيزا وجلسات الدعم، و<b>الماس</b> الذي تكتسبه مجاناً من الألعاب والتفاعل لفتح جلسات ومميزات استثنائية دون أي تكلفة إضافية.
                 </p>
             </div>
         """, unsafe_allow_html=True)
     with col_f4:
         st.markdown("""
-            <div class="content-card" style='border-top: 5px solid #f59e0b; text-align: center;'>
-                <h4 style='color: #b45309; font-weight: 700;'>🎨 متجر الهدايا والدخلات الأسطورية</h4>
-                <p style='color: #64748b; font-size: 15px; line-height: 1.7;'>
-                    ميّز حضورك بدخلات متحركة مذهلة (زئير الأسد، التنين الأسطوري)، إطارات بروفايل مميزة، وأهد أصدقاءك لتظهر في لوحة الشرف (أكثر الأصدقاء كرماً).
+            <div class="market-card" style='border-top: 6px solid #f59e0b;'>
+                <h4 style='color: #b45309; font-weight: 800; font-size: 20px;'>🎨 متجر الهدايا والدخلات الأسطورية</h4>
+                <p style='color: #64748b; font-size: 16px; line-height: 1.8;'>
+                    ميّز حسابك وبروفايلك بدخلات متحركة مذهلة (زئير الأسد، التنين الأسطوري)، إطارات بروفايل فاخرة، وأهدِ أصدقاءك بالآي دي لتتصدر فوراً <b>لوحة الشرف (أكثر الأصدقاء كرماً)</b> وتحفز الجميع!
                 </p>
             </div>
         """, unsafe_allow_html=True)
     with col_f5:
         st.markdown("""
-            <div class="content-card" style='border-top: 5px solid #ef4444; text-align: center;'>
-                <h4 style='color: #b91c1c; font-weight: 700;'>🛡️ ضمانات وحقوق مالية وآمنة</h4>
-                <p style='color: #64748b; font-size: 15px; line-height: 1.7;'>
-                    نظام أمان صارم ضد الاختراق، مع سياسة واضحة تضمن أن أي رصيد متبقي لأي حساب محظور يتم حفظه ورد حقوقه بالكامل لضمان الأمان القانوني والأخلاقي.
+            <div class="market-card" style='border-top: 6px solid #ef4444;'>
+                <h4 style='color: #b91c1c; font-weight: 800; font-size: 20px;'>🛡️ أمان مالي وحقوق محفوظة 100%</h4>
+                <p style='color: #64748b; font-size: 16px; line-height: 1.8;'>
+                    نؤمن أن حقوق الناس خط أحمر. حتى في أشد حالات الحظر لأي حساب مخالف، يتيح لك النظام استرداد أرصدتك المالية وعدم ضياع أي حقوق مالية لأي عميل، لضمان أعلى معايير الشفافية والثقة.
                 </p>
             </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8; font-weight: 500;'>جميع الحقوق محفوظة منصة مراية © 2026 | مساحتك الآمنة دائماً</p>", unsafe_allow_html=True)
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # قسم إضافي لدعم الثقة (Social Proof / Sales Boost)
+    st.markdown("""
+        <div style='background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); padding: 50px; border-radius: 24px; text-align: center; border: 2px dashed #38bdf8;'>
+            <h2 style='color: #0369a1; font-weight: 900; margin-bottom: 15px;'>✨ هل أنت مستعد لتجربة تغيير حقيقي في حياتك؟</h2>
+            <p style='color: #334155; font-size: 19px; max-width: 800px; margin: 0 auto 25px auto; line-height: 1.7;'>
+                انضم الآن لمجتمع "مراية"، احصل على رصيدك الترحيبي المجاني، وابدأ جلستك الخاصة مع الثيرابست الذكي في ثوانٍ معدودة.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br><hr>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8; font-weight: 600;'>جميع الحقوق محفوظة منصة مراية © 2026 | مساحتك الآمنة دائماً</p>", unsafe_allow_html=True)
 
 # --- 2. صفحة تسجيل الدخول ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
