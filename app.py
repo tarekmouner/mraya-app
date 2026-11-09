@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 import hashlib
+import streamlit.components.v1 as components
 
 # إعدادات الصفحة
 st.set_page_config(
@@ -11,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS القوي لحل جميع مشاكل المربعات البيضاء وتداخل النص نهائياً
+# تخصيص التصميم والـ CSS الساحق للقضاء على أي مشاكل بصرية
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
@@ -40,7 +41,7 @@ st.markdown("""
         font-weight: 600 !important;
     }
     
-    /* القضاء النهائي على المربع الأبيض في السايدبار (حساب الأونر) وتعديله للون داكن فخم */
+    /* تنسيق صندوق حساب الأونر في السايدبار ليكون داكن وواضح[cite: 5, 6] */
     section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] div.stSuccess,
     section[data-testid="stSidebar"] .stAlert,
     section[data-testid="stSidebar"] div[data-baseweb="notification"] {
@@ -56,7 +57,7 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* --- الحل القاطع لمربعات الإدخال (Text/Number Inputs) وتداخل النص --- */
+    /* --- تنسيق مربعات الإدخال (Text/Number Inputs) بشكل احترافي وواضح --- */
     .stTextInput input, .stNumberInput input, .stPasswordInput input {
         background-color: #1e293b !important;
         color: #ffffff !important;
@@ -65,17 +66,15 @@ st.markdown("""
         border-radius: 12px !important;
         font-size: 20px !important;
         font-weight: 700 !important;
-        padding: 10px 15px !important;
-    }
-    
-    /* إخفاء النص الإرشادي المتداخل تماماً من حقول الإدخال لضمان عدم تداخل الحروف */
-    .stTextInput div[data-baseweb="base-input"] div, 
-    .stTextInput small, 
-    .stNumberInput small {
-        color: #94a3b8 !important;
+        padding: 12px 15px !important;
     }
 
-    /* القضاء على أي خلفية بيضاء لرسائل التنبيه والنجاح والخطأ في الصفحة بالكامل */
+    /* إخفاء النصوص الإرشادية المزعجة لمنع التداخل تماماً[cite: 3, 5] */
+    .stTextInput small, .stNumberInput small, .stPasswordInput small {
+        display: none !important;
+    }
+
+    /* إزالة أي خلفيات بيضاء لرسائل التنبيه والنجاح والخطأ في الصفحة بالكامل */
     div.stSuccess, div.stInfo, div.stWarning, div.stError, div.stAlert {
         background-color: #1e293b !important;
         color: #ffffff !important;
@@ -160,6 +159,17 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+# حقن كود جافاسكريبت لمنع أي تداخل نهائياً في الحقول وتنظيف النصوص الإرشادية
+components.html("""
+    <script>
+    const observer = new MutationObserver(() => {
+        const helps = window.parent.document.querySelectorAll('.stTextInput small, .stNumberInput small, .stPasswordInput small');
+        helps.forEach(el => el.style.display = 'none');
+    });
+    observer.observe(window.parent.document.body, { childList: true, subtree: true });
+    </script>
+""", height=0)
 
 USERS_FILE = "mraya_users.csv"
 
