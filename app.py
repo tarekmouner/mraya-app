@@ -11,21 +11,27 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# تخصيص ثيم مريح جداً للعين (ألوان داكنة ناعمة، خطوط واضحة وكبيرة، وأزرار متناسقة)
+# تخصيص ثيم مريح للعين، اتجاه عربي سليم (RTL)، وتكبير الخطوط ووضوحها
 st.markdown("""
     <style>
-    /* خلفية هادئة ومريحة للعين تماماً */
-    .main { background-color: #0f172a; color: #e2e8f0; }
-    .stApp { background: linear-gradient(135deg, #090d16 0%, #111827 505, #0f172a 100%); color: #f1f5f9; }
-    
-    /* تكبير وتوضيح الخطوط العامة */
-    body, p, span, li, label {
-        font-size: 18px !important;
-        color: #cbd5e1 !important;
-        line-height: 1.8 !important;
+    /* فرض اتجاه اللغة العربية من اليمين لليسار لجميع العناصر */
+    html, body, [class*="css"] {
+        direction: rtl !important;
+        text-align: right !important;
     }
     
-    /* الأزرار بلون هادئ وراقي ومريح للعين (بدون فاقع وبدون أبيض) */
+    /* خلفية هادئة وناعمة جداً مريحة للعين */
+    .main { background-color: #0f172a; color: #f1f5f9; }
+    .stApp { background: linear-gradient(135deg, #090d16 0%, #111827 50%, #0f172a 100%); color: #f1f5f9; }
+    
+    /* تكبير وتوضيح الخطوط لراحة القراءة */
+    body, p, span, li, label, div {
+        font-size: 18px !important;
+        color: #e2e8f0 !important;
+        line-height: 1.9 !important;
+    }
+    
+    /* أزرار منسقة وراقية بدون ألوان فاقعة وبدون أبيض */
     .stButton>button {
         background: linear-gradient(135deg, #1e40af 0%, #6d28d9 100%) !important;
         color: #ffffff !important;
@@ -43,25 +49,27 @@ st.markdown("""
         box-shadow: 0 0 12px rgba(96, 165, 250, 0.3) !important;
     }
 
-    /* كروت محتوى مريحة للعين بخلفية داكنة ناعمة وحدود خفيفة */
+    /* كروت محتوى فخمة وناعمة */
     .content-card {
-        background-color: rgba(30, 41, 59, 0.6);
+        background-color: rgba(30, 41, 59, 0.7);
         padding: 35px;
         border-radius: 20px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         margin-bottom: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(8px);
+        text-align: right !important;
     }
     
-    /* عناوين واضحة وبألوان مريحة غير مزعجة */
+    /* عناوين واضحة ومريحة */
     .section-title {
         color: #60a5fa;
         font-weight: 900;
-        font-size: 28px !important;
+        font-size: 30px !important;
         text-align: center;
         margin-top: 50px;
         margin-bottom: 25px;
+        text-shadow: 0 0 10px rgba(96, 165, 250, 0.2);
     }
     
     /* صندوق البانر العلوي */
@@ -128,9 +136,9 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     col_logo, col_space, col_auth = st.columns([4, 4, 2])
     with col_logo:
         if os.path.exists("logo.png"):
-            st.image("logo.png", width=300)
+            st.image("logo.png", width=280)
         else:
-            st.warning("⚠️ يرجى التأكد من رفع صورة logo.png في مستودع GitHub")
+            st.warning("⚠️ يرجى التأكد من رفع صورة logo.png في مستودع GitHub في نفس مجلد الملفات الرئيسي")
             
     with col_auth:
         c1, c2 = st.columns(2)
@@ -170,7 +178,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     st.markdown("""
         <div class="content-card" style="text-align: center;">
             <p style="font-size: 20px !important; color: #f1f5f9 !important; line-height: 1.9; margin: 0;">
-                لاننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج.<br><br>
+                لأننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج.<br><br>
                 <b>لهذا لم نصمم مرايا لتكون مجرد نافذة محادثة، بل تجربة متكاملة تمنحك خيارات متعددة للتواصل والتعبير والتطور.</b>
             </p>
         </div>
@@ -268,7 +276,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
 
     # الأمان والرؤية والرسالة
     st.markdown("""
-        <div class="content-card" style="background: rgba(15, 23, 42, 0.95); border-left: 6px solid #60a5fa;">
+        <div class="content-card" style="background: rgba(15, 23, 42, 0.95); border-right: 6px solid #60a5fa;">
             <h3 style='color: #ffffff; font-size: 22px !important; margin-top: 0; margin-bottom: 15px;'>🛡️ الأمان والخصوصية والرؤية</h3>
             <p style='color: #e2e8f0; font-size: 18px !important; line-height: 1.9;'>
                 <b>رؤيتنا:</b> أن تصبح مراية مساحة رقمية رائدة تمنح الإنسان فرصة أفضل للتعبير عن نفسه وفهم مشاعره.<br>
