@@ -1,8 +1,7 @@
 """Streamlit screens to add after login. Keeps the existing public landing page untouched."""
 import streamlit as st
 import pandas as pd
-import mraya_core as db
-
+import miraya_core as db
 def render_remaining_app(user):
     """user is the authenticated dict returned by mraya_core.authenticate()."""
     uid=user["id"]
