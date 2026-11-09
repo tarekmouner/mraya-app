@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS الشامل لمنع أي لون أبيض في المنصة بالكامل
+# تخصيص التصميم والـ CSS الشامل لتدمير أي لون أبيض في الجداول والمربعات بالكامل
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
@@ -57,7 +57,44 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* --- القضاء على أي خلفية بيضاء في المربعات أو القوائم أو الأوتوفيل --- */
+    /* --- القضاء على البياض في الجداول (Dataframes & Tables) بالكامل --- */
+    [data-testid="stDataFrame"], [data-testid="stTable"], .dataframe, table {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        border-radius: 12px !important;
+        border: 1px solid #38bdf8 !important;
+    }
+
+    /* صفوف وخلايا الجدول الداكنة */
+    thead tr th, tbody tr td, tr, th, td {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        border-color: rgba(56, 189, 248, 0.2) !important;
+        text-align: right !important;
+        font-size: 18px !important;
+    }
+
+    /* رأس الجدول بلون مميز وفخم */
+    thead tr th {
+        background-color: #0f172a !important;
+        color: #38bdf8 !important;
+        font-weight: 900 !important;
+    }
+
+    /* ألوان صفوف الجدول بالتبادل لوضوح رؤية البيانات */
+    tbody tr:nth-child(even) {
+        background-color: #172033 !important;
+    }
+    tbody tr:hover {
+        background-color: #334155 !important;
+    }
+
+    /* الحاويات الخاصة بالجداول وعناصر الإدخال */
+    div[data-testid="stVerticalBlock"] [data-testid="element-container"] {
+        color: #ffffff !important;
+    }
+
+    /* --- القضاء على أي خلفية بيضاء في المربعات أو الأوتوفيل --- */
     input, textarea, select, [data-baseweb="select"], [data-baseweb="popover"], [data-baseweb="menu"] {
         background-color: #1e293b !important;
         color: #ffffff !important;
@@ -66,21 +103,6 @@ st.markdown("""
         border-radius: 12px !important;
         font-size: 20px !important;
         font-weight: 700 !important;
-    }
-
-    /* إجبار القوائم المنسدلة وقوائم الاختيار على الخلفية الداكنة وتدمير البياض */
-    div[data-baseweb="select"] > div {
-        background-color: #1e293b !important;
-        color: #ffffff !important;
-    }
-    
-    ul[data-baseweb="menu"], li[role="option"] {
-        background-color: #1e293b !important;
-        color: #ffffff !important;
-    }
-    li[role="option"]:hover {
-        background-color: #334155 !important;
-        color: #38bdf8 !important;
     }
 
     input:-webkit-autofill,
@@ -198,31 +220,31 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# كود جافاسكريبت لحقن الألوان الداكنة وتدمير أي خلفية بيضاء في الـ Popovers الداكنة للـ Select
+# كود جافاسكريبت لضمان تدمير أي بياض في الجداول وعناصر الـ DOM لحظياً
 components.html("""
     <script>
     const doc = window.parent.document;
     
-    function removeWhiteBackgrounds() {
-        // البحث عن أي عناصر منبثقة أو قوائم وإجبار خلفيتها على أن تكون داكنة
-        const popovers = doc.querySelectorAll('[data-baseweb="popover"], [data-baseweb="menu"], ul[role="listbox"]');
-        popovers.forEach(el => {
-            el.style.backgroundColor = '#1e293b';
-            el.style.color = '#ffffff';
+    function removeTableWhiteBackgrounds() {
+        const tables = doc.querySelectorAll('table, [data-testid="stDataFrame"], [data-testid="stTable"]');
+        tables.forEach(tbl => {
+            tbl.style.backgroundColor = '#1e293b';
+            tbl.style.color = '#ffffff';
         });
         
-        const options = doc.querySelectorAll('li[role="option"], [data-baseweb="option"]');
-        options.forEach(opt => {
-            opt.style.backgroundColor = '#1e293b';
-            opt.style.color = '#ffffff';
+        const cells = doc.querySelectorAll('th, td');
+        cells.forEach(cell => {
+            cell.style.backgroundColor = '#1e293b';
+            cell.style.color = '#ffffff';
+            cell.style.borderColor = 'rgba(56, 189, 248, 0.2)';
         });
     }
 
     const observer = new MutationObserver(() => {
-        removeWhiteBackgrounds();
+        removeTableWhiteBackgrounds();
     });
     observer.observe(doc.body, { childList: true, subtree: true });
-    setInterval(removeWhiteBackgrounds, 100);
+    setInterval(removeTableWhiteBackgrounds, 100);
     </script>
 """, height=0)
 
@@ -532,7 +554,6 @@ else:
         st.title("📖 مفكرتك الشخصية السرية")
         st.markdown('<div class="fancy-card"><p>سجل مشاعرك وأفكارك اليومية بسرية تامة لا يمكن لأحد سواك الاطلاع عليها.</p></div>', unsafe_allow_html=True)
         
-        # استبدال الـ selectbox بقائمة خيارات (Radio) داكنة وفخمة تمنع ظهور أي خلفية بيضاء مزعجة
         mood = st.radio("حالتك المزاجية اليوم:", ["😊 سعيد ومتفائل", "😌 هادئ ومستقر", "🤔 تفكير عميق", "🌧️ متوتر أو حزين"], horizontal=True)
         
         journal_text = st.text_area("اكتب يومياتك ومشاعرك هنا:")
