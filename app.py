@@ -603,10 +603,22 @@ else:
         st.title("⚙️ لوحة تحكم المالك (طارق)")
         st.markdown('<div class="fancy-card"><p>لوحة التحكم السيادية الخاصة بالأونر لإدارة الحسابات، الأرصدة، والمستخدمين.</p></div>', unsafe_allow_html=True)
         
-        st.subheader("📊 سجل المستخدمين المسجلين (بدون جداول بيضاء):")
+        st.subheader("🔍 البحث السريع عن مستخدم أو معرف:")
+        search_query = st.text_input("اكتب اسم المستخدم أو المعرف للبحث عنه فوراً:")
         
-        # عرض المستخدمين في كروت داكنة فخمة بدل جداول ستريمليت البيضاء المزعجة
-        for idx, row in users_df.iterrows():
+        # تصفية المستخدمين بناءً على حقل البحث
+        if search_query:
+            filtered_df = users_df[
+                users_df["Full_Name"].str.contains(search_query, case=False, na=False) | 
+                users_df["Login_ID"].str.contains(search_query, case=False, na=False)
+            ]
+        else:
+            filtered_df = users_df
+
+        st.markdown(f"<p style='color: #38bdf8;'>إجمالي المستخدمين الظاهرين: {len(filtered_df)}</p>", unsafe_allow_html=True)
+        
+        # عرض المستخدمين في كروت داكنة فخمة خالية تماماً من البياض
+        for idx, row in filtered_df.iterrows():
             st.markdown(f"""
                 <div class="fancy-card" style="padding: 20px; margin-bottom: 15px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
@@ -627,7 +639,7 @@ else:
             """, unsafe_allow_html=True)
         
         st.subheader("💰 شحن رصيد فوري لأي مستخدم")
-        t_id = st.text_input("أدخل معرف المستخدم (Login ID):")
+        t_id = st.text_input("أدخل معرف المستخدم (Login ID) المراد شحنه:")
         c_add = st.number_input("عدد الكوينز للإضافة:", min_value=0, value=100)
         d_add = st.number_input("عدد الماسات للإضافة:", min_value=0, value=50)
         
