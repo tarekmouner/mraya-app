@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 import hashlib
+import streamlit.components.v1 as components
 
 # إعدادات الصفحة
 st.set_page_config(
@@ -11,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS الشامل لمنع أي لون أبيض وتوحيد المظهر الداكن الفخم
+# تخصيص التصميم والـ CSS الشامل لمنع أي لون أبيض في المنصة
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
@@ -182,9 +183,34 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# كود جافاسكريبت جذري لمسح أي نص إرشادي مزعج (Press Enter to apply) من الجذور فوراً
+components.html("""
+    <script>
+    const doc = window.parent.document;
+    
+    function removeAnnoyingInstructions() {
+        // حذف أي عنصر يعرض تعليمات الـ Enter أو الـ small التابعة لـ streamlit
+        const instructions = doc.querySelectorAll('[data-testid="InputInstructions"], small, .stTextInput small');
+        instructions.forEach(el => el.remove());
+        
+        // إزالة الـ placeholders اللي بتعمل المشكلة
+        const inputs = doc.querySelectorAll('input');
+        inputs.forEach(input => {
+            if (input.getAttribute('placeholder')) {
+                input.setAttribute('placeholder', '');
+            }
+        });
+    }
+
+    const observer = new MutationObserver(() => {
+        removeAnnoyingInstructions();
+    });
+    observer.observe(doc.body, { childList: true, subtree: true });
+    setInterval(removeAnnoyingInstructions, 100);
+    </script>
+""", height=0)
+
 USERS_FILE = "mraya_users.csv"
-JOURNAL_FILE = "mraya_journal.csv"
-WALL_FILE = "mraya_wall.csv"
 
 def hash_password(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
@@ -203,6 +229,7 @@ def init_db():
         })
         df = pd.concat([df, admin_row], ignore_index=True)
         df.to_csv(USERS_FILE, index=False)
+        return df
     else:
         df = pd.read_csv(USERS_FILE)
         if "tarek_admin" not in df["Login_ID"].values:
@@ -217,13 +244,9 @@ def init_db():
             })
             df = pd.concat([df, admin_row], ignore_index=True)
             df.to_csv(USERS_FILE, index=False)
+        return df
 
-    if not os.path.exists(JOURNAL_FILE):
-        pd.DataFrame(columns=["Login_ID", "Date", "Mood", "Content"]).to_csv(JOURNAL_FILE, index=False)
-    if not os.path.exists(WALL_FILE):
-        pd.DataFrame(columns=["Login_ID", "Message", "Date"]).to_csv(WALL_FILE, index=False)
-
-init_db()
+users_df = init_db()
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -231,9 +254,10 @@ if "logged_in" not in st.session_state:
 if "view" not in st.session_state:
     st.session_state.view = "landing"
 
-# البحث الذكي عن الصور
+# البحث الذكي عن الصورتين المرفوعتين
 logo_img = None
 banner_img = None
+
 for f in os.listdir("."):
     if f.endswith(".png") or f.endswith(".jpg"):
         if "مراية" in f and "2" not in f:
@@ -249,8 +273,9 @@ if not banner_img and len(files_list) > 1:
 elif not banner_img:
     banner_img = logo_img
 
-# --- 1. الصفحة الرئيسية التسويقية ---
+# --- 1. الصفحة الرئيسية التسويقية (Landing Page) ---
 if not st.session_state.logged_in and st.session_state.view == "landing":
+    
     col_logo, col_space, col_auth = st.columns([4, 4, 2])
     with col_logo:
         if logo_img and os.path.exists(logo_img):
@@ -270,6 +295,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 st.rerun()
                 
     st.markdown("<br>", unsafe_allow_html=True)
+    
     if banner_img and os.path.exists(banner_img):
         st.markdown('<div class="image-showcase">', unsafe_allow_html=True)
         st.image(banner_img, use_container_width=True)
@@ -283,7 +309,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 st.session_state.view = "register"
                 st.rerun()
         with bb:
-            if st.button("✨ اكتشف مراية", use_container_width=True):
+            if st.button("✨ اكتشف مرايا", use_container_width=True):
                 st.session_state.show_discovery = True
                 
     if st.session_state.get("show_discovery", False):
@@ -291,10 +317,67 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             <div class="fancy-card" style="border-right: 6px solid #38bdf8; margin-top: 20px;">
                 <h3 style='color: #38bdf8;'>🧭 أهلاً بك في جولة سريعة داخل مراية</h3>
                 <p>
-                    منصة <b>مراية</b> بيئة متكاملة للدعم النفسي، المجتمعات الآمنة، والمذكرة السرية.
+                    منصة <b>مراية</b> ليست مجرد موقع تواصل، بل هي بيئة متكاملة تجمع بين:
+                    <br>1️⃣ <b>الثيرابست الذكي:</b> لمساعدتك في ترتيب أفكارك وسياق مشاعرك بأمان تام.
+                    <br>2️⃣ <b>الجلسات الجماعية:</b> لمشاركة التجارب عبر هويات مستعارة وبسرية مطلقة.
+                    <br>3️⃣ <b>المتجر الرقمي:</b> لتخصيص هويتك الفريدة وإرسال الهدايا للأصدقاء.
+                    <br><br>استكشف الأقسام أدناه لتتعرف على المزيد، أو أنشئ حسابك المجاني الآن وابدأ رحلتك!
                 </p>
             </div>
         """, unsafe_allow_html=True)
+                
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    st.markdown("<h2 class='section-title'>لماذا مرايا؟</h2>", unsafe_allow_html=True)
+    st.markdown("""
+        <div class="fancy-card" style="text-align: center;">
+            <p style="font-size: 22px !important; color: #ffffff !important; line-height: 2.1; margin: 0; font-weight: 600;">
+                لأننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج.<br><br>
+                <b>لهذا لم نصمم مرايا لتكون مجرد نافذة محادثة، بل تجربة متكاملة تمنحك خيارات متعددة للتواصل والتعبير والتطور.</b>
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    col_m1, col_m2 = st.columns(2)
+    with col_m1:
+        st.markdown("""
+            <div class="fancy-card">
+                <h3 style='color: #38bdf8; font-size: 24px !important; margin-bottom: 20px; font-weight: 800;'>🌟 مميزات أساسية</h3>
+                <ul style='color: #f1f5f9; font-size: 20px !important; line-height: 2.4; list-style-type: none; padding: 0; font-weight: 600;'>
+                    <li>🔹 مساحة شخصية مستقلة لكل مستخدم.</li>
+                    <li>🔹 جلسات فردية خاصة مصممة حولك.</li>
+                    <li>🔹 محادثات كتابية، صوتية، ومرئية متطورة.</li>
+                    <li>🔹 مساعد ذكي يتذكر سياق محادثاتك السابقة.</li>
+                </ul>
+            </div>
+        """, unsafe_allow_html=True)
+    with col_m2:
+        st.markdown("""
+            <div class="fancy-card">
+                <h3 style='color: #34d399; font-size: 24px !important; margin-bottom: 20px; font-weight: 800;'>💎 تجربة مجتمعية متكاملة</h3>
+                <ul style='color: #f1f5f9; font-size: 20px !important; line-height: 2.4; list-style-type: none; padding: 0; font-weight: 600;'>
+                    <li>🔹 إمكانية اختيار المشاركة المجتمعية أو البقاء بمفردك.</li>
+                    <li>🔹 نظام عضويات ومزايا قابل للتخصيص.</li>
+                    <li>🔹 تجربة شخصية قابلة للتطوير والتغيير.</li>
+                    <li>🔹 مكافآت، هدايا، وفعاليات تفاعلية.</li>
+                </ul>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<h2 class='section-title'>الأسئلة الشائعة</h2>", unsafe_allow_html=True)
+    with st.expander("❓ هل استخدام مراية مجاني؟"):
+        st.write("تتيح مراية عددًا من الجلسات المجانية الأولية، وبعد استهلاكها يمكنك اختيار إحدى الباقات المتاحة.")
+    with st.expander("❓ هل يتذكر المساعد الذكي محادثاتي السابقة؟"):
+        st.write("نعم، يستفيد من الذاكرة الشخصية المرتبطة بحسابك وفق إعدادات الأمان والخصوصية.")
+    with st.expander("❓ هل مراية بديل عن الطبيب النفسي؟"):
+        st.write("مراية منصة للدعم والمساندة الرقمية، وليست بديلًا عن التشخيص أو العلاج لدى متخصص مؤهل.")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    col_end1, col_end2, col_end3 = st.columns([1, 2, 1])
+    with col_end2:
+        if st.button("✨ أنشئ حسابك الآن مجانًا", type="primary", use_container_width=True):
+            st.session_state.view = "register"
+            st.rerun()
 
 # --- 2. صفحة تسجيل الدخول ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
@@ -364,9 +447,9 @@ elif not st.session_state.logged_in and st.session_state.view == "register":
                         users_df = pd.concat([users_df, new_user], ignore_index=True)
                         users_df.to_csv(USERS_FILE, index=False)
                         st.success(f"تم إنشاء حسابك بنجاح! المعرف الفريد الخاص بك هو: {unique_id}")
-                        st.info("يمكنك الان الانتقال لصفحة تسجيل الدخول.")
+                        st.info("يمكنك الآن الانتقال لصفحة تسجيل الدخول.")
 
-# --- 4. داخل المنصة (الصفحات الداخلية المكتملة) ---
+# --- 4. داخل المنصة (الصفحات الداخلية) ---
 else:
     users_df = pd.read_csv(USERS_FILE)
     is_owner = (st.session_state.current_user == "tarek_admin")
@@ -375,14 +458,7 @@ else:
     if is_owner:
         st.sidebar.success("👑 حساب الأونر والمالك")
         
-    menu_options = [
-        "لوحة التحكم", 
-        "الثيرابست الذكي", 
-        "مفكرة المشاعر واليوميات السرية 📖", 
-        "الجلسات الجماعية", 
-        "حائط الامتنان الإيجابي 🌟", 
-        "المتجر والألعاب"
-    ]
+    menu_options = ["لوحة التحكم", "الثيرابست الذكي", "الجلسات الجماعية", "المتجر والألعاب"]
     if is_owner:
         menu_options.append("إدارة المنصة (الأونر) ⚙️")
         
@@ -416,50 +492,21 @@ else:
         st.title("🤖 الثيرابست الذكي (مساحتك الآمنة للحديث)")
         st.markdown("""
             <div class="fancy-card">
-                <p>مرحباً بك في جلسة الدعم النفسي الذكية. هنا يمكنك التحدث بحرية تامة وسيتذكر النظام سياق أفكارك.</p>
+                <p>مرحباً بك في جلسة الدعم النفسي الذكية. هنا يمكنك التحدث بحرية تامة، وسيتذكر النظام سياق محادثاتك وأهدافك السابقة لمساعدتك بشكل أفضل.</p>
             </div>
         """, unsafe_allow_html=True)
         user_msg = st.text_input("اكتب رسالتك أو شعورك الآن:")
         if st.button("إرسال للثيرابست"):
             if user_msg:
-                st.info(f"🤖 **رد الثيرابست الذكي:** أسمعك جيداً يا صديقي بخصوص ({user_msg}). دعنا نفكر سوياً كيف نتجاوز هذا الشعور بسلام.")
-
-    elif menu == "مفكرة المشاعر واليوميات السرية 📖":
-        st.title("📖 مفكرتك الشخصية السرية")
-        st.markdown('<div class="fancy-card"><p>سجل مشاعرك وأفكارك اليومية بسرية تامة لا يمكن لأحد سواك الاطلاع عليها.</p></div>', unsafe_allow_html=True)
-        
-        mood = st.selectbox("حالتك المزاجية اليوم:", ["😊 سعيد ومتفائل", "😌 هادئ ومستقر", "🤔 تفكير عميق", "🌧️ متوتر أو حزين"])
-        journal_text = st.text_area("اكتب يومياتك ومشاعرك هنا:")
-        if st.button("حفظ في المفكرة السرية"):
-            if journal_text:
-                j_df = pd.read_csv(JOURNAL_FILE)
-                new_j = pd.DataFrame({
-                    "Login_ID": [st.session_state.current_user],
-                    "Date": [str(pd.Timestamp.now().date())],
-                    "Mood": [mood],
-                    "Content": [journal_text]
-                })
-                j_df = pd.concat([j_df, new_j], ignore_index=True)
-                j_df.to_csv(JOURNAL_FILE, index=False)
-                st.success("تم حفظ يومياتك بنجاح وبسرية تامة!")
-
-        st.subheader("📂 سجل يومياتك السابقة:")
-        j_df = pd.read_csv(JOURNAL_FILE)
-        user_j = j_df[j_df["Login_ID"] == st.session_state.current_user]
-        if not user_j.empty:
-            for idx, row in user_j.iterrows():
-                st.markdown(f"""
-                    <div class="fancy-card">
-                        <small style="color: #38bdf8;">التاريخ: {row['Date']} | المزاج: {row['Mood']}</small>
-                        <p style="margin-top: 10px;">{row['Content']}</p>
-                    </div>
-                """, unsafe_allow_html=True)
-        else:
-            st.info("لا توجد يوميات مسجلة حتى الآن. ابدأ بكتابة أول يومية لك!")
+                st.info(f"🤖 **رد الثيرابست الذكي:** أسمعك جيداً يا صديقي بخصوص ({user_msg}). دعنا نفكر سوياً كيف نتجاوز هذا الشعور بأمان وسلام داخلي.")
 
     elif menu == "الجلسات الجماعية":
         st.title("🎙️ الغرف الصوتية الجماعية (بسرية تامة)")
-        st.markdown('<div class="fancy-card"><p>شارك في غرف الاستماع والنقاش الجماعي باستخدام هويات مستعارة وبأمان مطلق.</p></div>', unsafe_allow_html=True)
+        st.markdown("""
+            <div class="fancy-card">
+                <p>شارك في غرف الاستماع والنقاش الجماعي باستخدام هويات مستعارة وبأمان مطلق.</p>
+            </div>
+        """, unsafe_allow_html=True)
         col_g1, col_g2 = st.columns(2)
         with col_g1:
             st.markdown('<div class="fancy-card"><h3>🎧 غرفة تفريغ الضغوط اليومية</h3><p>المشاركون: 14 شخص</p></div>', unsafe_allow_html=True)
@@ -470,39 +517,13 @@ else:
             if st.button("انضم للصوتية 2"):
                 st.success("تم انضمامك للغرفة بنجاح!")
 
-    elif menu == "حائط الامتنان الإيجابي 🌟":
-        st.title("🌟 حائط الامتنان ومشاركة الطاقة الإيجابية")
-        st.markdown('<div class="fancy-card"><p>انشر رسالة دعم أو امتنان مجهولة لتضيء بها يوم شخص آخر في المنصة.</p></div>', unsafe_allow_html=True)
-        
-        wall_msg = st.text_input("اكتب رسالة إيجابية أو كلمة طمأنينة:")
-        if st.button("نشر على الحائط الإيجابي"):
-            if wall_msg:
-                w_df = pd.read_csv(WALL_FILE)
-                new_w = pd.DataFrame({
-                    "Login_ID": [st.session_state.current_user],
-                    "Message": [wall_msg],
-                    "Date": [str(pd.Timestamp.now().date())]
-                })
-                w_df = pd.concat([w_df, new_w], ignore_index=True)
-                w_df.to_csv(WALL_FILE, index=False)
-                st.success("تم نشر رسالتك بنجاح على الحائط الإيجابي!")
-
-        st.subheader("💬 رسائل المجتمع الإيجابية:")
-        w_df = pd.read_csv(WALL_FILE)
-        if not w_df.empty:
-            for idx, row in w_df.tail(10).iterrows():
-                st.markdown(f"""
-                    <div class="fancy-card" style="padding: 20px; margin-bottom: 15px;">
-                        <p style="color: #f8fafc; font-size: 18px !important; margin: 0;">💬 "{row['Message']}"</p>
-                        <small style="color: #38bdf8; display: block; margin-top: 8px;">مشارك مجهول الأمان | التاريخ: {row['Date']}</small>
-                    </div>
-                """, unsafe_allow_html=True)
-        else:
-            st.info("كن أول من يكتب رسالة إيجابية على الحائط اليوم!")
-
     elif menu == "المتجر والألعاب":
         st.title("🎨 متجر مراية والعناصر الرقمية")
-        st.markdown('<div class="fancy-card"><p>اقتنِ الإطارات الفاخرة وأرسل الهدايا لأصدقائك عبر معرفاتهم الفريدة.</p></div>', unsafe_allow_html=True)
+        st.markdown("""
+            <div class="fancy-card">
+                <p>اقتنِ الإطارات الفاخرة، الدخلات المتحركة، وأرسل الهدايا لأصدقائك عبر معرفاتهم الفريدة.</p>
+            </div>
+        """, unsafe_allow_html=True)
         col_s1, col_s2 = st.columns(2)
         with col_s1:
             st.markdown('<div class="fancy-card"><h3>🦁 إطار زئير الأسد الأسطوري</h3><p>السعر: 50 كوينز</p></div>', unsafe_allow_html=True)
@@ -515,7 +536,7 @@ else:
 
     elif menu == "إدارة المنصة (الأونر) ⚙️" and is_owner:
         st.title("⚙️ لوحة تحكم المالك (طارق)")
-        st.markdown('<div class="fancy-card"><p>لوحة التحكم السيادية الخاصة بالأونر لإدارة الحسابات والأرصدة.</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="fancy-card"><p>لوحة التحكم السيادية الخاصة بالأونر لإدارة الحسابات، الأرصدة، والمستخدمين.</p></div>', unsafe_allow_html=True)
         
         st.subheader("📊 قاعدة بيانات المستخدمين المسجلين:")
         st.dataframe(users_df.drop(columns=["Password"]), use_container_width=True)
