@@ -131,7 +131,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             <span class="badge-sales">🔥 المنصة الأولى من نوعها للتعافي النفسي والمجتمعي الآمن</span>
             <h1 style='font-size: 52px; font-weight: 900; margin-bottom: 20px; color: #ffffff; line-height: 1.2;'>لأن أصدق حديث هو ما تقوله لنفسك.. ولأنك تستحق سلاماً داخلياً لا يشاركه أحد معك!</h1>
             <p style='font-size: 21px; max-width: 950px; margin: 0 auto 35px auto; line-height: 1.8; color: #cbd5e1;'>
-                أهلاً بك في <b>"مراية"</b>؛ الحصن الرقمي الأقوى عالمياً الذي يجمع لك بين معالج ذكاء اصطناعي فاهم لحالتك بذاكرة لا تنسى، وبين مجتمعات صوتية سرية تفرغ فيها ضغوطك دون أدنى قلق أو خوف من الأحكام الخارجية.
+                أهلاً بك في منصة مراية؛ الحصن الرقمي الأقوى عالمياً الذي يجمع لك بين معالج ذكاء اصطناعي فاهم لحالتك بذاكرة لا تنسى، وبين مجتمعات صوتية سرية تفرغ فيها ضغوطك دون أدنى قلق أو خوف من الأحكام الخارجية.
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -144,7 +144,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             st.rerun()
             
     st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown("<h2 style='text-align: center; color: #0f172a; font-weight: 900; font-size: 34px;'>🌟 لماذا يختار الملايين منصة "مراية" لرحلة علاجهم النفسي؟</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #0f172a; font-weight: 900; font-size: 34px;'>🌟 لماذا يختار الملايين منصة مراية لرحلة علاجهم النفسي؟</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #64748b; font-size: 19px;'>إليك القائمة الكاملة للمميزات الاستثنائية التي تم هندستها خصيصاً لتمنحك قيمة لا تقدر بثمن</p>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     
@@ -155,7 +155,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             <div class="market-card" style='border-right: 8px solid #0284c7;'>
                 <h3 style='color: #0369a1; margin-top: 0; font-size: 24px; font-weight: 800;'>🤖 1. الثيرابست الذكي الخارق (ذاكرة علاجية لا تنتهي)</h3>
                 <p style='color: #475569; font-size: 17px; line-height: 1.9;'>
-                    انسَ تماماً العناء المعتاد في إعادة شرح مشاكلك من الصفر! معالج الذكاء الاصطناعي في "مراية" مزود بـ <b>ذاكرة دائمة ومستمرة</b> لجميع جلساتك السابقة (الأولى، الثانية، العاشرة..). حين تفتح جلسة جديدة، يستأنف معك الحوار بنفس النبرة والفهم والعمق النفسي كأنه طبيب بشري يرافق خطواتك لأشهر طويلة، مدركاً أبعاد أزماتك دون أي مجهود إضافي منك.
+                    انسَ تماماً العناء المعتاد في إعادة شرح مشاكلك من الصفر! معالج الذكاء الاصطناعي في مراية مزود بـ <b>ذاكرة دائمة ومستمرة</b> لجميع جلساتك السابقة (الأولى، الثانية، العاشرة..). حين تفتح جلسة جديدة، يستأنف معك الحوار بنفس النبرة والفهم والعمق النفسي كأنه طبيب بشري يرافق خطواتك لأشهر طويلة، مدركاً أبعاد أزماتك دون أي مجهود إضافي منك.
                 </p>
                 <ul style='color: #334155; font-size: 16px; line-height: 1.8; margin-top: 15px;'>
                     <li>متابعة دقيقة لتطور حالتك المزاجية والنفسية يوماً بي يوم.</li>
@@ -212,12 +212,12 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
 
     st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # قسم إضافي لدعم الثقة (Social Proof / Sales Boost)
+    # قسم إضافي لدعم الثقة
     st.markdown("""
         <div style='background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); padding: 50px; border-radius: 24px; text-align: center; border: 2px dashed #38bdf8;'>
             <h2 style='color: #0369a1; font-weight: 900; margin-bottom: 15px;'>✨ هل أنت مستعد لتجربة تغيير حقيقي في حياتك؟</h2>
             <p style='color: #334155; font-size: 19px; max-width: 800px; margin: 0 auto 25px auto; line-height: 1.7;'>
-                انضم الآن لمجتمع "مراية"، احصل على رصيدك الترحيبي المجاني، وابدأ جلستك الخاصة مع الثيرابست الذكي في ثوانٍ معدودة.
+                انضم الآن لمجتمع مراية، احصل على رصيدك الترحيبي المجاني، وابدأ جلستك الخاصة مع الثيرابست الذكي في ثوانٍ معدودة.
             </p>
         </div>
     """, unsafe_allow_html=True)
