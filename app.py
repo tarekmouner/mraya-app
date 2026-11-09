@@ -170,51 +170,75 @@ st.markdown("""
         margin-bottom: 25px;
         text-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
     }
+    
+    .image-showcase {
+        text-align: center;
+        padding: 20px;
+        background: rgba(15, 23, 42, 0.85);
+        border-radius: 28px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        margin-bottom: 35px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
+# كود جافاسكريبت عام لتنظيف أي بقايا واجهات قديمة
+components.html("""
+    <script>
+    const doc = window.parent.document;
+    function cleanUI() {
+        const elements = doc.querySelectorAll('iframe');
+        elements.forEach(el => {
+            if(el.style.backgroundColor === 'white') {
+                el.style.backgroundColor = '#0b0f19';
+            }
+        });
+    }
+    setInterval(cleanUI, 100);
+    </script>
+""", height=0)
+
 USERS_FILE = "mraya_users.csv"
 JOURNAL_FILE = "mraya_journal.csv"
-AI_MEMORY_FILE = "mraya_ai_memory.csv"
+WALL_FILE = "mraya_wall.csv"
 
 def hash_password(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
 
 def init_db():
     if not os.path.exists(USERS_FILE):
-        df = pd.DataFrame(columns=["Full_Name", "Login_ID", "Phone_Email", "Password", "Account_Type", "Coins", "Diamonds", "Level"])
+        df = pd.DataFrame(columns=["Full_Name", "Login_ID", "Email_Phone", "Password", "Account_Type", "Coins", "Diamonds"])
         admin_row = pd.DataFrame({
             "Full_Name": ["طارق (الأونر)"],
-            "Login_ID": ["mraya_tarek_admin"],
-            "Phone_Email": ["tarek@mraya.com"],
+            "Login_ID": ["tarek_admin"],
+            "Email_Phone": ["tarek@mraya.com"],
             "Password": [hash_password("tarek12345")],
             "Account_Type": ["Owner"],
             "Coins": [999999],
-            "Diamonds": [999999],
-            "Level": [999]
+            "Diamonds": [999999]
         })
         df = pd.concat([df, admin_row], ignore_index=True)
         df.to_csv(USERS_FILE, index=False)
     else:
         df = pd.read_csv(USERS_FILE)
-        if "mraya_tarek_admin" not in df["Login_ID"].values:
+        if "tarek_admin" not in df["Login_ID"].values:
             admin_row = pd.DataFrame({
                 "Full_Name": ["طارق (الأونر)"],
-                "Login_ID": ["mraya_tarek_admin"],
-                "Phone_Email": ["tarek@mraya.com"],
+                "Login_ID": ["tarek_admin"],
+                "Email_Phone": ["tarek@mraya.com"],
                 "Password": [hash_password("tarek12345")],
                 "Account_Type": ["Owner"],
                 "Coins": [999999],
-                "Diamonds": [999999],
-                "Level": [999]
+                "Diamonds": [999999]
             })
             df = pd.concat([df, admin_row], ignore_index=True)
             df.to_csv(USERS_FILE, index=False)
 
     if not os.path.exists(JOURNAL_FILE):
         pd.DataFrame(columns=["Login_ID", "Date", "Mood", "Content"]).to_csv(JOURNAL_FILE, index=False)
-    if not os.path.exists(AI_MEMORY_FILE):
-        pd.DataFrame(columns=["Login_ID", "Chat_History"]).to_csv(AI_MEMORY_FILE, index=False)
+    if not os.path.exists(WALL_FILE):
+        pd.DataFrame(columns=["Login_ID", "Message", "Date"]).to_csv(WALL_FILE, index=False)
 
 init_db()
 
@@ -224,100 +248,205 @@ if "logged_in" not in st.session_state:
 if "view" not in st.session_state:
     st.session_state.view = "landing"
 
-# --- 1. الصفحة الرئيسية (Landing Page) ---
+# البحث الذكي عن الصورتين المرفوعتين
+logo_img = None
+banner_img = None
+
+for f in os.listdir("."):
+    if f.endswith(".png") or f.endswith(".jpg"):
+        if "مراية" in f and "2" not in f:
+            logo_img = f
+        elif "2" in f or "banner" in f.lower():
+            banner_img = f
+
+files_list = [f for f in os.listdir(".") if f.endswith(".png") or f.endswith(".jpg")]
+if not logo_img and files_list:
+    logo_img = files_list[0]
+if not banner_img and len(files_list) > 1:
+    banner_img = files_list[1]
+elif not banner_img:
+    banner_img = logo_img
+
+# --- 1. الصفحة الرئيسية التسويقية (Landing Page) ---
 if not st.session_state.logged_in and st.session_state.view == "landing":
-    col1, col2 = st.columns([6, 2])
-    with col1:
-        st.markdown("<h1 style='color: #38bdf8;'>🪞 منصة مراية | مساحتك الآمنة لفهم نفسك</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size: 22px;'>مساحة سرية بالكامل لتفريغ مشاعرك، التحدث مع الثيرابست الذكي بذاكرة خاصة، والانضمام لمجتمعات الدعم بأمان مطلق.</p>", unsafe_allow_html=True)
-    with col2:
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("تسجيل الدخول", use_container_width=True):
-            st.session_state.view = "login"
-            st.rerun()
-        if st.button("حساب جديد", type="primary", use_container_width=True):
+    
+    col_logo, col_space, col_auth = st.columns([4, 4, 2])
+    with col_logo:
+        if logo_img and os.path.exists(logo_img):
+            st.image(logo_img, width=260)
+        else:
+            st.markdown("<h3 style='color: #38bdf8;'>🪞 مراية | MIRAYA</h3>", unsafe_allow_html=True)
+            
+    with col_auth:
+        c1, c2 = st.columns(2)
+        with c1:
+            if st.button("دخول", use_container_width=True):
+                st.session_state.view = "login"
+                st.rerun()
+        with c2:
+            if st.button("حساب جديد", type="primary", use_container_width=True):
+                st.session_state.view = "register"
+                st.rerun()
+                
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    if banner_img and os.path.exists(banner_img):
+        st.markdown('<div class="image-showcase">', unsafe_allow_html=True)
+        st.image(banner_img, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
+    with col_b2:
+        ba, bb = st.columns(2)
+        with ba:
+            if st.button("🚀 ابدأ رحلتك مجانًا", type="primary", use_container_width=True):
+                st.session_state.view = "register"
+                st.rerun()
+        with bb:
+            if st.button("✨ اكتشف مراية", use_container_width=True):
+                st.session_state.show_discovery = True
+                
+    if st.session_state.get("show_discovery", False):
+        st.markdown("""
+            <div class="fancy-card" style="border-right: 6px solid #38bdf8; margin-top: 20px;">
+                <h3 style='color: #38bdf8;'>🧭 أهلاً بك في جولة سريعة داخل مراية</h3>
+                <p>
+                    منصة <b>مراية</b> ليست مجرد موقع تواصل، بل هي بيئة متكاملة تجمع بين:
+                    <br>1️⃣ <b>الثيرابست الذكي:</b> لمساعدتك في ترتيب أفكارك وسياق مشاعرك بأمان تام.
+                    <br>2️⃣ <b>الجلسات الجماعية:</b> لمشاركة التجارب عبر هويات مستعارة وبسرية مطلقة.
+                    <br>3️⃣ <b>المتجر الرقمي:</b> لتخصيص هويتك الفريدة وإرسال الهدايا للأصدقاء.
+                    <br><br>استكشف الأقسام أدناه لتتعرف على المزيد، أو أنشئ حسابك المجاني الآن وابدأ رحلتك!
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+                
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    st.markdown("<h2 class='section-title'>لماذا مرايا؟</h2>", unsafe_allow_html=True)
+    st.markdown("""
+        <div class="fancy-card" style="text-align: center;">
+            <p style="font-size: 22px !important; color: #ffffff !important; line-height: 2.1; margin: 0; font-weight: 600;">
+                لأننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج.<br><br>
+                <b>لهذا لم نصمم مرايا لتكون مجرد نافذة محادثة، بل تجربة متكاملة تمنحك خيارات متعددة للتواصل والتعبير والتطور.</b>
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    col_m1, col_m2 = st.columns(2)
+    with col_m1:
+        st.markdown("""
+            <div class="fancy-card">
+                <h3 style='color: #38bdf8; font-size: 24px !important; margin-bottom: 20px; font-weight: 800;'>🌟 مميزات أساسية</h3>
+                <ul style='color: #f1f5f9; font-size: 20px !important; line-height: 2.4; list-style-type: none; padding: 0; font-weight: 600;'>
+                    <li>🔹 مساحة شخصية مستقلة لكل مستخدم.</li>
+                    <li>🔹 جلسات فردية خاصة مصممة حولك.</li>
+                    <li>🔹 محادثات كتابية، صوتية، ومرئية متطورة.</li>
+                    <li>🔹 مساعد ذكي يتذكر سياق محادثاتك السابقة.</li>
+                </ul>
+            </div>
+        """, unsafe_allow_html=True)
+    with col_m2:
+        st.markdown("""
+            <div class="fancy-card">
+                <h3 style='color: #34d399; font-size: 24px !important; margin-bottom: 20px; font-weight: 800;'>💎 تجربة مجتمعية متكاملة</h3>
+                <ul style='color: #f1f5f9; font-size: 20px !important; line-height: 2.4; list-style-type: none; padding: 0; font-weight: 600;'>
+                    <li>🔹 إمكانية اختيار المشاركة المجتمعية أو البقاء بمفردك.</li>
+                    <li>🔹 نظام عضويات ومزايا قابل للتخصيص.</li>
+                    <li>🔹 تجربة شخصية قابلة للتطوير والتغيير.</li>
+                    <li>🔹 مكافآت، هدايا، وفعاليات تفاعلية.</li>
+                </ul>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<h2 class='section-title'>الأسئلة الشائعة</h2>", unsafe_allow_html=True)
+    with st.expander("❓ هل استخدام مراية مجاني؟"):
+        st.write("تتيح مراية عددًا من الجلسات المجانية الأولية، وبعد استهلاكها يمكنك اختيار إحدى الباقات المتاحة.")
+    with st.expander("❓ هل يتذكر المساعد الذكي محادثاتي السابقة؟"):
+        st.write("نعم، يستفيد من الذاكرة الشخصية المرتبطة بحسابك وفق إعدادات الأمان والخصوصية.")
+    with st.expander("❓ هل مراية بديل عن الطبيب النفسي؟"):
+        st.write("مراية منصة للدعم والمساندة الرقمية، وليست بديلًا عن التشخيص أو العلاج لدى متخصص مؤهل.")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    col_end1, col_end2, col_end3 = st.columns([1, 2, 1])
+    with col_end2:
+        if st.button("✨ أنشئ حسابك الآن مجانًا", type="primary", use_container_width=True):
             st.session_state.view = "register"
             st.rerun()
 
-    st.markdown("<h2 class='section-title'>مميزات منصة مراية</h2>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown('<div class="fancy-card"><h3>🤖 ثيرابست ذكي بذاكرة</h3><p>يتذكر تفاصيل مشاكلك وجلساتك السابقة ليكمل معك بوعي تام.</p></div>', unsafe_allow_html=True)
-    with c2:
-        st.markdown('<div class="fancy-card"><h3>🔒 سرية تامة وأمان</h3><p>أول ما تسجل بيتعمل لك آي دي فريد خاص باسم الموقع، ومحدش بيشوف أسرارك نهائياً.</p></div>', unsafe_allow_html=True)
-    with c3:
-        st.markdown('<div class="fancy-card"><h3>💎 متجر وهدايا</h3><p>أطراف متحركة، دخلات أسطورية، ولوحة شرف لأكثر الأصدقاء كرماً.</p></div>', unsafe_allow_html=True)
-
 # --- 2. صفحة تسجيل الدخول ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
-    if st.button("⬅️ العودة للرئيسية"):
+    if st.button("⬅️ العودة للصفحة الرئيسية"):
         st.session_state.view = "landing"
         st.rerun()
     
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
+    col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
+    with col_l2:
         st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🔑 تسجيل الدخول إلى مراية</h2>", unsafe_allow_html=True)
-        login_id_input = st.text_input("معرف مراية الفريد (Login ID) أو الهاتف/الإيميل:")
-        password_input = st.text_input("كلمة المرور:", type="password")
+        login_input = st.text_input("معرف مراية (Login ID) أو البريد الإلكتروني:")
+        login_pass = st.text_input("كلمة المرور:", type="password")
         
         if st.button("دخول آمن", type="primary", use_container_width=True):
             users_df = pd.read_csv(USERS_FILE)
-            hashed_p = hash_password(password_input)
-            match = users_df[(users_df["Login_ID"] == login_id_input) | (users_df["Phone_Email"] == login_id_input)]
+            hashed_p = hash_password(login_pass)
+            user_match = users_df[(users_df["Login_ID"] == login_input) | (users_df["Email_Phone"] == login_input)]
             
-            if not match.empty:
-                if str(match.iloc[0]["Password"]) == hashed_p:
+            if not user_match.empty:
+                stored_pass = str(user_match.iloc[0]["Password"])
+                if stored_pass == hashed_p:
                     st.session_state.logged_in = True
-                    st.session_state.current_user = match.iloc[0]["Login_ID"]
+                    st.session_state.current_user = user_match.iloc[0]["Login_ID"]
                     st.success("تم الدخول بنجاح!")
                     st.rerun()
                 else:
                     st.error("كلمة المرور غير صحيحة.")
             else:
-                st.error("المعرف أو الهاتف غير مسجل.")
+                st.error("المعرف أو البريد غير مسجل.")
 
-# --- 3. صفحة حساب جديد ---
+# --- 3. صفحة إنشاء حساب جديد ---
 elif not st.session_state.logged_in and st.session_state.view == "register":
-    if st.button("⬅️ العودة للرئيسية"):
+    if st.button("⬅️ العودة للصفحة الرئيسية"):
         st.session_state.view = "landing"
         st.rerun()
     
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
+    col_r1, col_r2, col_r3 = st.columns([1, 2, 1])
+    with col_r2:
         st.markdown("<h2 style='text-align: center; color: #38bdf8;'>✨ إنشاء حساب جديد في مراية</h2>", unsafe_allow_html=True)
         full_name = st.text_input("الاسم الحقيقي أو المستعار:")
-        phone_email = st.text_input("رقم الهاتف أو البريد الإلكتروني:")
-        new_pass = st.text_input("كلمة المرور:", type="password")
+        contact_info = st.text_input("البريد الإلكتروني أو رقم الهاتف:")
+        new_pass = st.text_input("كلمة المرور السرية:", type="password")
+        confirm_pass = st.text_input("تأكيد كلمة المرور:", type="password")
         
         if st.button("إنشاء الحساب الان", type="primary", use_container_width=True):
-            if full_name and phone_email and new_pass:
-                users_df = pd.read_csv(USERS_FILE)
-                if phone_email in users_df["Phone_Email"].values:
-                    st.error("هذا البريد أو الرقم مسجل مسبقاً.")
+            if full_name and contact_info and new_pass:
+                if new_pass != confirm_pass:
+                    st.warning("كلمات المرور غير متطابقة.")
                 else:
-                    base_id = full_name.strip().replace(" ", "_").lower()
-                    unique_id = f"mraya_{base_id}_{len(users_df) + 1}"
-                    
-                    new_user = pd.DataFrame({
-                        "Full_Name": [full_name],
-                        "Login_ID": [unique_id],
-                        "Phone_Email": [phone_email],
-                        "Password": [hash_password(new_pass)],
-                        "Account_Type": ["Standard"],
-                        "Coins": [10],
-                        "Diamonds": [5],
-                        "Level": [1]
-                    })
-                    
-                    users_df = pd.concat([users_df, new_user], ignore_index=True)
-                    users_df.to_csv(USERS_FILE, index=False)
-                    st.success(f"تم إنشاء حسابك بنجاح! معرفك الفريد هو: {unique_id}")
-                    st.info("يمكنك الآن الانتقال لصفحة تسجيل الدخول.")
+                    users_df = pd.read_csv(USERS_FILE)
+                    if contact_info in users_df["Email_Phone"].values:
+                        st.error("هذا البريد أو الرقم مسجل بالفعل.")
+                    else:
+                        base_id = full_name.strip().replace(" ", "_").lower()
+                        unique_id = f"mraya_{base_id}_{len(users_df) + 1}"
+                        
+                        new_user = pd.DataFrame({
+                            "Full_Name": [full_name],
+                            "Login_ID": [unique_id],
+                            "Email_Phone": [contact_info],
+                            "Password": [hash_password(new_pass)],
+                            "Account_Type": ["Standard"],
+                            "Coins": [10],
+                            "Diamonds": [5]
+                        })
+                        
+                        users_df = pd.concat([users_df, new_user], ignore_index=True)
+                        users_df.to_csv(USERS_FILE, index=False)
+                        st.success(f"تم إنشاء حسابك بنجاح! المعرف الفريد الخاص بك هو: {unique_id}")
+                        st.info("يمكنك الآن الانتقال لصفحة تسجيل الدخول.")
 
-# --- 4. داخل المنصة ---
+# --- 4. داخل المنصة (الصفحات الداخلية المحدثة) ---
 else:
     users_df = pd.read_csv(USERS_FILE)
-    is_owner = (st.session_state.current_user == "mraya_tarek_admin")
+    is_owner = (st.session_state.current_user == "tarek_admin")
     
     st.sidebar.title(f"🪞 مراية | {st.session_state.current_user}")
     if is_owner:
@@ -325,13 +454,16 @@ else:
         
     menu_options = [
         "لوحة التحكم", 
-        "الثيرابست الذكي (بذاكرة)", 
-        "مفكرة المشاعر السرية 📖", 
-        "إدارة المنصة (الأونر) ⚙️" if is_owner else None
+        "الثيرابست الذكي", 
+        "مفكرة المشاعر واليوميات السرية 📖", 
+        "الجلسات الجماعية", 
+        "حائط الامتنان الإيجابي 🌟", 
+        "المتجر والألعاب"
     ]
-    menu_options = [m for m in menu_options if m]
-    
-    menu = st.sidebar.radio("التنقل:", menu_options)
+    if is_owner:
+        menu_options.append("إدارة المنصة (الأونر) ⚙️")
+        
+    menu = st.sidebar.radio("التنقل بين الصفحات:", menu_options)
     
     if st.sidebar.button("تسجيل الخروج"):
         st.session_state.logged_in = False
@@ -352,63 +484,168 @@ else:
                     <h2>أهلاً بك، {name} 👋</h2>
                     <p>معرفك الفريد في المنصة: <b>{st.session_state.current_user}</b></p>
                     <hr style="border-color: rgba(255,255,255,0.1);">
-                    <h3>💰 رصيد المحفظة:</h3>
+                    <h3>💰 رصيد محفظتك الرقمية:</h3>
                     <p style="font-size: 24px; color: #38bdf8;"><b>{c} كوينز</b> | 💎 <b>{d} ماسات</b></p>
                 </div>
             """, unsafe_allow_html=True)
 
-    elif menu == "الثيرابست الذكي (بذاكرة)":
-        st.title("🤖 الثيرابست الذكي (مساحتك الآمنة)")
-        st.markdown('<div class="fancy-card"><p>هذا البوت يتذكر تفاصيل جلستك السابقة ليتابع معك بدقة متناهية.</p></div>', unsafe_allow_html=True)
-        
-        # استرجاع الذاكرة المخزنة لهذا المستخدم
-        mem_df = pd.read_csv(AI_MEMORY_FILE)
-        user_mem = mem_df[mem_df["Login_ID"] == st.session_state.current_user]
-        
-        history = user_mem.iloc[0]["Chat_History"] if not user_mem.empty else "لا توجد جلسات سابقة. هذه هي الجلسة الأولى."
-        
-        st.info(f"🧠 **ذاكرة البوت الحالية معك:** {history}")
-        
+    elif menu == "الثيرابست الذكي":
+        st.title("🤖 الثيرابست الذكي (مساحتك الآمنة للحديث)")
+        st.markdown("""
+            <div class="fancy-card">
+                <p>مرحباً بك في جلسة الدعم النفسي الذكية. هنا يمكنك التحدث بحرية تامة، وسيتذكر النظام سياق محادثاتك وأهدافك السابقة لمساعدتك بشكل أفضل.</p>
+            </div>
+        """, unsafe_allow_html=True)
         user_msg = st.text_input("اكتب رسالتك أو شعورك الآن:")
         if st.button("إرسال للثيرابست"):
             if user_msg:
-                new_history = f"آخر موضوع ناقشته العميل: {user_msg}"
-                if user_mem.empty:
-                    new_row = pd.DataFrame({"Login_ID": [st.session_state.current_user], "Chat_History": [new_history]})
-                    mem_df = pd.concat([mem_df, new_row], ignore_index=True)
-                else:
-                    mem_df.loc[mem_df["Login_ID"] == st.session_state.current_user, "Chat_History"] = new_history
-                mem_df.to_csv(AI_MEMORY_FILE, index=False)
-                
-                st.success(f"🤖 **رد الثيرابست الذكي:** أسمعك جيداً بخصوص ({user_msg}). لقد سجلت ذلك في ذاكرتي وسنتابع منه في جلستنا القادمة!")
+                st.info(f"🤖 **رد الثيرابست الذكي:** أسمعك جيداً يا صديقي بخصوص ({user_msg}). دعنا نفكر سوياً كيف نتجاوز هذا الشعور بأمان وسلام داخلي.")
 
-    elif menu == "مفكرة المشاعر السرية 📖":
-        st.title("📖 مفكرتك السرية")
-        st.markdown('<div class="fancy-card"><p>سجل يومياتك بسرية تامة لا يطلع عليها أحد سواك.</p></div>', unsafe_allow_html=True)
-        mood = st.selectbox("المزاج:", ["😊 سعيد", "😌 هادئ", "🤔 عميق", "🌧️ متوتر"])
-        content = st.text_area("اكتب أفكارك:")
-        if st.button("حفظ اليومية"):
-            if content:
+    elif menu == "مفكرة المشاعر واليوميات السرية 📖":
+        st.title("📖 مفكرتك الشخصية السرية")
+        st.markdown('<div class="fancy-card"><p>سجل مشاعرك وأفكارك اليومية بسرية تامة لا يمكن لأحد سواك الاطلاع عليها.</p></div>', unsafe_allow_html=True)
+        
+        mood = st.radio("حالتك المزاجية اليوم:", ["😊 سعيد ومتفائل", "😌 هادئ ومستقر", "🤔 تفكير عميق", "🌧️ متوتر أو حزين"], horizontal=True)
+        
+        journal_text = st.text_area("اكتب يومياتك ومشاعرك هنا:")
+        if st.button("حفظ في المفكرة السرية"):
+            if journal_text:
                 j_df = pd.read_csv(JOURNAL_FILE)
                 new_j = pd.DataFrame({
                     "Login_ID": [st.session_state.current_user],
                     "Date": [str(pd.Timestamp.now().date())],
                     "Mood": [mood],
-                    "Content": [content]
+                    "Content": [journal_text]
                 })
                 j_df = pd.concat([j_df, new_j], ignore_index=True)
                 j_df.to_csv(JOURNAL_FILE, index=False)
-                st.success("تم الحفظ بسرية تامة!")
+                st.success("تم حفظ يومياتك بنجاح وبسرية تامة!")
+
+        st.subheader("📂 سجل يومياتك السابقة:")
+        j_df = pd.read_csv(JOURNAL_FILE)
+        user_j = j_df[j_df["Login_ID"] == st.session_state.current_user]
+        if not user_j.empty:
+            for idx, row in user_j.iterrows():
+                st.markdown(f"""
+                    <div class="fancy-card">
+                        <small style="color: #38bdf8;">التاريخ: {row['Date']} | المزاج: {row['Mood']}</small>
+                        <p style="margin-top: 10px;">{row['Content']}</p>
+                    </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.info("لا توجد يوميات مسجلة حتى الآن. ابدأ بكتابة أول يومية لك!")
+
+    elif menu == "الجلسات الجماعية":
+        st.title("🎙️ الغرف الصوتية الجماعية (بسرية تامة)")
+        st.markdown("""
+            <div class="fancy-card">
+                <p>شارك في غرف الاستماع والنقاش الجماعي باستخدام هويات مستعارة وبأمان مطلق.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        col_g1, col_g2 = st.columns(2)
+        with col_g1:
+            st.markdown('<div class="fancy-card"><h3>🎧 غرفة تفريغ الضغوط اليومية</h3><p>المشاركون: 14 شخص</p></div>', unsafe_allow_html=True)
+            if st.button("انضم للصوتية 1"):
+                st.success("تم انضمامك للغرفة بنجاح!")
+        with col_g2:
+            st.markdown('<div class="fancy-card"><h3>🌟 غرفة التأمل والسلام الداخلي</h3><p>المشاركون: 8 أشخاص</p></div>', unsafe_allow_html=True)
+            if st.button("انضم للصوتية 2"):
+                st.success("تم انضمامك للغرفة بنجاح!")
+
+    elif menu == "حائط الامتنان الإيجابي 🌟":
+        st.title("🌟 حائط الامتنان ومشاركة الطاقة الإيجابية")
+        st.markdown('<div class="fancy-card"><p>انشر رسالة دعم أو امتنان مجهولة لتضيء بها يوم شخص آخر في المنصة.</p></div>', unsafe_allow_html=True)
+        
+        wall_msg = st.text_input("اكتب رسالة إيجابية أو كلمة طمأنينة:")
+        if st.button("نشر على الحائط الإيجابي"):
+            if wall_msg:
+                w_df = pd.read_csv(WALL_FILE)
+                new_w = pd.DataFrame({
+                    "Login_ID": [st.session_state.current_user],
+                    "Message": [wall_msg],
+                    "Date": [str(pd.Timestamp.now().date())]
+                })
+                w_df = pd.concat([w_df, new_w], ignore_index=True)
+                w_df.to_csv(WALL_FILE, index=False)
+                st.success("تم نشر رسالتك بنجاح على الحائط الإيجابي!")
+
+        st.subheader("💬 رسائل المجتمع الإيجابية:")
+        w_df = pd.read_csv(WALL_FILE)
+        if not w_df.empty:
+            for idx, row in w_df.tail(10).iterrows():
+                st.markdown(f"""
+                    <div class="fancy-card" style="padding: 20px; margin-bottom: 15px;">
+                        <p style="color: #f8fafc; font-size: 18px !important; margin: 0;">💬 "{row['Message']}"</p>
+                        <small style="color: #38bdf8; display: block; margin-top: 8px;">مشارك مجهول الأمان | التاريخ: {row['Date']}</small>
+                    </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.info("كن أول من يكتب رسالة إيجابية على الحائط اليوم!")
+
+    elif menu == "المتجر والألعاب":
+        st.title("🎨 متجر مراية والعناصر الرقمية")
+        st.markdown("""
+            <div class="fancy-card">
+                <p>اقتنِ الإطارات الفاخرة، الدخلات المتحركة، وأرسل الهدايا لأصدقائك عبر معرفاتهم الفريدة.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        col_s1, col_s2 = st.columns(2)
+        with col_s1:
+            st.markdown('<div class="fancy-card"><h3>🦁 إطار زئير الأسد الأسطوري</h3><p>السعر: 50 كوينز</p></div>', unsafe_allow_html=True)
+            if st.button("شراء الإطار"):
+                st.success("تم شراء العنصر بنجاح وأُضيف لبروفايلك!")
+        with col_s2:
+            st.markdown('<div class="fancy-card"><h3>💎 باقة الماسات الترحيبية</h3><p>احصل على 100 ماسة إضافية</p></div>', unsafe_allow_html=True)
+            if st.button("احصل على الماسات"):
+                st.success("تم شحن الماسات بنجاح!")
 
     elif menu == "إدارة المنصة (الأونر) ⚙️" and is_owner:
-        st.title("⚙️ لوحة تحكم الأونر (طارق)")
-        st.markdown('<div class="fancy-card"><p>التحكم الشامل في الأكونتات والبحث السريع.</p></div>', unsafe_allow_html=True)
-        search = st.text_input("بحث بالاسم أو المعرف:")
-        filtered = users_df[users_df["Full_Name"].str.contains(search, case=False, na=False) | users_df["Login_ID"].str.contains(search, case=False, na=False)] if search else users_df
+        st.title("⚙️ لوحة تحكم المالك (طارق)")
+        st.markdown('<div class="fancy-card"><p>لوحة التحكم السيادية الخاصة بالأونر لإدارة الحسابات، الأرصدة، والمستخدمين.</p></div>', unsafe_allow_html=True)
         
-        for idx, row in filtered.iterrows():
+        st.subheader("🔍 البحث السريع عن مستخدم أو معرف:")
+        search_query = st.text_input("اكتب اسم المستخدم أو المعرف للبحث عنه فوراً:")
+        
+        if search_query:
+            filtered_df = users_df[
+                users_df["Full_Name"].str.contains(search_query, case=False, na=False) | 
+                users_df["Login_ID"].str.contains(search_query, case=False, na=False)
+            ]
+        else:
+            filtered_df = users_df
+
+        st.markdown(f"<p style='color: #38bdf8;'>إجمالي المستخدمين الظاهرين: {len(filtered_df)}</p>", unsafe_allow_html=True)
+        
+        for idx, row in filtered_df.iterrows():
             st.markdown(f"""
-                <div class="fancy-card" style="padding: 15px;">
-                    <b>👤 الاسم:</b> {row['Full_Name']} | <b>🔑 المعرف:</b> {row['Login_ID']} | <b>💰 كوينز:</b> {row['Coins']}
+                <div class="fancy-card" style="padding: 20px; margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <div>
+                            <span style="color: #38bdf8; font-weight: bold;">👤 الاسم:</span> {row['Full_Name']} <br>
+                            <span style="color: #38bdf8; font-weight: bold;">🔑 المعرف:</span> {row['Login_ID']} <br>
+                            <span style="color: #38bdf8; font-weight: bold;">📧 البريد/الهاتف:</span> {row['Email_Phone']}
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <span style="background: #0f172a; padding: 6px 14px; border-radius: 8px; border: 1px solid #38bdf8; color: #38bdf8; font-weight: bold;">
+                                نوع الحساب: {row['Account_Type']}
+                            </span><br><br>
+                            <span style="color: #34d399; font-weight: bold;">💰 كوينز: {row['Coins']}</span> | 
+                            <span style="color: #38bdf8; font-weight: bold;">💎 ماسات: {row['Diamonds']}</span>
+                        </div>
+                    </div>
                 </div>
             """, unsafe_allow_html=True)
+        
+        st.subheader("💰 شحن رصيد فوري لأي مستخدم")
+        t_id = st.text_input("أدخل معرف المستخدم (Login ID) المراد شحنه:")
+        c_add = st.number_input("عدد الكوينز للإضافة:", min_value=0, value=100)
+        d_add = st.number_input("عدد الماسات للإضافة:", min_value=0, value=50)
+        
+        if st.button("تنفيذ شحن الرصيد"):
+            if t_id in users_df["Login_ID"].values:
+                users_df.loc[users_df["Login_ID"] == t_id, "Coins"] += c_add
+                users_df.loc[users_df["Login_ID"] == t_id, "Diamonds"] += d_add
+                users_df.to_csv(USERS_FILE, index=False)
+                st.success(f"تم شحن رصيد المستخدم ({t_id}) بنجاح!")
+            else:
+                st.error("المعرف غير موجود في النظام.")
