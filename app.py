@@ -189,11 +189,9 @@ components.html("""
     const doc = window.parent.document;
     
     function removeAnnoyingInstructions() {
-        // حذف أي عنصر يعرض تعليمات الـ Enter أو الـ small التابعة لـ streamlit
         const instructions = doc.querySelectorAll('[data-testid="InputInstructions"], small, .stTextInput small');
         instructions.forEach(el => el.remove());
         
-        // إزالة الـ placeholders اللي بتعمل المشكلة
         const inputs = doc.querySelectorAll('input');
         inputs.forEach(input => {
             if (input.getAttribute('placeholder')) {
@@ -211,6 +209,8 @@ components.html("""
 """, height=0)
 
 USERS_FILE = "mraya_users.csv"
+JOURNAL_FILE = "mraya_journal.csv"
+WALL_FILE = "mraya_wall.csv"
 
 def hash_password(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
@@ -229,7 +229,6 @@ def init_db():
         })
         df = pd.concat([df, admin_row], ignore_index=True)
         df.to_csv(USERS_FILE, index=False)
-        return df
     else:
         df = pd.read_csv(USERS_FILE)
         if "tarek_admin" not in df["Login_ID"].values:
@@ -244,9 +243,13 @@ def init_db():
             })
             df = pd.concat([df, admin_row], ignore_index=True)
             df.to_csv(USERS_FILE, index=False)
-        return df
 
-users_df = init_db()
+    if not os.path.exists(JOURNAL_FILE):
+        pd.DataFrame(columns=["Login_ID", "Date", "Mood", "Content"]).to_csv(JOURNAL_FILE, index=False)
+    if not os.path.exists(WALL_FILE):
+        pd.DataFrame(columns=["Login_ID", "Message", "Date"]).to_csv(WALL_FILE, index=False)
+
+init_db()
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -449,7 +452,7 @@ elif not st.session_state.logged_in and st.session_state.view == "register":
                         st.success(f"تم إنشاء حسابك بنجاح! المعرف الفريد الخاص بك هو: {unique_id}")
                         st.info("يمكنك الآن الانتقال لصفحة تسجيل الدخول.")
 
-# --- 4. داخل المنصة (الصفحات الداخلية) ---
+# --- 4. داخل المنصة (الصفحات الداخلية المحدثة بكودك الأصلي) ---
 else:
     users_df = pd.read_csv(USERS_FILE)
     is_owner = (st.session_state.current_user == "tarek_admin")
@@ -458,7 +461,14 @@ else:
     if is_owner:
         st.sidebar.success("👑 حساب الأونر والمالك")
         
-    menu_options = ["لوحة التحكم", "الثيرابست الذكي", "الجلسات الجماعية", "المتجر والألعاب"]
+    menu_options = [
+        "لوحة التحكم", 
+        "الثيرابست الذكي", 
+        "مفكرة المشاعر واليوميات السرية 📖", 
+        "الجلسات الجماعية", 
+        "حائط الامتنان الإيجابي 🌟", 
+        "المتجر والألعاب"
+    ]
     if is_owner:
         menu_options.append("إدارة المنصة (الأونر) ⚙️")
         
@@ -500,6 +510,39 @@ else:
             if user_msg:
                 st.info(f"🤖 **رد الثيرابست الذكي:** أسمعك جيداً يا صديقي بخصوص ({user_msg}). دعنا نفكر سوياً كيف نتجاوز هذا الشعور بأمان وسلام داخلي.")
 
+    elif menu == "مفكرة المشاعر واليوميات السرية 📖":
+        st.title("📖 مفكرتك الشخصية السرية")
+        st.markdown('<div class="fancy-card"><p>سجل مشاعرك وأفكارك اليومية بسرية تامة لا يمكن لأحد سواك الاطلاع عليها.</p></div>', unsafe_allow_html=True)
+        
+        mood = st.selectbox("حالتك المزاجية اليوم:", ["😊 سعيد ومتفائل", "😌 هادئ ومستقر", "🤔 تفكير عميق", "🌧️ متوتر أو حزين"])
+        journal_text = st.text_area("اكتب يومياتك ومشاعرك هنا:")
+        if st.button("حفظ في المفكرة السرية"):
+            if journal_text:
+                j_df = pd.read_csv(JOURNAL_FILE)
+                new_j = pd.DataFrame({
+                    "Login_ID": [st.session_state.current_user],
+                    "Date": [str(pd.Timestamp.now().date())],
+                    "Mood": [mood],
+                    "Content": [journal_text]
+                })
+                j_df = pd.concat([j_df, new_j], ignore_index=True)
+                j_df.to_csv(JOURNAL_FILE, index=False)
+                st.success("تم حفظ يومياتك بنجاح وبسرية تامة!")
+
+        st.subheader("📂 سجل يومياتك السابقة:")
+        j_df = pd.read_csv(JOURNAL_FILE)
+        user_j = j_df[j_df["Login_ID"] == st.session_state.current_user]
+        if not user_j.empty:
+            for idx, row in user_j.iterrows():
+                st.markdown(f"""
+                    <div class="fancy-card">
+                        <small style="color: #38bdf8;">التاريخ: {row['Date']} | المزاج: {row['Mood']}</small>
+                        <p style="margin-top: 10px;">{row['Content']}</p>
+                    </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.info("لا توجد يوميات مسجلة حتى الآن. ابدأ بكتابة أول يومية لك!")
+
     elif menu == "الجلسات الجماعية":
         st.title("🎙️ الغرف الصوتية الجماعية (بسرية تامة)")
         st.markdown("""
@@ -516,6 +559,36 @@ else:
             st.markdown('<div class="fancy-card"><h3>🌟 غرفة التأمل والسلام الداخلي</h3><p>المشاركون: 8 أشخاص</p></div>', unsafe_allow_html=True)
             if st.button("انضم للصوتية 2"):
                 st.success("تم انضمامك للغرفة بنجاح!")
+
+    elif menu == "حائط الامتنان الإيجابي 🌟":
+        st.title("🌟 حائط الامتنان ومشاركة الطاقة الإيجابية")
+        st.markdown('<div class="fancy-card"><p>انشر رسالة دعم أو امتنان مجهولة لتضيء بها يوم شخص آخر في المنصة.</p></div>', unsafe_allow_html=True)
+        
+        wall_msg = st.text_input("اكتب رسالة إيجابية أو كلمة طمأنينة:")
+        if st.button("نشر على الحائط الإيجابي"):
+            if wall_msg:
+                w_df = pd.read_csv(WALL_FILE)
+                new_w = pd.DataFrame({
+                    "Login_ID": [st.session_state.current_user],
+                    "Message": [wall_msg],
+                    "Date": [str(pd.Timestamp.now().date())]
+                })
+                w_df = pd.concat([w_df, new_w], ignore_index=True)
+                w_df.to_csv(WALL_FILE, index=False)
+                st.success("تم نشر رسالتك بنجاح على الحائط الإيجابي!")
+
+        st.subheader("💬 رسائل المجتمع الإيجابية:")
+        w_df = pd.read_csv(WALL_FILE)
+        if not w_df.empty:
+            for idx, row in w_df.tail(10).iterrows():
+                st.markdown(f"""
+                    <div class="fancy-card" style="padding: 20px; margin-bottom: 15px;">
+                        <p style="color: #f8fafc; font-size: 18px !important; margin: 0;">💬 "{row['Message']}"</p>
+                        <small style="color: #38bdf8; display: block; margin-top: 8px;">مشارك مجهول الأمان | التاريخ: {row['Date']}</small>
+                    </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.info("كن أول من يكتب رسالة إيجابية على الحائط اليوم!")
 
     elif menu == "المتجر والألعاب":
         st.title("🎨 متجر مراية والعناصر الرقمية")
