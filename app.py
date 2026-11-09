@@ -198,7 +198,22 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 st.rerun()
         with bb:
             if st.button("✨ اكتشف مرايا", use_container_width=True):
-                pass
+                st.session_state.show_discovery = True
+                
+    # تفاعل زر اكتشف مرايا
+    if st.session_state.get("show_discovery", False):
+        st.markdown("""
+            <div class="fancy-card" style="border-right: 6px solid #38bdf8; margin-top: 20px;">
+                <h3 style='color: #38bdf8;'>🧭 أهلاً بك في جولة سريعة داخل مراية</h3>
+                <p>
+                    منصة <b>مراية</b> ليست مجرد موقع تواصل، بل هي بيئة متكاملة تجمع بين:
+                    <br>1️⃣ <b>الثيرابست الذكي:</b> لمساعدتك في ترتيب أفكارك وسياق مشاعرك بأمان تام.
+                    <br>2️⃣ <b>الجلسات الجماعية:</b> لمشاركة التجارب عبر هويات مستعارة وبسرية مطلقة.
+                    <br>3️⃣ <b>المتجر الرقمي:</b> لتخصيص هويتك الفريدة وإرسال الهدايا للأصدقاء.
+                    <br><br>استكشف الأقسام أدناه لتتعرف على المزيد، أو أنشئ حسابك المجاني الآن وابدأ رحلتك!
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
                 
     st.markdown("<br><br>", unsafe_allow_html=True)
     
@@ -323,7 +338,7 @@ elif not st.session_state.logged_in and st.session_state.view == "register":
                         st.success(f"تم إنشاء حسابك بنجاح! المعرف الفريد الخاص بك هو: {unique_id}")
                         st.info("يمكنك الآن الانتقال لصفحة تسجيل الدخول.")
 
-# --- 4. داخل المنصة (الصفحات الداخلية المتاحة بعد تسجيل الدخول) ---
+# --- 4. داخل المنصة (الصفحات الداخلية) ---
 else:
     users_df = pd.read_csv(USERS_FILE)
     is_owner = (st.session_state.current_user == "tarek_admin")
@@ -344,7 +359,6 @@ else:
         st.session_state.view = "landing"
         st.rerun()
 
-    # أ. صفحة لوحة التحكم الرئيسية للمستخدم
     if menu == "لوحة التحكم":
         st.title("🏠 لوحة التحكم الشخصية")
         user_row = users_df[users_df["Login_ID"] == st.session_state.current_user]
@@ -363,7 +377,6 @@ else:
                 </div>
             """, unsafe_allow_html=True)
 
-    # ب. صفحة الثيرابست الذكي (مع الذاكرة الذكية)
     elif menu == "الثيرابست الذكي":
         st.title("🤖 الثيرابست الذكي (مساحتك الآمنة للحديث)")
         st.markdown("""
@@ -371,14 +384,11 @@ else:
                 <p>مرحباً بك في جلسة الدعم النفسي الذكية. هنا يمكنك التحدث بحرية تامة، وسيتذكر النظام سياق محادثاتك وأهدافك السابقة لمساعدتك بشكل أفضل.</p>
             </div>
         """, unsafe_allow_html=True)
-        
-        # محاكاة نافذة الشات
         user_msg = st.text_input("اكتب رسالتك أو شعورك الآن:")
         if st.button("إرسال للثيرابست"):
             if user_msg:
                 st.info(f"🤖 **رد الثيرابست الذكي:** أسمعك جيداً يا صديقي بخصوص ({user_msg}). دعنا نفكر سوياً كيف نتجاوز هذا الشعور بأمان وسلام داخلي.")
 
-    # ج. صفحة الجلسات الجماعية الصوتية
     elif menu == "الجلسات الجماعية":
         st.title("🎙️ الغرف الصوتية الجماعية (بسرية تامة)")
         st.markdown("""
@@ -396,7 +406,6 @@ else:
             if st.button("انضم للصوتية 2"):
                 st.success("تم انضمامك للغرفة بنجاح!")
 
-    # د. صفحة المتجر والألعاب والهدايا
     elif menu == "المتجر والألعاب":
         st.title("🎨 متجر مراية والعناصر الرقمية")
         st.markdown("""
@@ -404,7 +413,6 @@ else:
                 <p>اقتنِ الإطارات الفاخرة، الدخلات المتحركة، وأرسل الهدايا لأصدقائك عبر معرفاتهم الفريدة.</p>
             </div>
         """, unsafe_allow_html=True)
-        
         col_s1, col_s2 = st.columns(2)
         with col_s1:
             st.markdown('<div class="fancy-card"><h3>🦁 إطار زئير الأسد الأسطوري</h3><p>السعر: 50 كوينز</p></div>', unsafe_allow_html=True)
@@ -415,7 +423,6 @@ else:
             if st.button("احصل على الماسات"):
                 st.success("تم شحن الماسات بنجاح!")
 
-    # هـ. لوحة تحكم الأونر والمالك (خاصة بطارق فقط)
     elif menu == "إدارة المنصة (الأونر) ⚙️" and is_owner:
         st.title("⚙️ لوحة تحكم المالك (طارق)")
         st.markdown('<div class="fancy-card"><p>لوحة التحكم السيادية الخاصة بالأونر لإدارة الحسابات، الأرصدة، والمستخدمين.</p></div>', unsafe_allow_html=True)
