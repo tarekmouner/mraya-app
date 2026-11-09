@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import hashlib
 
-# إعدادات الصفحة
+# إعدادات الصفحة الاحترافية
 st.set_page_config(
     page_title="منصة مراية | مساحتك للتعافي والدعم النفسي",
     page_icon="🪞",
@@ -49,20 +49,58 @@ def init_db():
 
 users_df = init_db()
 
-# إدارة التنقل وحالة الدخول
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.current_user = None
 if "view" not in st.session_state:
     st.session_state.view = "landing"
 
-# --- 1. الصفحة الرئيسية التسويقية المبهجة (Landing Page) ---
+# --- 1. الصفحة الرئيسية التسويقية الاحترافية والفاخرة ---
 if not st.session_state.logged_in and st.session_state.view == "landing":
     
-    # الشريط العلوي (الهيدر)
+    # حقن تصميم CSS لتعديل الشكل العام وجعل الأزرار والعناصر عصرية جداً
+    st.markdown("""
+        <style>
+        .main { background-color: #f8fafc; }
+        .hero-box {
+            text-align: center;
+            padding: 70px 20px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
+            border-radius: 24px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 40px;
+        }
+        .feature-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+            height: 100%;
+            transition: transform 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # الشريط العلوي مع اللوجو الفخم الجديد (أيقونة مراية عصرية متوهجة)
     col_logo, col_space, col_auth = st.columns([3, 4, 3])
     with col_logo:
-        st.markdown("<h1 style='color: #2E5B88; margin:0; font-weight: bold;'>🪞 مــراية</h1>", unsafe_allow_html=True)
+        st.markdown("""
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="background: linear-gradient(45deg, #3b82f6, #8b5cf6); padding: 10px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(59,130,246,0.3);">
+                    <span style="font-size: 26px;">🪞</span>
+                </div>
+                <div>
+                    <h2 style="color: #0f172a; margin: 0; font-weight: 900; letter-spacing: 0.5px;">مــرايـة</h2>
+                    <span style="color: #64748b; font-size: 12px; font-weight: 600;">MRAYA PLATFORM</span>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        
     with col_auth:
         c1, c2 = st.columns(2)
         with c1:
@@ -74,19 +112,19 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 st.session_state.view = "register"
                 st.rerun()
                 
-    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    # البانر الرئيسي الفخم
+    # البانر الرئيسي (Hero Section) الفخم
     st.markdown("""
-        <div style='text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%); border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 40px;'>
-            <h1 style='color: #0f172a; font-size: 46px; font-weight: 800; margin-bottom: 20px;'>عالمك الخاص للتعافي والنقاء النفسي</h1>
-            <p style='color: #334155; font-size: 22px; max-width: 850px; margin: 0 auto 30px auto; line-height: 1.6;'>
-                منصة <b>مراية</b> هي المساحة الآمنة الأولى التي تمنحك صوتاً وحصناً لسرية أفكارك، تجمع بين ذكاء الدعم النفسي الفردي المستمر وتفاعل المجتمعات الصوتية السرية بأمان مطلق.
+        <div class="hero-box">
+            <h1 style='font-size: 48px; font-weight: 900; margin-bottom: 20px; color: #ffffff;'>عالمك الخاص للتعافي والنقاء النفسي</h1>
+            <p style='font-size: 20px; max-width: 850px; margin: 0 auto 35px auto; line-height: 1.7; color: #cbd5e1;'>
+                منصة <b>مراية</b> الحصن الرقمي الأكثر أماناً لسرية أفكارك ومشاعركس؛ نجمع بين الذكاء الاصطناعي المتطور للتشخيص والدعم النفسي الفردي، وبين المجتمعات الصوتية الجماعية السرية المحمية تماماً.
             </p>
         </div>
     """, unsafe_allow_html=True)
     
-    # زر البدء السريع في المنتصف
+    # زر البدء السريع
     col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
     with col_b2:
         if st.button("🚀 ابدأ رحلتك النفسية مجاناً الآن", type="primary", use_container_width=True):
@@ -94,59 +132,58 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             st.rerun()
             
     st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown("<h2 style='text-align: center; color: #1e293b;'>🌟 مميزات وحصريات عالم مراية</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b; font-size: 18px;'>كل ما تحتاجه لرحلتك النفسية وتطوير ذاتك في مكان واحد</p>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #0f172a; font-weight: 800;'>🌟 مميزات وحصريات عالم مراية</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #64748b; font-size: 18px;'>مصممة بعناية فائقة لتلبي كافة احتياجاتك النفسية والاجتماعية في بيئة آمنة</p>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # كروت المميزات الكبرى
-    f1, f2 = st.columns(2)
-    with f1:
+    # شبكة المميزات الكبرى (كروت احترافية)
+    col_f1, col_f2 = st.columns(2)
+    with col_f1:
         st.markdown("""
-            <div style='background-color: #ffffff; padding: 30px; border-radius: 16px; border-right: 6px solid #3b82f6; box-shadow: 0 4px 15px rgba(0,0,0,0.05); height: 100%;'>
+            <div class="feature-card" style='border-right: 6px solid #3b82f6;'>
                 <h3 style='color: #1d4ed8; margin-top: 0;'>🤖 الثيرابست الذكي ذو الذاكرة المستمرة</h3>
                 <p style='color: #475569; font-size: 16px; line-height: 1.7;'>
-                    لا داعي لإعادة شرح قصتك في كل مرة! يتحدث معالج الذكاء الاصطناعي معك في جلسات فردية سرية جداً، مسترجعاً تفاصيل جلساتك السابقة لمتابعة تطورك النفسي خطوة بخطوة وكأنه رفيقك الدائم.
+                    لن تحتاج لإعادة شرح تفاصيل حياتك! معالج الذكاء الاصطناعي الخاص بنا يحتفظ بذاكرة ذكية متكاملة لكل جلساتك السابقة، ليتابع حالتك النفسية بدقة وكأنه معالج بشري يرافق خطوتك بخطوة.
                 </p>
             </div>
         """, unsafe_allow_html=True)
-    with f2:
+    with col_f2:
         st.markdown("""
-            <div style='background-color: #ffffff; padding: 30px; border-radius: 16px; border-right: 6px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.05); height: 100%;'>
+            <div class="feature-card" style='border-right: 6px solid #10b981;'>
                 <h3 style='color: #047857; margin-top: 0;'>🎙️ الغرف الصوتية الجماعية السرية</h3>
                 <p style='color: #475569; font-size: 16px; line-height: 1.7;'>
-                    تكلم وفضفض بحرية! انضم إلى جلسات الدعم الجماعية الصوتية بأسماء مستعارة وأفاتار محمية بالكامل. افتح أو أغلق الميكروفون وقتما تشاء دون إفشاء هويتك الحقيقية إطلاقاً.
+                    تكلم وفضفض بكل راحة واطمئنان. شارك في جلسات الدعم الجماعية الصوتية عبر (فيك أكونت) وبأفاتار محمية بالكامل تضمن لك سرية هويتك المطلقة وعدم معرفة أحد بك.
                 </p>
             </div>
         """, unsafe_allow_html=True)
         
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # كروت الخدمات الثلاثة الأخرى
-    f3, f4, f5 = st.columns(3)
-    with f3:
+    col_f3, col_f4, col_f5 = st.columns(3)
+    with col_f3:
         st.markdown("""
-            <div style='background-color: #ffffff; padding: 25px; border-radius: 16px; border-top: 5px solid #8b5cf6; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; height: 100%;'>
+            <div class="feature-card" style='border-top: 5px solid #8b5cf6; text-align: center;'>
                 <h4 style='color: #6d28d9;'>💎 محفظة الكوينز والماس</h4>
-                <p style='color: #64748b; font-size: 15px; line-height: 1.6;'>نظام رصيد مزدوج؛ اشحن الكوينز بأمان تام واكسب الماسات من تفاعلك لفتح مميزات حصرية.</p>
+                <p style='color: #64748b; font-size: 15px; line-height: 1.6;'>نظام رصيد ثنائي متطور؛ كوينز للشحن الحقيقي، وماسات تكسبها من الألعاب والتفاعل لفتح جلسات ومميزات.</p>
             </div>
         """, unsafe_allow_html=True)
-    with f4:
+    with col_f4:
         st.markdown("""
-            <div style='background-color: #ffffff; padding: 25px; border-radius: 16px; border-top: 5px solid #f59e0b; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; height: 100%;'>
+            <div class="feature-card" style='border-top: 5px solid #f59e0b; text-align: center;'>
                 <h4 style='color: #b45309;'>🎨 متجر الإطارات والدخلات</h4>
-                <p style='color: #64748b; font-size: 15px; line-height: 1.6;'>ميز حسابك بدخلات أسطورية وإطارات متحركة، وأهدِ أصدقاءك لتظهر في لوحة الكرماء والشرف!</p>
+                <p style='color: #64748b; font-size: 15px; line-height: 1.6;'>ميز هويتك بدخلات أسطورية (زئير الأسد، التنين) وإطارات متحركة، وأهد أصدقاءك لتتصدر لوحة الشرف والكرماء.</p>
             </div>
         """, unsafe_allow_html=True)
-    with f5:
+    with col_f5:
         st.markdown("""
-            <div style='background-color: #ffffff; padding: 25px; border-radius: 16px; border-top: 5px solid #ef4444; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; height: 100%;'>
+            <div class="feature-card" style='border-top: 5px solid #ef4444; text-align: center;'>
                 <h4 style='color: #b91c1c;'>🛡️ أمان وحماية مطلقة</h4>
-                <p style='color: #64748b; font-size: 15px; line-height: 1.6;'>تشفير كامل للبيانات، نظام بلاغات آلي ضد أي تجاوز، وحماية تضمن سرية أسرارك ورصيدك.</p>
+                <p style='color: #64748b; font-size: 15px; line-height: 1.6;'>تشفير شامل للبيانات، نظام بلاغات آلي صارم ضد أي تجاوز، مع حفظ تامة لحقوق الأرصدة المالية للأعضاء.</p>
             </div>
         """, unsafe_allow_html=True)
 
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8;'>جميع الحقوق محفوظة منصة مراية © 2026 | مساحتك الآمنة دائماً</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8; font-weight: 500;'>جميع الحقوق محفوظة منصة مراية © 2026 | مساحتك الآمنة دائماً</p>", unsafe_allow_html=True)
 
 # --- 2. صفحة تسجيل الدخول ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
