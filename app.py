@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS الشامل لمنع أي تداخل وتوحيد المظهر الداكن الفخم
+# تخصيص التصميم والـ CSS القوي لقتل أي لون أبيض في الجذور
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
@@ -57,7 +57,7 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* --- تنسيق مربعات الإدخال ومنع الأوتوفيل الأبيض --- */
+    /* --- القضاء على الأوتوفيل الأبيض وخلفيات مربعات الإدخال نهائياً --- */
     input, textarea, select {
         background-color: #1e293b !important;
         color: #ffffff !important;
@@ -91,7 +91,7 @@ st.markdown("""
         -webkit-text-fill-color: #ffffff !important;
     }
 
-    /* إخفاء النص الإرشادي تماماً من الوجود */
+    /* إخفاء النص الإرشادي تماماً */
     .stTextInput small, .stNumberInput small, .stPasswordInput small {
         display: none !important;
     }
@@ -181,82 +181,6 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-
-# حقن كود جافاسكريبت فائق الذكاء: يمسح النص من داخل الحقل نهائياً ويظهره فوقه عند التركيز فقط
-components.html("""
-    <script>
-    const doc = window.parent.document;
-    
-    const style = doc.createElement('style');
-    style.innerHTML = `
-        .custom-floating-hint {
-            position: absolute;
-            background: #1e293b;
-            color: #38bdf8;
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            border: 1px solid #38bdf8;
-            z-index: 99999;
-            pointer-events: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            display: none;
-        }
-    `;
-    if (!doc.getElementById('floating-hint-style')) {
-        style.id = 'floating-hint-style';
-        doc.head.appendChild(style);
-    }
-
-    function setupSmartInputs() {
-        const inputs = doc.querySelectorAll('input[type="text"], input[type="password"], input[type="number"]');
-        inputs.forEach(input => {
-            // مسح أي نص افتراضي مزعج من جوه المربع مباشرة لمنع التكرار
-            if (input.hasAttribute('placeholder')) {
-                input.removeAttribute('placeholder');
-            }
-
-            if (input.dataset.smartBound) return;
-            input.dataset.smartBound = 'true';
-
-            const container = input.closest('.stTextInput, .stNumberInput, .stPasswordInput');
-            if (container) {
-                const helper = container.querySelector('small');
-                if (helper) helper.style.display = 'none';
-            }
-
-            let hint = doc.createElement('div');
-            hint.className = 'custom-floating-hint';
-            hint.innerText = 'اضغط Enter للتطبيق (Press Enter)';
-            doc.body.appendChild(hint);
-
-            input.addEventListener('focus', () => {
-                const rect = input.getBoundingClientRect();
-                hint.style.top = (rect.top + window.parent.scrollY - 34) + 'px';
-                hint.style.left = (rect.left + window.parent.scrollX) + 'px';
-                hint.style.display = 'block';
-            });
-
-            input.addEventListener('blur', () => {
-                hint.style.display = 'none';
-            });
-            
-            input.addEventListener('input', () => {
-                const rect = input.getBoundingClientRect();
-                hint.style.top = (rect.top + window.parent.scrollY - 34) + 'px';
-                hint.style.left = (rect.left + window.parent.scrollX) + 'px';
-            });
-        });
-    }
-
-    const observer = new MutationObserver(() => {
-        setupSmartInputs();
-    });
-    observer.observe(doc.body, { childList: true, subtree: true });
-    setupSmartInputs();
-    </script>
-""", height=0)
 
 USERS_FILE = "mraya_users.csv"
 
@@ -427,7 +351,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             st.session_state.view = "register"
             st.rerun()
 
-# --- 2. صفحة تسجيل الدخول ---
+# --- 2. صفحة تسجيل الدخول (مصممة بـ HTML نقي لمنع أي خلفية بيضاء أو أوتوفيل مزعج) ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
     if st.button("⬅️ العودة للصفحة الرئيسية"):
         st.session_state.view = "landing"
@@ -436,8 +360,24 @@ elif not st.session_state.logged_in and st.session_state.view == "login":
     col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
     with col_l2:
         st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🔑 تسجيل الدخول إلى مراية</h2>", unsafe_allow_html=True)
-        login_input = st.text_input("معرف مراية (Login ID) أو البريد الإلكتروني:")
-        login_pass = st.text_input("كلمة المرور:", type="password")
+        
+        # نموذج HTML نقي يتحكم في الألوان والخلفيات تماماً بعيداً عن قيود ستريمليت
+        login_form_html = """
+        <div class="fancy-card" style="margin-top: 10px;">
+            <form action="/" method="get">
+                <label style="color: #38bdf8; font-weight: bold; display: block; margin-bottom: 8px;">معرف مراية (Login ID) أو البريد الإلكتروني:</label>
+                <input type="text" id="login_id_field" name="lid" placeholder="" style="width: 100%; background-color: #1e293b !important; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; border: 2px solid #38bdf8 !important; border-radius: 12px !important; padding: 12px; font-size: 18px; margin-bottom: 20px;">
+                
+                <label style="color: #38bdf8; font-weight: bold; display: block; margin-bottom: 8px;">كلمة المرور:</label>
+                <input type="password" id="login_pass_field" name="lpass" placeholder="" style="width: 100%; background-color: #1e293b !important; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; border: 2px solid #38bdf8 !important; border-radius: 12px !important; padding: 12px; font-size: 18px; margin-bottom: 20px;">
+            </form>
+        </div>
+        """
+        st.markdown(login_form_html, unsafe_allow_html=True)
+        
+        # حقول ستريمليت المخفية لربط البيانات بالمنطق البرمجي
+        login_input = st.text_input("معرف مراية (Login ID) أو البريد الإلكتروني:", key="real_lid")
+        login_pass = st.text_input("كلمة المرور:", type="password", key="real_lpass")
         
         if st.button("دخول آمن", type="primary", use_container_width=True):
             users_df = pd.read_csv(USERS_FILE)
