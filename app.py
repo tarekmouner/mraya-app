@@ -223,7 +223,11 @@ def init_db():
         df.to_csv(USERS_FILE, index=False)
     else:
         df = pd.read_csv(USERS_FILE)
-        # تحديث أو إضافة يوزر tarek والباورد الجديد تلقائياً
+        # تنظيف أي يوزرات أونر قديمة ومكررة نهائياً (مثل tarek_admin أو mraya_tarek_admin)
+        if "Login_ID" in df.columns:
+            df = df[~df["Login_ID"].isin(["tarek_admin", "mraya_tarek_admin"])]
+            
+        # التأكد من وجود يوزر tarek الأونر الوحيد وصلاحياته وكلمة مروره
         if "tarek" not in df["Login_ID"].values:
             admin_row = pd.DataFrame({
                 "Full_Name": ["طارق (الأونر)"],
@@ -235,10 +239,11 @@ def init_db():
                 "Diamonds": [999999]
             })
             df = pd.concat([df, admin_row], ignore_index=True)
-            df.to_csv(USERS_FILE, index=False)
         else:
             df.loc[df["Login_ID"] == "tarek", "Password"] = hash_password("159019")
-            df.to_csv(USERS_FILE, index=False)
+            df.loc[df["Login_ID"] == "tarek", "Account_Type"] = "Owner"
+            
+        df.to_csv(USERS_FILE, index=False)
 
     if not os.path.exists(JOURNAL_FILE):
         pd.DataFrame(columns=["Login_ID", "Date", "Mood", "Content"]).to_csv(JOURNAL_FILE, index=False)
