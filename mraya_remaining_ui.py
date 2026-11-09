@@ -2,14 +2,15 @@
 import streamlit as st
 import pandas as pd
 import mraya_core as db
+import mraya_games as games
 
 def render_remaining_app(user):
     """user is the authenticated dict returned by mraya_core.authenticate()."""
     uid=user["id"]
     st.sidebar.caption(f'{user["display_name"]} · {user["public_id"]}')
-    pages=["لوحة حسابي","مفكرة المشاعر","جلسة كتابية تجريبية","المتجر","محفظتي","الإحالات","الإبلاغ عن مستخدم"]
+    pages=["لوحة حسابي","مفكرة المشاعر","جلسة كتابية تجريبية","الألعاب 🎮","المتجر","محفظتي","الإحالات","الإبلاغ عن مستخدم"]
     if user["account_type"]=="Owner":
-        pages += ["إدارة المستخدمين","إدارة الأرصدة","البلاغات","الإعدادات والإحصائيات"]
+        pages += ["إدارة المستخدمين","إدارة الأرصدة","إدارة الألعاب","البلاغات","الإعدادات والإحصائيات"]
     page=st.sidebar.radio("التنقل",pages)
 
     if page=="لوحة حسابي":
@@ -49,6 +50,12 @@ def render_remaining_app(user):
                 db.add_session_message(sid,"user",msg); st.success("حُفظت الرسالة.")
             if st.button("إنهاء الجلسة"):
                 db.end_session(sid,uid); del st.session_state["mraya_active_session"]; st.rerun()
+
+    elif page=="الألعاب 🎮":
+        games.render_games(user)
+
+    elif page=="إدارة الألعاب" and user["account_type"]=="Owner":
+        games.render_game_admin()
 
     elif page=="المتجر":
         items=db.get_catalog()
