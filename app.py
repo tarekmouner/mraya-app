@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والخطوط الواضحة والجميلة للمنصة بالكامل
+# تخصيص التصميم وتظبيط القائمة الجانبية (Sidebar) والخطوط لتكون واضحة وفخمة
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار */
@@ -20,11 +20,28 @@ st.markdown("""
         text-align: right !important;
     }
     
-    /* خلفية هادئة وناعمة مريحة للعين */
+    /* خلفية المنصة الرئيسية */
     .main { background-color: #0b0f19; color: #ffffff; }
     .stApp { background: linear-gradient(135deg, #070913 0%, #0f172a 50%, #1e1b4b 100%); color: #ffffff; }
     
-    /* تكبير وتوضيح الخطوط لضمان أقصى درجة وضوح */
+    /* --- تنسيق القائمة الجانبية (Sidebar) لتكون واضحة ومميزة --- */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%) !important;
+        border-left: 1px solid rgba(139, 92, 246, 0.3);
+    }
+    
+    /* جعل كل النصوص والعناصر داخل القائمة الجانبية واضحة بلون أبيض وبارز */
+    section[data-testid="stSidebar"] p, 
+    section[data-testid="stSidebar"] span, 
+    section[data-testid="stSidebar"] label, 
+    section[data-testid="stSidebar"] div,
+    section[data-testid="stSidebar"] .stRadio label p {
+        color: #f8fafc !important;
+        font-size: 19px !important;
+        font-weight: 600 !important;
+    }
+    
+    /* تكبير وتوضيح الخطوط في المنصة ككل */
     body, p, span, li, label, div {
         font-size: 20px !important;
         color: #f8fafc !important;
@@ -200,7 +217,6 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             if st.button("✨ اكتشف مرايا", use_container_width=True):
                 st.session_state.show_discovery = True
                 
-    # تفاعل زر اكتشف مرايا
     if st.session_state.get("show_discovery", False):
         st.markdown("""
             <div class="fancy-card" style="border-right: 6px solid #38bdf8; margin-top: 20px;">
