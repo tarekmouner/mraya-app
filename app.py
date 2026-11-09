@@ -11,10 +11,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# تخصيص ثيم مريح للعين، اتجاه عربي سليم (RTL)، وتكبير الخطوط ووضوحها
+# تخصيص ثيم مريح للعين (ألوان داكنة ناعمة، خطوط واضحة، وبدون أي ألوان فاقعة)
 st.markdown("""
     <style>
-    /* فرض اتجاه اللغة العربية من اليمين لليسار لجميع العناصر */
+    /* فرض اتجاه اللغة العربية من اليمين لليسار */
     html, body, [class*="css"] {
         direction: rtl !important;
         text-align: right !important;
@@ -27,7 +27,7 @@ st.markdown("""
     /* تكبير وتوضيح الخطوط لراحة القراءة */
     body, p, span, li, label, div {
         font-size: 18px !important;
-        color: #e2e8f0 !important;
+        color: #cbd5e1 !important;
         line-height: 1.9 !important;
     }
     
@@ -75,7 +75,7 @@ st.markdown("""
     /* صندوق البانر العلوي */
     .hero-banner-container {
         text-align: center;
-        padding: 20px;
+        padding: 15px;
         background: rgba(15, 23, 42, 0.9);
         border-radius: 24px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.4);
@@ -135,14 +135,11 @@ banner_img = None
 
 for f in os.listdir("."):
     if f.endswith(".png") or f.endswith(".jpg"):
-        # لو الصورة الأولى (اللوجو)
         if "مراية" in f and "2" not in f:
             logo_img = f
-        # لو الصورة الثانية (البانر التسويقي)
-        elif "2" in f or "banner" in f.lower() or "صورة" in f:
+        elif "2" in f or "banner" in f.lower():
             banner_img = f
 
-# احتياطي لو ملقاش اسم دقيق، ياخد أي صورتين متاحين
 files_list = [f for f in os.listdir(".") if f.endswith(".png") or f.endswith(".jpg")]
 if not logo_img and files_list:
     logo_img = files_list[0]
@@ -158,9 +155,9 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     col_logo, col_space, col_auth = st.columns([4, 4, 2])
     with col_logo:
         if logo_img and os.path.exists(logo_img):
-            st.image(logo_img, width=280)
+            st.image(logo_img, width=260)
         else:
-            st.warning("⚠️ يرجى التأكد من رفع صور المشروع في مستودع GitHub")
+            st.markdown("<h3 style='color: #60a5fa;'>🪞 مراية | MIRAYA</h3>", unsafe_allow_html=True)
             
     with col_auth:
         c1, c2 = st.columns(2)
