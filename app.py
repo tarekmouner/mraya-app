@@ -19,7 +19,6 @@ def hash_password(password):
 def init_db():
     if not os.path.exists(USERS_FILE):
         df = pd.DataFrame(columns=["Full_Name", "Login_ID", "Email_Phone", "Password", "Account_Type", "Coins", "Diamonds"])
-        # إنشاء حساب الأونر تلقائياً وبأمان في قاعدة البيانات
         admin_row = pd.DataFrame({
             "Full_Name": ["طارق (الأونر)"],
             "Login_ID": ["tarek_admin"],
@@ -34,7 +33,6 @@ def init_db():
         return df
     else:
         df = pd.read_csv(USERS_FILE)
-        # التأكد من وجود حساب الأونر
         if "tarek_admin" not in df["Login_ID"].values:
             admin_row = pd.DataFrame({
                 "Full_Name": ["طارق (الأونر)"],
@@ -56,15 +54,15 @@ if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.current_user = None
 if "view" not in st.session_state:
-    st.session_state.view = "landing" # الخيارات: landing, login, register
+    st.session_state.view = "landing"
 
-# --- 1. الصفحة الرئيسية التسويقية (Landing Page) ---
+# --- 1. الصفحة الرئيسية التسويقية المجهزة بالكامل (Landing Page) ---
 if not st.session_state.logged_in and st.session_state.view == "landing":
     
-    # الهيدر والشريط العلوي
-    col_logo, col_space, col_auth = st.columns([2, 5, 3])
+    # الهيدر والشريط العلوي الشيك
+    col_logo, col_space, col_auth = st.columns([3, 4, 3])
     with col_logo:
-        st.markdown("<h2 style='color: #2E5B88; margin:0;'>🪞 مــراية</h2>", unsafe_allow_html=True)
+        st.markdown("<h1 style='color: #2E5B88; margin:0; font-weight: bold;'>🪞 مــراية</h1>", unsafe_allow_html=True)
     with col_auth:
         c1, c2 = st.columns(2)
         with c1:
@@ -72,43 +70,85 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 st.session_state.view = "login"
                 st.rerun()
         with c2:
-            if st.button("حساب جديد", type="primary", use_container_width=True):
+            if st.button("حساب جديد ✨", type="primary", use_container_width=True):
                 st.session_state.view = "register"
                 st.rerun()
                 
     st.markdown("---")
     
-    # البانر الرئيسي (Hero Section)
+    # البانر الرئيسي الترحيبي والتسويقي
     st.markdown("""
-        <div style='text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%); border-radius: 15px; margin-bottom: 30px;'>
-            <h1 style='color: #1e3a8a; font-size: 42px;'>مساحتك الآمنة للتنفس، التعافي، والنمو الداخلي</h1>
-            <p style='color: #475569; font-size: 20px; max-width: 800px; margin: 20px auto;'>
-                منصة مراية تجمع بين الذكاء الاصطناعي المتطور للدعم النفسي الفردي المستمر، وبين المجتمعات التفاعلية والغرف الصوتية السرية التامة.
+        <div style='text-align: center; padding: 50px 20px; background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%); border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 40px;'>
+            <h1 style='color: #0f172a; font-size: 45px; font-weight: 800; margin-bottom: 15px;'>عالمك الخاص للتعافي والنقاء النفسي</h1>
+            <p style='color: #334155; font-size: 22px; max-width: 850px; margin: 0 auto 30px auto; line-height: 1.6;'>
+                منصة <b>"مراية"</b> هي المساحة الآمنة الأولى التي تمنحك صوتاً وحصناً لسرية أفكارك، تجمع بين ذكاء الدعم النفسي الفردي المستمر وتفاعل المجتمعات الصوتية السرية بأمان مطلق.
             </p>
         </div>
     """, unsafe_allow_html=True)
     
-    # زر جذب سريع في منتصف الصفحة
+    # زر الدعوة والبدء في منتصف الصفحة
     col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
     with col_b2:
-        if st.button("✨ ابدأ رحلتك النفسية مجاناً الآن ✨", type="primary", use_container_width=True):
+        if st.button("🚀 ابدأ أولى جلساتك مجاناً الآن", type="primary", use_container_width=True):
             st.session_state.view = "register"
             st.rerun()
             
-    st.markdown("### 🌟 ماذا تقدم لك منصة مراية؟")
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #1e293b;'>🌟 مميزات وحصريات عالم "مراية"</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #64748b; font-size: 18px;'>كل ما تحتاجه لرحلتك النفسية في مكان واحد</p>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # عرض المميزات كروت مبهرة
-    f1, f2, f3 = st.columns(3)
+    # الصف الأول للمميزات (المميزات الرئيسية)
+    f1, f2 = st.columns(2)
     with f1:
-        st.subheader("🤖 الثيرابست الذكي")
-        st.write("جلسات فردية مغلقة مع ذكاء اصطناعي يحتفظ بذاكرة جلساتك السابقة لمتابعة حالتك النفسية بدقة دون نسيان أي تفصيل.")
+        st.markdown("""
+            <div style='background-color: #ffffff; padding: 25px; border-radius: 15px; border-right: 6px solid #3b82f6; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: 100%;'>
+                <h3 style='color: #1d4ed8; margin-top: 0;'>🤖 الثيرابست الذكي ذو الذاكرة المستمرة</h3>
+                <p style='color: #475569; font-size: 16px; line-height: 1.6;'>
+                    لا داعي لإعادة شرح قصتك في كل مرة! يتحدث معالج الذكاء الاصطناعي معك في جلسات فردية سرية جداً، مسترجعاً تفاصيل جلساتك السابقة لمتابعة تطورك النفسي خطوة بخطوة وكأنه مرافقك الشخصي.
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
     with f2:
-        st.subheader("🎙️ غرف صوتية جماعية")
-        st.write("شارك همومك واستمع للآخرين في جلسات صوتية جماعية بأسماء وهمية وأفاتار محمية لضمان الخصوصية المطلقة.")
+        st.markdown("""
+            <div style='background-color: #ffffff; padding: 25px; border-radius: 15px; border-right: 6px solid #10b981; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: 100%;'>
+                <h3 style='color: #047857; margin-top: 0;'>🎙️ الغرف الصوتية الجماعية السرية</h3>
+                <p style='color: #475569; font-size: 16px; line-height: 1.6;'>
+                    تكلم وفضفض بحرية! انضم إلى جلسات الدعم الجماعية الفويس بأسماء مستعارة وأفاتار محمية بالكامل. افتح أو أغلق الميكروفون وقتما تشاء دون إفشاء هويتك الحقيقية إطلاقاً.
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # الصف الثاني للمميزات (المتجر، الألعاب، والأمان)
+    f3, f4, f5 = st.columns(3)
     with f3:
-        st.subheader("🎮 مجتمع وهدايا وتفاعل")
-        st.write("متجر مخصص للتصاميم والأشكال، ألعاب تفاعلية، ونظام نقاط لكسب الكوينز والماس وتكريم أصدقائك.")
+        st.markdown("""
+            <div style='background-color: #ffffff; padding: 20px; border-radius: 15px; border-top: 4px solid #8b5cf6; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center;'>
+                <h4 style='color: #6d28d9;'>💎 محفظة الكوينز والماس</h4>
+                <p style='color: #64748b; font-size: 15px;'>نظام رصيد مزدوج؛ اشحن الكوينز بآمان واكسب الماسات من تفاعلك لفتح مميزات حصرية وجلسات إضافية.</p>
+            </div>
+        """, unsafe_allow_html=True)
+    with f4:
+        st.markdown("""
+            <div style='background-color: #ffffff; padding: 20px; border-radius: 15px; border-top: 4px solid #f59e0b; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center;'>
+                <h4 style='color: #b45309;'>🎨 متجر الإطارات والدخلات</h4>
+                <p style='color: #64748b; font-size: 15px;'>ميز حسابك بدخلات أسطورية (زئير الأسد، التنين) وإطارات متحركة، وأهدِ أصدقاءك لتظهر في لوحة الكرماء!</p>
+            </div>
+        """, unsafe_allow_html=True)
+    with f5:
+        st.markdown("""
+            <div style='background-color: #ffffff; padding: 20px; border-radius: 15px; border-top: 4px solid #ef4444; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center;'>
+                <h4 style='color: #b91c1c;'>🛡️ أمان وحماية مطلقة</h4>
+                <p style='color: #64748b; font-size: 15px;'>تشفير كامل للبيانات، نظام بلاغات آلي ضد أي تجاوز، وحماية تضمن سرية أسرارك ورصيدك المالي بدقة.</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<br><br><hr>", unsafe_allow_html=True)
+    
+    # الفوتر النهائي
+    st.markdown("<p style='text-align: center; color: #94a3b8;'>جميع الحقوق محفوظة منصة مراية © 2026 | مساحتك الآمنة دائماً</p>", unsafe_allow_html=True)
 
 # --- 2. صفحة تسجيل الدخول ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
@@ -116,7 +156,7 @@ elif not st.session_state.logged_in and st.session_state.view == "login":
     
     col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
     with col_l2:
-        st.markdown("<h2 style='text-align: center;'>🔑 تسجيل الدخول إلى مراية</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: #1e293b;'>🔑 تسجيل الدخول إلى مراية</h2>", unsafe_allow_html=True)
         login_input = st.text_input("معرف مراية (Login ID) أو البريد الإلكتروني:")
         login_pass = st.text_input("كلمة المرور:", type="password")
         
@@ -144,7 +184,7 @@ elif not st.session_state.logged_in and st.session_state.view == "register":
     
     col_r1, col_r2, col_r3 = st.columns([1, 2, 1])
     with col_r2:
-        st.markdown("<h2 style='text-align: center;'>✨ إنشاء حساب جديد في مراية</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: #1e293b;'>✨ إنشاء حساب جديد في مراية</h2>", unsafe_allow_html=True)
         full_name = st.text_input("الاسم:")
         contact_info = st.text_input("البريد الإلكتروني أو رقم الهاتف:")
         new_pass = st.text_input("كلمة المرور:", type="password")
