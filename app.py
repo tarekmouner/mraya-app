@@ -303,7 +303,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 st.session_state.view = "register"
                 st.rerun()
         with bb:
-            if st.button("✨ اكتشف مرايا", use_container_width=True):
+            if st.button("✨ اكتشف مراية", use_container_width=True):
                 st.session_state.show_discovery = True
                 
     if st.session_state.get("show_discovery", False):
@@ -313,8 +313,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 <p>
                     منصة <b>مراية</b> ليست مجرد موقع تواصل، بل هي بيئة متكاملة تجمع بين:
                     <br>1️⃣ <b>الثيرابست الذكي:</b> لمساعدتك في ترتيب أفكارك وسياق مشاعرك بأمان تام.
-                    <br>2️⃣ <b>مفكرة المشاعر والاختبارات الذاتية:</b> لتتبع حالتك المزاجية والنفسية.
-                    <br>3️⃣ <b>حائط الامتنان والمتجر الرقمي:</b> لنشر الطاقة الإيجابية وتخصيص هويتك.
+                    <br>2️⃣ <b>المفكرة والاختبارات الذاتية:</b> لتتبع حالتك المزاجية والنفسية يومياً.
+                    <br>3️⃣ <b>التحديات وحائط الامتنان:</b> لتحفيز النمو الشخصي ونشر الطاقة الإيجابية.
                     <br><br>استكشف الأقسام أدناه لتتعرف على المزيد، أو أنشئ حسابك المجاني الآن وابدأ رحلتك!
                 </p>
             </div>
@@ -457,6 +457,7 @@ else:
         "الثيرابست الذكي", 
         "مفكرة المشاعر واليوميات السرية 📖", 
         "اختبارات التقييم الذاتي 🧠",
+        "تحديات النمو الشخصي 🎯",
         "الجلسات الجماعية", 
         "حائط الامتنان الإيجابي 🌟", 
         "المتجر والألعاب"
@@ -480,7 +481,6 @@ else:
             d = user_row.iloc[0]["Diamonds"]
             name = user_row.iloc[0]["Full_Name"]
             
-            # رسالة تحفيزية يومية تظهر فوراً في لوحة التحكم
             st.markdown("""
                 <div class="fancy-card" style="border-right: 6px solid #34d399; margin-bottom: 20px;">
                     <h3 style='color: #34d399; margin: 0;'>💡 رسالة الدعم اليومية لك:</h3>
@@ -561,6 +561,20 @@ else:
                 st.info("⚖️ نتيجتك متوازنة. لديك ضغوط طبيعية، وننصحك بأخذ قسط قصير من الراحة والتأمل.")
             else:
                 st.warning("🌧️ يبدو أن مستوى التوتر لديك مرتفع اليوم. ننصحك باستخدام 'الثيرابست الذكي' أو كتابة مشاعرك في المفكرة السرية لتفريغ طاقتك السلبية.")
+
+    elif menu == "تحديات النمو الشخصي 🎯":
+        st.title("🎯 تحديات النمو والسلام الداخلي")
+        st.markdown('<div class="fancy-card"><p>أنجز التحديات اليومية لاكتساب نقاط إضافية وتعزيز عاداتك الإيجابية.</p></div>', unsafe_allow_html=True)
+        
+        col_t1, col_t2 = st.columns(2)
+        with col_t1:
+            st.markdown('<div class="fancy-card"><h3>🧘 تحدي التنفس العميق</h3><p>قم بجلسة تنفس لمدة 5 دقائق وارتاح.</p></div>', unsafe_allow_html=True)
+            if st.button("إتمام تحدي التنفس"):
+                st.success("أحسنت! أُضيف لرصيدك 15 كوينز.")
+        with col_t2:
+            st.markdown('<div class="fancy-card"><h3>📝 تحدي التدوين الامتناني</h3><p>اكتب 3 أشياء أنت ممتن لها اليوم.</p></div>', unsafe_allow_html=True)
+            if st.button("إتمام تحدي الامتنان"):
+                st.success("رائع! أُضيف لرصيدك 20 كوينز و 5 ماسات.")
 
     elif menu == "الجلسات الجماعية":
         st.title("🎙️ الغرف الصوتية الجماعية (بسرية تامة)")
