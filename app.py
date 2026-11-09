@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS الشامل لحل مشكلة ألوان مربعات الإدخال والنصوص تماماً
+# تخصيص التصميم والـ CSS الشامل لحل مشكلة تداخل النصوص في مربعات الإدخال نهائياً
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار */
@@ -30,7 +30,6 @@ st.markdown("""
         border-left: 1px solid rgba(139, 92, 246, 0.3);
     }
     
-    /* جعل النصوص والعناصر داخل القائمة الجانبية واضحة وبارزة */
     section[data-testid="stSidebar"] p, 
     section[data-testid="stSidebar"] span, 
     section[data-testid="stSidebar"] label, 
@@ -41,7 +40,6 @@ st.markdown("""
         font-weight: 600 !important;
     }
     
-    /* إصلاح صندوق التنبيهات وحساب الأونر في السايدبار بالكامل ليكون داكن وواضح */
     section[data-testid="stSidebar"] .stSuccess,
     section[data-testid="stSidebar"] div[data-baseweb="notification"] {
         background-color: #1e293b !important;
@@ -54,24 +52,33 @@ st.markdown("""
         font-weight: 700 !important;
     }
     
-    /* --- حل مشكلة مربعات الإدخال (Text Inputs) في السيستم بالكامل --- */
-    input, textarea, select {
+    /* --- الحل الجذري لمربعات الإدخال وتداخل النصوص --- */
+    input[type="text"], input[type="password"], textarea {
         background-color: #1e293b !important;
         color: #ffffff !important;
-        border: 1px solid #6d28d9 !important;
+        border: 2px solid #6d28d9 !important;
         border-radius: 12px !important;
-        font-size: 18px !important;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        padding: 10px 15px !important;
     }
     
     div[data-baseweb="input"] {
         background-color: #1e293b !important;
         border-radius: 12px !important;
-        border: 1px solid rgba(139, 92, 246, 0.4) !important;
+        border: 2px solid #38bdf8 !important;
     }
     
     div[data-baseweb="input"] input {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+    }
+    
+    /* إخفاء رسالة الـ Press Enter المزعجة لتجنب التداخل تماماً */
+    .stTextInput small {
+        display: none !important;
     }
 
     /* تكبير وتوضيح الخطوط في المنصة ككل */
