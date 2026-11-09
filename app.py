@@ -8,10 +8,10 @@ st.set_page_config(
     page_title="منصة مراية | مساحتك الخاصة لفهم نفسك",
     page_icon="🪞",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والخطوط بوضوح وقوة عالية للقراءة المريحة
+# تخصيص التصميم والخطوط الواضحة والجميلة للمنصة بالكامل
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار */
@@ -24,13 +24,12 @@ st.markdown("""
     .main { background-color: #0b0f19; color: #ffffff; }
     .stApp { background: linear-gradient(135deg, #070913 0%, #0f172a 50%, #1e1b4b 100%); color: #ffffff; }
     
-    /* تكبير وتوضيح الخطوط لضمان أقصى درجة وضوح وسهولة في القراءة */
+    /* تكبير وتوضيح الخطوط لضمان أقصى درجة وضوح */
     body, p, span, li, label, div {
-        font-size: 21px !important;
+        font-size: 20px !important;
         color: #f8fafc !important;
-        line-height: 2.1 !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.3px !important;
+        line-height: 2.0 !important;
+        font-weight: 500 !important;
     }
     
     /* أزرار واضحة وقوية */
@@ -40,7 +39,7 @@ st.markdown("""
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
         border-radius: 14px !important;
         font-weight: 800 !important;
-        font-size: 19px !important;
+        font-size: 18px !important;
         padding: 12px 28px !important;
         transition: all 0.3s ease !important;
         box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
@@ -53,27 +52,19 @@ st.markdown("""
         transform: translateY(-2px);
     }
 
-    /* الكروت بخلفية واضحة وخطوط بارزة */
+    /* الكروت الاحترافية (Fancy Cards) */
     .fancy-card {
         background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
-        padding: 40px;
+        padding: 35px;
         border-radius: 24px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         margin-bottom: 25px;
         border: 1px solid rgba(139, 92, 246, 0.3);
         backdrop-filter: blur(12px);
         text-align: right !important;
-        transition: all 0.4s ease;
         position: relative;
         overflow: hidden;
     }
-    
-    .fancy-card:hover {
-        transform: translateY(-6px);
-        border-color: #38bdf8;
-        box-shadow: 0 15px 35px rgba(56, 189, 248, 0.3), inset 0 0 15px rgba(56, 189, 248, 0.15);
-    }
-
     .fancy-card::before {
         content: '';
         position: absolute;
@@ -84,18 +75,17 @@ st.markdown("""
         background: linear-gradient(90deg, #38bdf8, #8b5cf6, #ec4899);
     }
     
-    /* عناوين رئيسية واضحة جداً */
+    /* عناوين رئيسية واضحة */
     .section-title {
         color: #38bdf8;
         font-weight: 900;
-        font-size: 36px !important;
+        font-size: 34px !important;
         text-align: center;
-        margin-top: 60px;
-        margin-bottom: 30px;
+        margin-top: 40px;
+        margin-bottom: 25px;
         text-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
     }
     
-    /* حاوية العرض للصورة أو البانر */
     .image-showcase {
         text-align: center;
         padding: 20px;
@@ -171,7 +161,7 @@ if not banner_img and len(files_list) > 1:
 elif not banner_img:
     banner_img = logo_img
 
-# --- 1. الصفحة الرئيسية التسويقية الجديدة بالكامل (Landing Page) ---
+# --- 1. الصفحة الرئيسية التسويقية (Landing Page) ---
 if not st.session_state.logged_in and st.session_state.view == "landing":
     
     col_logo, col_space, col_auth = st.columns([4, 4, 2])
@@ -212,24 +202,22 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 
     st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # لماذا مرايا؟
     st.markdown("<h2 class='section-title'>لماذا مرايا؟</h2>", unsafe_allow_html=True)
     st.markdown("""
         <div class="fancy-card" style="text-align: center;">
-            <p style="font-size: 23px !important; color: #ffffff !important; line-height: 2.1; margin: 0; font-weight: 600;">
+            <p style="font-size: 22px !important; color: #ffffff !important; line-height: 2.1; margin: 0; font-weight: 600;">
                 لأننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج.<br><br>
                 <b>لهذا لم نصمم مرايا لتكون مجرد نافذة محادثة، بل تجربة متكاملة تمنحك خيارات متعددة للتواصل والتعبير والتطور.</b>
             </p>
         </div>
     """, unsafe_allow_html=True)
     
-    # مميزات المنصة
     col_m1, col_m2 = st.columns(2)
     with col_m1:
         st.markdown("""
             <div class="fancy-card">
-                <h3 style='color: #38bdf8; font-size: 25px !important; margin-bottom: 20px; font-weight: 800;'>🌟 مميزات أساسية</h3>
-                <ul style='color: #f1f5f9; font-size: 21px !important; line-height: 2.5; list-style-type: none; padding: 0; font-weight: 600;'>
+                <h3 style='color: #38bdf8; font-size: 24px !important; margin-bottom: 20px; font-weight: 800;'>🌟 مميزات أساسية</h3>
+                <ul style='color: #f1f5f9; font-size: 20px !important; line-height: 2.4; list-style-type: none; padding: 0; font-weight: 600;'>
                     <li>🔹 مساحة شخصية مستقلة لكل مستخدم.</li>
                     <li>🔹 جلسات فردية خاصة مصممة حولك.</li>
                     <li>🔹 محادثات كتابية، صوتية، ومرئية متطورة.</li>
@@ -240,8 +228,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with col_m2:
         st.markdown("""
             <div class="fancy-card">
-                <h3 style='color: #34d399; font-size: 25px !important; margin-bottom: 20px; font-weight: 800;'>💎 تجربة مجتمعية متكاملة</h3>
-                <ul style='color: #f1f5f9; font-size: 21px !important; line-height: 2.5; list-style-type: none; padding: 0; font-weight: 600;'>
+                <h3 style='color: #34d399; font-size: 24px !important; margin-bottom: 20px; font-weight: 800;'>💎 تجربة مجتمعية متكاملة</h3>
+                <ul style='color: #f1f5f9; font-size: 20px !important; line-height: 2.4; list-style-type: none; padding: 0; font-weight: 600;'>
                     <li>🔹 إمكانية اختيار المشاركة المجتمعية أو البقاء بمفردك.</li>
                     <li>🔹 نظام عضويات ومزايا قابل للتخصيص.</li>
                     <li>🔹 تجربة شخصية قابلة للتطوير والتغيير.</li>
@@ -250,110 +238,20 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             </div>
         """, unsafe_allow_html=True)
 
-    # مساراتك وأدواتك
-    st.markdown("<h2 class='section-title'>مساراتك وأدواتك داخل المنصة</h2>", unsafe_allow_html=True)
-    
-    t1, t2, t3 = st.columns(3)
-    with t1:
-        st.markdown("""
-            <div class="fancy-card">
-                <h3 style='color: #38bdf8; font-size: 25px !important; margin-bottom: 15px; font-weight: 800;'>🧘 جلسات فردية</h3>
-                <p style='color: #f1f5f9; font-size: 20px !important; line-height: 2.0; font-weight: 600;'>
-                    كل شخص مختلف، وكل تجربة تستحق الاهتمام. ابدأ جلسة فردية خاصة بك ومشاركة ما تشعر به ومناقشة تحدياتك في سرية تامة.
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-    with t2:
-        st.markdown("""
-            <div class="fancy-card">
-                <h3 style='color: #34d399; font-size: 25px !important; margin-bottom: 15px; font-weight: 800;'>🎙️ طرق تواصل متعددة</h3>
-                <p style='color: #f1f5f9; font-size: 20px !important; line-height: 2.0; font-weight: 600;'>
-                    <b>كتابية:</b> اكتب أفكارك بحرية.<br><b>صوتية:</b> تحدث بصوتك لتجربة طبيعية.<br><b>مرئية:</b> تواصل مرئي ضمن التجارب المدعومة.
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-    with t3:
-        st.markdown("""
-            <div class="fancy-card">
-                <h3 style='color: #a78bfa; font-size: 25px !important; margin-bottom: 15px; font-weight: 800;'>🧠 ذاكرة ذكية</h3>
-                <p style='color: #f1f5f9; font-size: 20px !important; line-height: 2.0; font-weight: 600;'>
-                    لا تبدأ من الصفر أبداً. ذاكرتك الشخصية تساعد المساعد الذكي على استيعاب السياق السابق والأهداف والتحديات.
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-
-    # مجتمع مراية والأمان
-    st.markdown("""
-        <div class="fancy-card" style="border-right: 6px solid #34d399; margin-top: 20px;">
-            <h3 style='color: #34d399; font-size: 25px !important; margin-top: 0; margin-bottom: 15px; font-weight: 800;'>👥 مجتمع مراية | لست مضطرًا للبقاء وحدك</h3>
-            <p style='color: #f8fafc; font-size: 21px !important; line-height: 2.1; font-weight: 600;'>
-                توفير تجربة مجتمعية اختيارية تتيح لك المشاركة في جلسات جماعية صوتية مع أشخاص آخرين باستخدام <b>هويات مستعارة</b>. مشاركة اختيارية بالكامل، لا اسم حقيقي يظهر، لا تظهر جلساتك الفردية أبداً، مع نظام بلاغات ومراجعة صارم.
-            </p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # الشخصية الرقمية والمتجر
-    c_s1, c_s2 = st.columns(2)
-    with c_s1:
-        st.markdown("""
-            <div class="fancy-card">
-                <h3 style='color: #fbbf24; font-size: 25px !important; margin-bottom: 15px; font-weight: 800;'>🎨 شخصيتك الرقمية والمتجر</h3>
-                <p style='color: #f1f5f9; font-size: 20px !important; line-height: 2.0; font-weight: 600;'>
-                    طور مظهر هويتك بإطارات ثابتة ومتحركة، أشكال وألوان مميزة للأسماء، تصاميم معرفات ID، وخلفيات شخصية ومؤثرات صوتية وبصرية.
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-    with c_s2:
-        st.markdown("""
-            <div class="fancy-card">
-                <h3 style='color: #f472b6; font-size: 25px !important; margin-bottom: 15px; font-weight: 800;'>🎁 الهدايا ونظام العملات</h3>
-                <p style='color: #f1f5f9; font-size: 20px !important; line-height: 2.0; font-weight: 600;'>
-                    أرسل هدية لأي صديق بمعرفه الفريد لتظهر في لوحة أكثر الأصدقاء كرمًا.<br>
-                    <b>الكوينز (COINS):</b> للشحن والمزايا المدفوعة.<br>
-                    <b>الماسات (DIAMONDS):</b> مكاسب الفعاليات والأنشطة.
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-
-    # الأمان والرؤية والرسالة
-    st.markdown("""
-        <div class="fancy-card" style="border-right: 6px solid #38bdf8;">
-            <h3 style='color: #ffffff; font-size: 25px !important; margin-top: 0; margin-bottom: 15px; font-weight: 800;'>🛡️ الأمان والخصوصية والرؤية</h3>
-            <p style='color: #f8fafc; font-size: 21px !important; line-height: 2.1; font-weight: 600;'>
-                <b>رؤيتنا:</b> أن تصبح مراية مساحة رقمية رائدة تمنح الإنسان فرصة أفضل للتعبير عن نفسه وفهم مشاعره.<br>
-                <b>رسالتنا:</b> توفير تجربة تجمع بين الذكاء الاصطناعي والتكنولوجيا والتواصل الإنساني ببيئة تراعي الخصوصية التامة.<br>
-                نحن نؤمن أن الثقة أساس المشاعر؛ حسابات مستقلة، معرفات فريدة، وفصل تام لبيانات الجلسات الشخصية.
-            </p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # الأسئلة الشائعة (FAQ)
     st.markdown("<h2 class='section-title'>الأسئلة الشائعة</h2>", unsafe_allow_html=True)
-    
     with st.expander("❓ هل استخدام مراية مجاني؟"):
-        st.write("تتيح مراية عددًا من الجلسات المجانية الأولية، وبعد استهلاكها يمكنك اختيار إحدى الباقات المتاحة أو استخدام الرصيد المؤهل لفتح جلسات إضافية.")
-    with st.expander("❓ هل يجب عليّ المشاركة في الجلسات الجماعية؟"):
-        st.write("لا. الجلسات الفردية هي الأساس، والمشاركة المجتمعية اختيارية بالكامل.")
-    with st.expander("❓ هل أستطيع التحدث بدلًا من الكتابة؟"):
-        st.write("نعم، تتضمن التجربة إمكانية المحادثات الصوتية، مع إمكانية دعم الفيديو وفق الخطة والقدرات المتاحة.")
+        st.write("تتيح مراية عددًا من الجلسات المجانية الأولية، وبعد استهلاكها يمكنك اختيار إحدى الباقات المتاحة.")
     with st.expander("❓ هل يتذكر المساعد الذكي محادثاتي السابقة؟"):
-        st.write("نعم، يستفيد من الذاكرة الشخصية المرتبطة بحسابك، وفق إعدادات الموافقة والاحتفاظ بالبيانات.")
-    with st.expander("❓ هل يستطيع الآخرون رؤية جلساتي؟"):
-        st.write("لا تظهر الجلسات الفردية للمستخدمين الآخرين إطلاقاً. وتُدار صلاحيات الوصول وفق سياسة الخصوصية.")
+        st.write("نعم، يستفيد من الذاكرة الشخصية المرتبطة بحسابك وفق إعدادات الأمان والخصوصية.")
     with st.expander("❓ هل مراية بديل عن الطبيب النفسي؟"):
-        st.write("مراية منصة للدعم والمساندة الرقمية باستخدام الذكاء الاصطناعي، وليست بديلًا عن التشخيص أو العلاج لدى متخصص مؤهل. وفي حالات الطوارئ أو خطر إيذاء النفس يجب التواصل مع خدمات الطوارئ أو مختص بشري فورًا.")
+        st.write("مراية منصة للدعم والمساندة الرقمية، وليست بديلًا عن التشخيص أو العلاج لدى متخصص مؤهل.")
 
     st.markdown("<br>", unsafe_allow_html=True)
-    
     col_end1, col_end2, col_end3 = st.columns([1, 2, 1])
     with col_end2:
         if st.button("✨ أنشئ حسابك الآن مجانًا", type="primary", use_container_width=True):
             st.session_state.view = "register"
             st.rerun()
-
-    st.markdown("<br><hr>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #38bdf8; font-weight: bold;'>MIRAYA — Your Space. Your Story. Your Reflection.</p>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 15px;'>جميع الحقوق محفوظة منصة مراية © 2026</p>", unsafe_allow_html=True)
 
 # --- 2. صفحة تسجيل الدخول ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
@@ -425,7 +323,7 @@ elif not st.session_state.logged_in and st.session_state.view == "register":
                         st.success(f"تم إنشاء حسابك بنجاح! المعرف الفريد الخاص بك هو: {unique_id}")
                         st.info("يمكنك الآن الانتقال لصفحة تسجيل الدخول.")
 
-# --- 4. داخل المنصة بعد تسجيل الدخول ---
+# --- 4. داخل المنصة (الصفحات الداخلية المتاحة بعد تسجيل الدخول) ---
 else:
     users_df = pd.read_csv(USERS_FILE)
     is_owner = (st.session_state.current_user == "tarek_admin")
@@ -438,7 +336,7 @@ else:
     if is_owner:
         menu_options.append("إدارة المنصة (الأونر) ⚙️")
         
-    menu = st.sidebar.radio("التنقل:", menu_options)
+    menu = st.sidebar.radio("التنقل بين الصفحات:", menu_options)
     
     if st.sidebar.button("تسجيل الخروج"):
         st.session_state.logged_in = False
@@ -446,28 +344,95 @@ else:
         st.session_state.view = "landing"
         st.rerun()
 
+    # أ. صفحة لوحة التحكم الرئيسية للمستخدم
     if menu == "لوحة التحكم":
-        st.title("🏠 أهلاً بك في مساحتك الآمنة")
+        st.title("🏠 لوحة التحكم الشخصية")
         user_row = users_df[users_df["Login_ID"] == st.session_state.current_user]
         if not user_row.empty:
             c = user_row.iloc[0]["Coins"]
             d = user_row.iloc[0]["Diamonds"]
-            st.info(f"💰 رصيد محفظتك: **{c} كوينز** | 💎 **{d} ماسات**")
+            name = user_row.iloc[0]["Full_Name"]
             
+            st.markdown(f"""
+                <div class="fancy-card">
+                    <h2>أهلاً بك، {name} 👋</h2>
+                    <p>معرفك الفريد في المنصة: <b>{st.session_state.current_user}</b></p>
+                    <hr style="border-color: rgba(255,255,255,0.1);">
+                    <h3>💰 رصيد محفظتك الرقمية:</h3>
+                    <p style="font-size: 24px; color: #38bdf8;"><b>{c} كوينز</b> | 💎 <b>{d} ماسات</b></p>
+                </div>
+            """, unsafe_allow_html=True)
+
+    # ب. صفحة الثيرابست الذكي (مع الذاكرة الذكية)
+    elif menu == "الثيرابست الذكي":
+        st.title("🤖 الثيرابست الذكي (مساحتك الآمنة للحديث)")
+        st.markdown("""
+            <div class="fancy-card">
+                <p>مرحباً بك في جلسة الدعم النفسي الذكية. هنا يمكنك التحدث بحرية تامة، وسيتذكر النظام سياق محادثاتك وأهدافك السابقة لمساعدتك بشكل أفضل.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # محاكاة نافذة الشات
+        user_msg = st.text_input("اكتب رسالتك أو شعورك الآن:")
+        if st.button("إرسال للثيرابست"):
+            if user_msg:
+                st.info(f"🤖 **رد الثيرابست الذكي:** أسمعك جيداً يا صديقي بخصوص ({user_msg}). دعنا نفكر سوياً كيف نتجاوز هذا الشعور بأمان وسلام داخلي.")
+
+    # ج. صفحة الجلسات الجماعية الصوتية
+    elif menu == "الجلسات الجماعية":
+        st.title("🎙️ الغرف الصوتية الجماعية (بسرية تامة)")
+        st.markdown("""
+            <div class="fancy-card">
+                <p>شارك في غرف الاستماع والنقاش الجماعي باستخدام هويات مستعارة وبأمان مطلق.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        col_g1, col_g2 = st.columns(2)
+        with col_g1:
+            st.markdown('<div class="fancy-card"><h3>🎧 غرفة تفريغ الضغوط اليومية</h3><p>المشاركون: 14 شخص</p></div>', unsafe_allow_html=True)
+            if st.button("انضم للصوتية 1"):
+                st.success("تم انضمامك للغرفة بنجاح!")
+        with col_g2:
+            st.markdown('<div class="fancy-card"><h3>🌟 غرفة التأمل والسلام الداخلي</h3><p>المشاركون: 8 أشخاص</p></div>', unsafe_allow_html=True)
+            if st.button("انضم للصوتية 2"):
+                st.success("تم انضمامك للغرفة بنجاح!")
+
+    # د. صفحة المتجر والألعاب والهدايا
+    elif menu == "المتجر والألعاب":
+        st.title("🎨 متجر مراية والعناصر الرقمية")
+        st.markdown("""
+            <div class="fancy-card">
+                <p>اقتنِ الإطارات الفاخرة، الدخلات المتحركة، وأرسل الهدايا لأصدقائك عبر معرفاتهم الفريدة.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        col_s1, col_s2 = st.columns(2)
+        with col_s1:
+            st.markdown('<div class="fancy-card"><h3>🦁 إطار زئير الأسد الأسطوري</h3><p>السعر: 50 كوينز</p></div>', unsafe_allow_html=True)
+            if st.button("شراء الإطار"):
+                st.success("تم شراء العنصر بنجاح وأُضيف لبروفايلك!")
+        with col_s2:
+            st.markdown('<div class="fancy-card"><h3>💎 باقة الماسات الترحيبية</h3><p>احصل على 100 ماسة إضافية</p></div>', unsafe_allow_html=True)
+            if st.button("احصل على الماسات"):
+                st.success("تم شحن الماسات بنجاح!")
+
+    # هـ. لوحة تحكم الأونر والمالك (خاصة بطارق فقط)
     elif menu == "إدارة المنصة (الأونر) ⚙️" and is_owner:
         st.title("⚙️ لوحة تحكم المالك (طارق)")
-        st.dataframe(users_df.drop(columns=["Password"]))
+        st.markdown('<div class="fancy-card"><p>لوحة التحكم السيادية الخاصة بالأونر لإدارة الحسابات، الأرصدة، والمستخدمين.</p></div>', unsafe_allow_html=True)
         
-        st.subheader("شحن رصيد مستخدم")
-        t_id = st.text_input("معرف المستخدم (Login ID):")
-        c_add = st.number_input("الكوينز:", min_value=0, value=100)
-        d_add = st.number_input("الماسات:", min_value=0, value=50)
+        st.subheader("📊 قاعدة بيانات المستخدمين المسجلين:")
+        st.dataframe(users_df.drop(columns=["Password"]), use_container_width=True)
         
-        if st.button("تأكيد الشحن"):
+        st.subheader("💰 شحن رصيد فوري لأي مستخدم")
+        t_id = st.text_input("أدخل معرف المستخدم (Login ID):")
+        c_add = st.number_input("عدد الكوينز للإضافة:", min_value=0, value=100)
+        d_add = st.number_input("عدد الماسات للإضافة:", min_value=0, value=50)
+        
+        if st.button("تنفيذ شحن الرصيد"):
             if t_id in users_df["Login_ID"].values:
                 users_df.loc[users_df["Login_ID"] == t_id, "Coins"] += c_add
                 users_df.loc[users_df["Login_ID"] == t_id, "Diamonds"] += d_add
                 users_df.to_csv(USERS_FILE, index=False)
-                st.success("تم الشحن بنجاح!")
+                st.success(f"تم شحن رصيد المستخدم ({t_id}) بنجاح!")
             else:
-                st.error("المستخدم غير موجود.")
+                st.error("المعرف غير موجود في النظام.")
