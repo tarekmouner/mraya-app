@@ -554,3 +554,14 @@ else:
                 st.success(f"تم شحن رصيد المستخدم ({t_id}) بنجاح!")
             else:
                 st.error("المعرف غير موجود في النظام.")
+import streamlit as st
+import pandas as pd
+import os
+import hashlib
+import streamlit.components.v1 as components
+
+# إعدادات الصفحة
+st.set_page_config(
+    page_title="منصة مراية | مساحتك الخاصة لفهم نفسك",
+    page_icon="🪞",
+    layout
