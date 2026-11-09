@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم وتظبيط القائمة الجانبية (Sidebar) والمربعات بدقة متناهية
+# تخصيص التصميم والـ CSS الشامل لحل مشكلة ألوان مربعات الإدخال والنصوص تماماً
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار */
@@ -41,18 +41,39 @@ st.markdown("""
         font-weight: 600 !important;
     }
     
-    /* إصلاح رسائل التنبيه والنجاح داخل السايدبار لتكون بخلفية داكنة وكلام واضح */
-    section[data-testid="stSidebar"] div[data-baseweb="notification"],
-    section[data-testid="stSidebar"] .stSuccess {
-        background-color: rgba(30, 41, 59, 0.9) !important;
-        border: 1px solid #34d399 !important;
+    /* إصلاح صندوق التنبيهات وحساب الأونر في السايدبار بالكامل ليكون داكن وواضح */
+    section[data-testid="stSidebar"] .stSuccess,
+    section[data-testid="stSidebar"] div[data-baseweb="notification"] {
+        background-color: #1e293b !important;
+        border: 1px solid #38bdf8 !important;
         color: #ffffff !important;
     }
-    section[data-testid="stSidebar"] .stSuccess p {
-        color: #34d399 !important;
+    section[data-testid="stSidebar"] .stSuccess p,
+    section[data-testid="stSidebar"] div[data-baseweb="notification"] * {
+        color: #ffffff !important;
         font-weight: 700 !important;
     }
     
+    /* --- حل مشكلة مربعات الإدخال (Text Inputs) في السيستم بالكامل --- */
+    input, textarea, select {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        border: 1px solid #6d28d9 !important;
+        border-radius: 12px !important;
+        font-size: 18px !important;
+    }
+    
+    div[data-baseweb="input"] {
+        background-color: #1e293b !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(139, 92, 246, 0.4) !important;
+    }
+    
+    div[data-baseweb="input"] input {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+
     /* تكبير وتوضيح الخطوط في المنصة ككل */
     body, p, span, li, label, div {
         font-size: 20px !important;
