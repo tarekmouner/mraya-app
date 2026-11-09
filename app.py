@@ -204,16 +204,17 @@ JOURNAL_FILE = "mraya_journal.csv"
 WALL_FILE = "mraya_wall.csv"
 
 def hash_password(password):
-    return hashlib.sha256(str.encode(password)).hexdigest()
+    clean_pass = str(password).strip()
+    return hashlib.sha256(str.encode(clean_pass)).hexdigest()
 
 def init_db():
     if not os.path.exists(USERS_FILE):
         df = pd.DataFrame(columns=["Full_Name", "Login_ID", "Email_Phone", "Password", "Account_Type", "Coins", "Diamonds"])
         admin_row = pd.DataFrame({
             "Full_Name": ["طارق (الأونر)"],
-            "Login_ID": ["tarek_admin"],
+            "Login_ID": ["tarek"],
             "Email_Phone": ["tarek@mraya.com"],
-            "Password": [hash_password("tarek12345")],
+            "Password": [hash_password("159019")],
             "Account_Type": ["Owner"],
             "Coins": [999999],
             "Diamonds": [999999]
@@ -222,17 +223,21 @@ def init_db():
         df.to_csv(USERS_FILE, index=False)
     else:
         df = pd.read_csv(USERS_FILE)
-        if "tarek_admin" not in df["Login_ID"].values:
+        # تحديث أو إضافة يوزر tarek والباورد الجديد تلقائياً
+        if "tarek" not in df["Login_ID"].values:
             admin_row = pd.DataFrame({
                 "Full_Name": ["طارق (الأونر)"],
-                "Login_ID": ["tarek_admin"],
+                "Login_ID": ["tarek"],
                 "Email_Phone": ["tarek@mraya.com"],
-                "Password": [hash_password("tarek12345")],
+                "Password": [hash_password("159019")],
                 "Account_Type": ["Owner"],
                 "Coins": [999999],
                 "Diamonds": [999999]
             })
             df = pd.concat([df, admin_row], ignore_index=True)
+            df.to_csv(USERS_FILE, index=False)
+        else:
+            df.loc[df["Login_ID"] == "tarek", "Password"] = hash_password("159019")
             df.to_csv(USERS_FILE, index=False)
 
     if not os.path.exists(JOURNAL_FILE):
@@ -303,7 +308,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 st.session_state.view = "register"
                 st.rerun()
         with bb:
-            if st.button("✨ اكتشف مراية", use_container_width=True):
+            if st.button("✨ اكتشف مرايا", use_container_width=True):
                 st.session_state.show_discovery = True
                 
     if st.session_state.get("show_discovery", False):
@@ -388,10 +393,11 @@ elif not st.session_state.logged_in and st.session_state.view == "login":
         if st.button("دخول آمن", type="primary", use_container_width=True):
             users_df = pd.read_csv(USERS_FILE)
             hashed_p = hash_password(login_pass)
-            user_match = users_df[(users_df["Login_ID"] == login_input) | (users_df["Email_Phone"] == login_input)]
+            clean_login = login_input.strip()
+            user_match = users_df[(users_df["Login_ID"] == clean_login) | (users_df["Email_Phone"] == clean_login)]
             
             if not user_match.empty:
-                stored_pass = str(user_match.iloc[0]["Password"])
+                stored_pass = str(user_match.iloc[0]["Password"]).strip()
                 if stored_pass == hashed_p:
                     st.session_state.logged_in = True
                     st.session_state.current_user = user_match.iloc[0]["Login_ID"]
@@ -422,16 +428,16 @@ elif not st.session_state.logged_in and st.session_state.view == "register":
                     st.warning("كلمات المرور غير متطابقة.")
                 else:
                     users_df = pd.read_csv(USERS_FILE)
-                    if contact_info in users_df["Email_Phone"].values:
+                    if contact_info.strip() in users_df["Email_Phone"].values:
                         st.error("هذا البريد أو الرقم مسجل بالفعل.")
                     else:
                         base_id = full_name.strip().replace(" ", "_").lower()
                         unique_id = f"mraya_{base_id}_{len(users_df) + 1}"
                         
                         new_user = pd.DataFrame({
-                            "Full_Name": [full_name],
+                            "Full_Name": [full_name.strip()],
                             "Login_ID": [unique_id],
-                            "Email_Phone": [contact_info],
+                            "Email_Phone": [contact_info.strip()],
                             "Password": [hash_password(new_pass)],
                             "Account_Type": ["Standard"],
                             "Coins": [10],
@@ -446,7 +452,7 @@ elif not st.session_state.logged_in and st.session_state.view == "register":
 # --- 4. داخل المنصة (الصفحات الداخلية المحدثة) ---
 else:
     users_df = pd.read_csv(USERS_FILE)
-    is_owner = (st.session_state.current_user == "tarek_admin")
+    is_owner = (st.session_state.current_user == "tarek")
     
     st.sidebar.title(f"🪞 مراية | {st.session_state.current_user}")
     if is_owner:
