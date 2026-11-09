@@ -129,16 +129,38 @@ if "logged_in" not in st.session_state:
 if "view" not in st.session_state:
     st.session_state.view = "landing"
 
+# البحث الذكي عن الصورتين المرفوعتين في المستودع تلقائياً
+logo_img = None
+banner_img = None
+
+for f in os.listdir("."):
+    if f.endswith(".png") or f.endswith(".jpg"):
+        # لو الصورة الأولى (اللوجو)
+        if "مراية" in f and "2" not in f:
+            logo_img = f
+        # لو الصورة الثانية (البانر التسويقي)
+        elif "2" in f or "banner" in f.lower() or "صورة" in f:
+            banner_img = f
+
+# احتياطي لو ملقاش اسم دقيق، ياخد أي صورتين متاحين
+files_list = [f for f in os.listdir(".") if f.endswith(".png") or f.endswith(".jpg")]
+if not logo_img and files_list:
+    logo_img = files_list[0]
+if not banner_img and len(files_list) > 1:
+    banner_img = files_list[1]
+elif not banner_img:
+    banner_img = logo_img
+
 # --- 1. الصفحة الرئيسية التسويقية الكاملة (Landing Page) ---
 if not st.session_state.logged_in and st.session_state.view == "landing":
     
-    # الشريط العلوي مع اللوجو الفخم الخاص بك
+    # الشريط العلوي مع اللوجو الفخم
     col_logo, col_space, col_auth = st.columns([4, 4, 2])
     with col_logo:
-        if os.path.exists("logo.png"):
-            st.image("logo.png", width=280)
+        if logo_img and os.path.exists(logo_img):
+            st.image(logo_img, width=280)
         else:
-            st.warning("⚠️ يرجى التأكد من رفع صورة logo.png في مستودع GitHub في نفس مجلد الملفات الرئيسي")
+            st.warning("⚠️ يرجى التأكد من رفع صور المشروع في مستودع GitHub")
             
     with col_auth:
         c1, c2 = st.columns(2)
@@ -153,10 +175,10 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # عرض الصورة الأساسية كبانر تسويقي فخم في واجهة الموقع
-    if os.path.exists("logo.png"):
+    # عرض الصورة الثانية كبانر تسويقي فخم وضخم في واجهة الموقع
+    if banner_img and os.path.exists(banner_img):
         st.markdown('<div class="hero-banner-container">', unsafe_allow_html=True)
-        st.image("logo.png", use_container_width=True)
+        st.image(banner_img, use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
     
     # أزرار التوجيه السريع
