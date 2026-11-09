@@ -11,22 +11,42 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# تخصيص ثيم وألوان المنصة لتتطابق مع هوية الصور (الداكن، النيون الأزرق والبنفسجي)
+# تخصيص ثيم الألوان وإلغاء اللون الأبيض تماماً من الأزرار وتوحيد الهوية البصرية
 st.markdown("""
     <style>
     .main { background-color: #0b0f19; color: #f8fafc; }
     .stApp { background: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #0f172a 100%); color: #ffffff; }
+    
+    /* تعديل الأزرار لمنع ظهور اللون الأبيض نهائياً وتخصيص ألوان متناسقة نيون/بنفسجي */
+    .stButton>button {
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        transition: all 0.3s ease !important;
+    }
+    .stButton>button:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
+        color: #f3f4f6 !important;
+        border-color: #38bdf8 !important;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.5) !important;
+    }
+    .stButton>button:focus {
+        color: #ffffff !important;
+    }
+
     .hero-banner-container {
         text-align: center;
-        padding: 20px;
-        background: rgba(15, 23, 42, 0.8);
+        padding: 15px;
+        background: rgba(15, 23, 42, 0.85);
         border-radius: 24px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        border: 1px solid rgba(59, 130, 246, 0.3);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        border: 1px solid rgba(139, 92, 246, 0.3);
         margin-bottom: 30px;
     }
     .content-card {
-        background-color: rgba(30, 41, 59, 0.7);
+        background-color: rgba(30, 41, 59, 0.75);
         padding: 30px;
         border-radius: 18px;
         box-shadow: 0 8px 25px rgba(0,0,0,0.3);
@@ -92,11 +112,11 @@ if "view" not in st.session_state:
 # --- 1. الصفحة الرئيسية التسويقية الكاملة (Landing Page) ---
 if not st.session_state.logged_in and st.session_state.view == "landing":
     
-    # الشريط العلوي مع اللوجو الأساسي (الصورة الأولى)
-    col_logo, col_space, col_auth = st.columns([3, 5, 2])
+    # الشريط العلوي مع اللوجو الجديد (الصورة الأساسية)
+    col_logo, col_space, col_auth = st.columns([4, 4, 2])
     with col_logo:
         if os.path.exists("logo.png"):
-            st.image("logo.png", width=220)
+            st.image("logo.png", width=280)
         else:
             st.markdown("<h2 style='color: #38bdf8;'>🪞 مــرايــا | MIRAYA</h2>", unsafe_allow_html=True)
             
@@ -113,16 +133,20 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # عرض الصورة الثانية البانر التسويقي الضخم في واجهة الموقع
-    if os.path.exists("banner.png"):
+    # عرض اللوجو/البانر الأساسي الضخم في واجهة الموقع (نفس الصورة الجديدة)
+    if os.path.exists("logo.png"):
+        st.markdown('<div class="hero-banner-container">', unsafe_allow_html=True)
+        st.image("logo.png", use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    elif os.path.exists("banner.png"):
         st.markdown('<div class="hero-banner-container">', unsafe_allow_html=True)
         st.image("banner.png", use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.markdown("""
             <div class="hero-banner-container">
-                <h1 style='font-size: 42px; font-weight: 900; margin-bottom: 15px; color: #ffffff;'>احكي. عبّر. اكتشف. وتطوّر.</h1>
-                <p style='font-size: 19px; color: #cbd5e1;'>مرحبًا بك في مرايا، مساحة رقمية صُممت لتكون أقرب مكان يمكنك اللجوء إليه.</p>
+                <h1 style='font-size: 42px; font-weight: 900; margin-bottom: 15px; color: #ffffff;'>احكي. عبّر. اكتشف. وتطوّر.[cite: 5]</h1>
+                <p style='font-size: 19px; color: #cbd5e1;'>مرحبًا بك في مرايا، مساحة رقمية صُممت لتكون أقرب مكان يمكنك اللجوء إليه[cite: 5].</p>
             </div>
         """, unsafe_allow_html=True)
     
@@ -145,8 +169,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     st.markdown("""
         <div class="content-card" style="text-align: center;">
             <p style="font-size: 18px; color: #e2e8f0; line-height: 1.8; margin: 0;">
-                لاننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج.<br>
-                <b>لهذا لم نصمم مرايا لتكون مجرد نافذة محادثة، بل تجربة متكاملة تمنحك خيارات متعددة للتواصل والتعبير والتطور.</b>
+                لاننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا[cite: 5]. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج[cite: 5].<br>
+                <b>لهذا لم نصمم مرايا لتكون مجرد نافذة محادثة، بل تجربة متكاملة تمنحك خيارات متعددة للتواصل والتعبير والتطور[cite: 5].</b>
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -157,9 +181,9 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
         st.markdown("""
             <div class="content-card">
                 <ul style='color: #cbd5e1; font-size: 16px; line-height: 2; list-style-type: none; padding: 0;'>
-                    <li>🔹 مساحة شخصية مستقلة لكل مستخدم.</li>
-                    <li>🔹 جلسات فردية خاصة مصممة حولك.</li>
-                    <li>🔹 محادثات كتابية، صوتية، ومرئية متطورة.</li>
+                    <li>🔹 مساحة شخصية مستقلة لكل مستخدم[cite: 5].</li>
+                    <li>🔹 جلسات فردية خاصة مصممة حولك[cite: 5].</li>
+                    <li>🔹 محادثات كتابية، صوتية، ومرئية متطورة[cite: 5].</li>
                     <li>🔹 مساعد ذكي يتذكر سياق محادثاتك السابقة[cite: 5].</li>
                 </ul>
             </div>
@@ -168,10 +192,10 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
         st.markdown("""
             <div class="content-card">
                 <ul style='color: #cbd5e1; font-size: 16px; line-height: 2; list-style-type: none; padding: 0;'>
-                    <li>🔹 إمكانية اختيار المشاركة المجتمعية أو البقاء بمفردك.</li>
-                    <li>🔹 نظام عضويات ومزايا قابل للتخصيص.</li>
-                    <li>🔹 تجربة شخصية قابلة للتطوير والتغيير.</li>
-                    <li>🔹 مكافآت، هدايا، وفعاليات تفاعلية.</li>
+                    <li>🔹 إمكانية اختيار المشاركة المجتمعية أو البقاء بمفردك[cite: 5].</li>
+                    <li>🔹 نظام عضويات ومزايا قابل للتخصيص[cite: 5].</li>
+                    <li>🔹 تجربة شخصية قابلة للتطوير والتغيير[cite: 5].</li>
+                    <li>🔹 مكافآت، هدايا، وفعاليات تفاعلية[cite: 5].</li>
                 </ul>
             </div>
         """, unsafe_allow_html=True)
@@ -397,4 +421,4 @@ else:
                 users_df.to_csv(USERS_FILE, index=False)
                 st.success("تم الشحن بنجاح!")
             else:
-                st.error("معرف المستخدم غير موجود.")
+                st.error("المستخدم غير موجود.")
