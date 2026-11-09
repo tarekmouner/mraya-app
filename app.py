@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS الشامل لمنع أي لون أبيض في المنصة
+# تخصيص التصميم والـ CSS الشامل لمنع أي لون أبيض في المنصة بالكامل
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
@@ -57,8 +57,8 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* --- القضاء على أي خلفية بيضاء في المربعات أو الأوتوفيل --- */
-    input, textarea, select {
+    /* --- القضاء على أي خلفية بيضاء في المربعات أو القوائم أو الأوتوفيل --- */
+    input, textarea, select, [data-baseweb="select"], [data-baseweb="popover"], [data-baseweb="menu"] {
         background-color: #1e293b !important;
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
@@ -66,6 +66,21 @@ st.markdown("""
         border-radius: 12px !important;
         font-size: 20px !important;
         font-weight: 700 !important;
+    }
+
+    /* إجبار القوائم المنسدلة وقوائم الاختيار على الخلفية الداكنة وتدمير البياض */
+    div[data-baseweb="select"] > div {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+    }
+    
+    ul[data-baseweb="menu"], li[role="option"] {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+    }
+    li[role="option"]:hover {
+        background-color: #334155 !important;
+        color: #38bdf8 !important;
     }
 
     input:-webkit-autofill,
@@ -183,28 +198,31 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# كود جافاسكريبت جذري لمسح أي نص إرشادي مزعج (Press Enter to apply) من الجذور فوراً
+# كود جافاسكريبت لحقن الألوان الداكنة وتدمير أي خلفية بيضاء في الـ Popovers الداكنة للـ Select
 components.html("""
     <script>
     const doc = window.parent.document;
     
-    function removeAnnoyingInstructions() {
-        const instructions = doc.querySelectorAll('[data-testid="InputInstructions"], small, .stTextInput small');
-        instructions.forEach(el => el.remove());
+    function removeWhiteBackgrounds() {
+        // البحث عن أي عناصر منبثقة أو قوائم وإجبار خلفيتها على أن تكون داكنة
+        const popovers = doc.querySelectorAll('[data-baseweb="popover"], [data-baseweb="menu"], ul[role="listbox"]');
+        popovers.forEach(el => {
+            el.style.backgroundColor = '#1e293b';
+            el.style.color = '#ffffff';
+        });
         
-        const inputs = doc.querySelectorAll('input');
-        inputs.forEach(input => {
-            if (input.getAttribute('placeholder')) {
-                input.setAttribute('placeholder', '');
-            }
+        const options = doc.querySelectorAll('li[role="option"], [data-baseweb="option"]');
+        options.forEach(opt => {
+            opt.style.backgroundColor = '#1e293b';
+            opt.style.color = '#ffffff';
         });
     }
 
     const observer = new MutationObserver(() => {
-        removeAnnoyingInstructions();
+        removeWhiteBackgrounds();
     });
     observer.observe(doc.body, { childList: true, subtree: true });
-    setInterval(removeAnnoyingInstructions, 100);
+    setInterval(removeWhiteBackgrounds, 100);
     </script>
 """, height=0)
 
@@ -452,7 +470,7 @@ elif not st.session_state.logged_in and st.session_state.view == "register":
                         st.success(f"تم إنشاء حسابك بنجاح! المعرف الفريد الخاص بك هو: {unique_id}")
                         st.info("يمكنك الآن الانتقال لصفحة تسجيل الدخول.")
 
-# --- 4. داخل المنصة (الصفحات الداخلية المحدثة بكودك الأصلي) ---
+# --- 4. داخل المنصة (الصفحات الداخلية المحدثة) ---
 else:
     users_df = pd.read_csv(USERS_FILE)
     is_owner = (st.session_state.current_user == "tarek_admin")
@@ -514,7 +532,9 @@ else:
         st.title("📖 مفكرتك الشخصية السرية")
         st.markdown('<div class="fancy-card"><p>سجل مشاعرك وأفكارك اليومية بسرية تامة لا يمكن لأحد سواك الاطلاع عليها.</p></div>', unsafe_allow_html=True)
         
-        mood = st.selectbox("حالتك المزاجية اليوم:", ["😊 سعيد ومتفائل", "😌 هادئ ومستقر", "🤔 تفكير عميق", "🌧️ متوتر أو حزين"])
+        # استبدال الـ selectbox بقائمة خيارات (Radio) داكنة وفخمة تمنع ظهور أي خلفية بيضاء مزعجة
+        mood = st.radio("حالتك المزاجية اليوم:", ["😊 سعيد ومتفائل", "😌 هادئ ومستقر", "🤔 تفكير عميق", "🌧️ متوتر أو حزين"], horizontal=True)
+        
         journal_text = st.text_area("اكتب يومياتك ومشاعرك هنا:")
         if st.button("حفظ في المفكرة السرية"):
             if journal_text:
