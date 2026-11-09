@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS الشامل للقضاء النهائي على أي لون أبيض
+# تخصيص التصميم والـ CSS الشامل لمنع أي لون أبيض في المنصة
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
@@ -57,7 +57,7 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* --- القضاء على الأوتوفيل الأبيض وخلفيات مربعات الإدخال نهائياً --- */
+    /* --- القضاء على أي خلفية بيضاء في المربعات أو الأوتوفيل --- */
     input, textarea, select {
         background-color: #1e293b !important;
         color: #ffffff !important;
@@ -91,12 +91,13 @@ st.markdown("""
         -webkit-text-fill-color: #ffffff !important;
     }
 
-    /* إخفاء النص الإرشادي تماماً */
-    .stTextInput small, .stNumberInput small, .stPasswordInput small {
+    /* إخفاء أي نصوص مساعدة نهائياً */
+    .stTextInput small, .stNumberInput small, .stPasswordInput small, [data-testid="InputInstructions"] {
         display: none !important;
+        visibility: hidden !important;
     }
 
-    /* إزالة أي خلفيات بيضاء لرسائل التنبيه والنجاح والخطأ في الصفحة بالكامل */
+    /* إزالة أي خلفيات بيضاء لرسائل التنبيه والنجاح والخطأ */
     div.stSuccess, div.stInfo, div.stWarning, div.stError, div.stAlert {
         background-color: #1e293b !important;
         color: #ffffff !important;
@@ -182,23 +183,30 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# حقن كود جافاسكريبت برمجى لتثبيت الخلفيات الداكنة وإزالة أي تداخل فوراً
+# كود جافاسكريبت جذري لمسح أي نص إرشادي مزعج (Press Enter to apply) من الجذور فوراً
 components.html("""
     <script>
     const doc = window.parent.document;
-    const style = doc.createElement('style');
-    style.innerHTML = `
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover, 
-        input:-webkit-autofill:focus {
-            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
-            -webkit-text-fill-color: #ffffff !important;
-        }
-    `;
-    if (!doc.getElementById('fix-autofill')) {
-        style.id = 'fix-autofill';
-        doc.head.appendChild(style);
+    
+    function removeAnnoyingInstructions() {
+        // حذف أي عنصر يعرض تعليمات الـ Enter أو الـ small التابعة لـ streamlit
+        const instructions = doc.querySelectorAll('[data-testid="InputInstructions"], small, .stTextInput small');
+        instructions.forEach(el => el.remove());
+        
+        // إزالة الـ placeholders اللي بتعمل المشكلة
+        const inputs = doc.querySelectorAll('input');
+        inputs.forEach(input => {
+            if (input.getAttribute('placeholder')) {
+                input.setAttribute('placeholder', '');
+            }
+        });
     }
+
+    const observer = new MutationObserver(() => {
+        removeAnnoyingInstructions();
+    });
+    observer.observe(doc.body, { childList: true, subtree: true });
+    setInterval(removeAnnoyingInstructions, 100);
     </script>
 """, height=0)
 
@@ -371,7 +379,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             st.session_state.view = "register"
             st.rerun()
 
-# --- 2. صفحة تسجيل الدخول (باستخدام مدخلات ستريمليت النظامية بدون أي عك HTML نصوص) ---
+# --- 2. صفحة تسجيل الدخول ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
     if st.button("⬅️ العودة للصفحة الرئيسية"):
         st.session_state.view = "landing"
