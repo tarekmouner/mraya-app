@@ -3,100 +3,161 @@ import pandas as pd
 import os
 import hashlib
 
-# إعدادات الصفحة الأساسية لتطبيق مراية
+# إعدادات الصفحة
 st.set_page_config(
-    page_title="مراية | مساحتك الآمنة",
+    page_title="منصة مراية | مساحتك للتعافي والدعم النفسي",
     page_icon="🪞",
-    layout="centered"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
-# ملف تخزين الحسابات محلياً
 USERS_FILE = "mraya_users.csv"
 
-# دالة لتشفيّر كلمات المرور لضمان الأمان التام
 def hash_password(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
 
-def load_users():
-    if os.path.exists(USERS_FILE):
-        return pd.read_csv(USERS_FILE)
-    else:
-        # إنشاء جدول المستخدمين مع حساب الأونر الأساسي بكلمة مرور آمنة
+def init_db():
+    if not os.path.exists(USERS_FILE):
         df = pd.DataFrame(columns=["Full_Name", "Login_ID", "Email_Phone", "Password", "Account_Type", "Coins", "Diamonds"])
-        admin_df = pd.DataFrame({
-            "Full_Name": ["طارق المطور (الأونر)"],
+        # إنشاء حساب الأونر تلقائياً وبأمان في قاعدة البيانات
+        admin_row = pd.DataFrame({
+            "Full_Name": ["طارق (الأونر)"],
             "Login_ID": ["tarek_admin"],
-            "Email_Phone": ["admin@mraya.com"],
-            "Password": [hash_password("tarek12345")], # كلمة مرور الأونر الافتراضية
+            "Email_Phone": ["tarek@mraya.com"],
+            "Password": [hash_password("tarek12345")],
             "Account_Type": ["Owner"],
             "Coins": [999999],
             "Diamonds": [999999]
         })
-        admin_df.to_csv(USERS_FILE, index=False)
-        return admin_df
+        df = pd.concat([df, admin_row], ignore_index=True)
+        df.to_csv(USERS_FILE, index=False)
+        return df
+    else:
+        df = pd.read_csv(USERS_FILE)
+        # التأكد من وجود حساب الأونر
+        if "tarek_admin" not in df["Login_ID"].values:
+            admin_row = pd.DataFrame({
+                "Full_Name": ["طارق (الأونر)"],
+                "Login_ID": ["tarek_admin"],
+                "Email_Phone": ["tarek@mraya.com"],
+                "Password": [hash_password("tarek12345")],
+                "Account_Type": ["Owner"],
+                "Coins": [999999],
+                "Diamonds": [999999]
+            })
+            df = pd.concat([df, admin_row], ignore_index=True)
+            df.to_csv(USERS_FILE, index=False)
+        return df
 
-# حالة تسجيل الدخول في الجلسة
+users_df = init_db()
+
+# إدارة التنقل وحالة الدخول
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.current_user = None
+if "view" not in st.session_state:
+    st.session_state.view = "landing" # الخيارات: landing, login, register
 
-# --- واجهة الترحيب والتعريف بالموقع (قبل تسجيل الدخول) ---
-if not st.session_state.logged_in:
-    st.markdown("<h1 style='text-align: center; color: #4A90E2;'>🪞 منصة مراية</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center; color: #666;'>مساحتك الآمنة للاسترخاء، الدعم النفسي، والنمو الداخلي</h3>", unsafe_allow_html=True)
+# --- 1. الصفحة الرئيسية التسويقية (Landing Page) ---
+if not st.session_state.logged_in and st.session_state.view == "landing":
+    
+    # الهيدر والشريط العلوي
+    col_logo, col_space, col_auth = st.columns([2, 5, 3])
+    with col_logo:
+        st.markdown("<h2 style='color: #2E5B88; margin:0;'>🪞 مــراية</h2>", unsafe_allow_html=True)
+    with col_auth:
+        c1, c2 = st.columns(2)
+        with c1:
+            if st.button("تسجيل الدخول", use_container_width=True):
+                st.session_state.view = "login"
+                st.rerun()
+        with c2:
+            if st.button("حساب جديد", type="primary", use_container_width=True):
+                st.session_state.view = "register"
+                st.rerun()
+                
     st.markdown("---")
     
-    col1, col2 = st.columns(2)
-    with col1:
-        st.info("✨ **جلسات فردية سرية بذاكرة ذكية**\n\nتواصل مع الثيرابست الذكي الذي يتذكر تفاصيل جلستك السابقة.")
-    with col2:
-        st.success("👥 **جلسات جماعية اختيارية**\n\nتواصل بأمان تام عبر الغرف الصوتية بشخصيات وهمية وأفاتار محمية.")
-        
-    st.markdown("---")
+    # البانر الرئيسي (Hero Section)
+    st.markdown("""
+        <div style='text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%); border-radius: 15px; margin-bottom: 30px;'>
+            <h1 style='color: #1e3a8a; font-size: 42px;'>مساحتك الآمنة للتنفس، التعافي، والنمو الداخلي</h1>
+            <p style='color: #475569; font-size: 20px; max-width: 800px; margin: 20px auto;'>
+                منصة مراية تجمع بين الذكاء الاصطناعي المتطور للدعم النفسي الفردي المستمر، وبين المجتمعات التفاعلية والغرف الصوتية السرية التامة.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
     
-    st.subheader("🔑 بوابة الأمان وتسجيل الدخول")
-    auth_tab1, auth_tab2 = st.tabs(["تسجيل الدخول", "إنشاء حساب آمن جديد"])
+    # زر جذب سريع في منتصف الصفحة
+    col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
+    with col_b2:
+        if st.button("✨ ابدأ رحلتك النفسية مجاناً الآن ✨", type="primary", use_container_width=True):
+            st.session_state.view = "register"
+            st.rerun()
+            
+    st.markdown("### 🌟 ماذا تقدم لك منصة مراية؟")
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    with auth_tab1:
-        st.caption("💡 للأونر: ادخل بالمعرف `tarek_admin` وكلمة المرور `tarek12345`")
-        login_input = st.text_input("معرف مراية (Login ID) أو الإيميل:", key="login_id_input")
-        login_pass = st.text_input("كلمة المرور السرية:", type="password", key="login_pass_input")
+    # عرض المميزات كروت مبهرة
+    f1, f2, f3 = st.columns(3)
+    with f1:
+        st.subheader("🤖 الثيرابست الذكي")
+        st.write("جلسات فردية مغلقة مع ذكاء اصطناعي يحتفظ بذاكرة جلساتك السابقة لمتابعة حالتك النفسية بدقة دون نسيان أي تفصيل.")
+    with f2:
+        st.subheader("🎙️ غرف صوتية جماعية")
+        st.write("شارك همومك واستمع للآخرين في جلسات صوتية جماعية بأسماء وهمية وأفاتار محمية لضمان الخصوصية المطلقة.")
+    with f3:
+        st.subheader("🎮 مجتمع وهدايا وتفاعل")
+        st.write("متجر مخصص للتصاميم والأشكال، ألعاب تفاعلية، ونظام نقاط لكسب الكوينز والماس وتكريم أصدقائك.")
+
+# --- 2. صفحة تسجيل الدخول ---
+elif not st.session_state.logged_in and st.session_state.view == "login":
+    st.button("⬅️ العودة للصفحة الرئيسية", on_click=lambda: st.session_state.update(view="landing"))
+    
+    col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
+    with col_l2:
+        st.markdown("<h2 style='text-align: center;'>🔑 تسجيل الدخول إلى مراية</h2>", unsafe_allow_html=True)
+        login_input = st.text_input("معرف مراية (Login ID) أو البريد الإلكتروني:")
+        login_pass = st.text_input("كلمة المرور:", type="password")
         
-        if st.button("دخول آمن للموقع"):
-            users_df = load_users()
+        if st.button("دخول", type="primary", use_container_width=True):
+            users_df = pd.read_csv(USERS_FILE)
             hashed_p = hash_password(login_pass)
             
-            # التحقق من المعرف وكلمة المرور معاً لضمان مستوى الأمان العالي
             user_match = users_df[(users_df["Login_ID"] == login_input) | (users_df["Email_Phone"] == login_input)]
             
             if not user_match.empty:
-                stored_pass = user_match.iloc[0]["Password"]
+                stored_pass = str(user_match.iloc[0]["Password"])
                 if stored_pass == hashed_p:
                     st.session_state.logged_in = True
                     st.session_state.current_user = user_match.iloc[0]["Login_ID"]
-                    st.success("تم تسجيل الدخول بنجاح! جاري تحويلك...")
+                    st.success("تم الدخول بنجاح!")
                     st.rerun()
                 else:
-                    st.error("كلمة المرور غير صحيحة. حاول مرة أخرى.")
+                    st.error("كلمة المرور غير صحيحة.")
             else:
-                st.error("المعرف أو البريد غير مسجل في النظام.")
-                
-    with auth_tab2:
-        full_name = st.text_input("الاسم الحقيقي أو المستعار:")
+                st.error("المعرف أو البريد غير مسجل.")
+
+# --- 3. صفحة إنشاء حساب جديد ---
+elif not st.session_state.logged_in and st.session_state.view == "register":
+    st.button("⬅️ العودة للصفحة الرئيسية", on_click=lambda: st.session_state.update(view="landing"))
+    
+    col_r1, col_r2, col_r3 = st.columns([1, 2, 1])
+    with col_r2:
+        st.markdown("<h2 style='text-align: center;'>✨ إنشاء حساب جديد في مراية</h2>", unsafe_allow_html=True)
+        full_name = st.text_input("الاسم:")
         contact_info = st.text_input("البريد الإلكتروني أو رقم الهاتف:")
-        new_pass = st.text_input("كلمة المرور السرية الجديدة:", type="password", key="new_pass_input")
-        confirm_pass = st.text_input("تأكيد كلمة المرور السرية:", type="password", key="confirm_pass_input")
+        new_pass = st.text_input("كلمة المرور:", type="password")
+        confirm_pass = st.text_input("تأكيد كلمة المرور:", type="password")
         
-        if st.button("إنشاء الحساب الفريد الآمن"):
+        if st.button("إنشاء الحساب", type="primary", use_container_width=True):
             if full_name and contact_info and new_pass:
                 if new_pass != confirm_pass:
-                    st.warning("كلمات المرور غير متطابقة. من فضلك تأكد منهما.")
+                    st.warning("كلمات المرور غير متطابقة.")
                 else:
-                    users_df = load_users()
-                    
-                    # التحقق من عدم تكرار البريد أو الهاتف
+                    users_df = pd.read_csv(USERS_FILE)
                     if contact_info in users_df["Email_Phone"].values:
-                        st.error("هذا البريد أو رقم الهاتف مسجل مسبقاً بحساب آخر!")
+                        st.error("هذا البريد أو الرقم مسجل بالفعل.")
                     else:
                         base_id = full_name.strip().replace(" ", "_").lower()
                         unique_id = f"mraya_{base_id}_{len(users_df) + 1}"
@@ -107,83 +168,58 @@ if not st.session_state.logged_in:
                             "Email_Phone": [contact_info],
                             "Password": [hash_password(new_pass)],
                             "Account_Type": ["Standard"],
-                            "Coins": [10], # هدية ترحيبية
+                            "Coins": [10],
                             "Diamonds": [5]
                         })
                         
                         users_df = pd.concat([users_df, new_user], ignore_index=True)
                         users_df.to_csv(USERS_FILE, index=False)
-                        
-                        st.success(f"تم إنشاء حسابك الآمن بنجاح! معرفك الفريد للموقع هو: **{unique_id}** (احتفظ به لتسجيل الدخول).")
-            else:
-                st.warning("من فضلك أدخل جميع البيانات المطلوبة بما فيها كلمة المرور.")
+                        st.success(f"تم إنشاء حسابك بنجاح! المعرف الخاص بك هو: {unique_id}")
+                        st.info("يمكنك الآن الانتقال لصفحة تسجيل الدخول.")
 
-# --- الواجهة الداخلية للعميل بعد تسجيل الدخول ---
+# --- 4. داخل المنصة بعد تسجيل الدخول ---
 else:
-    users_df = load_users()
-    user_row = users_df[users_df["Login_ID"] == st.session_state.current_user]
-    
+    users_df = pd.read_csv(USERS_FILE)
     is_owner = (st.session_state.current_user == "tarek_admin")
     
-    st.sidebar.title(f"🪞 أهلاً بك، {st.session_state.current_user}")
+    st.sidebar.title(f"🪞 مراية | {st.session_state.current_user}")
     if is_owner:
-        st.sidebar.markdown("👑 **[صلاحيات الأونر والمطور]**")
-    st.sidebar.markdown("---")
-    
-    menu_options = ["الصفحة الرئيسية", "الجلسات النفسية (الثيرابست)", "المجتمع والجلسات الجماعية", "المتجر والألعاب (الكوينز والماس)"]
-    if is_owner:
-        menu_options.append("لوحة تحكم الأونر ⚙️")
+        st.sidebar.success("👑 حساب الأونر والمالك")
         
-    menu = st.sidebar.radio("القائمة الرئيسية:", menu_options)
+    menu_options = ["لوحة التحكم", "الثيرابست الذكي", "الجلسات الجماعية", "المتجر والألعاب"]
+    if is_owner:
+        menu_options.append("إدارة المنصة (الأونر) ⚙️")
+        
+    menu = st.sidebar.radio("التنقل:", menu_options)
     
     if st.sidebar.button("تسجيل الخروج"):
         st.session_state.logged_in = False
         st.session_state.current_user = None
+        st.session_state.view = "landing"
         st.rerun()
 
-    if menu == "الصفحة الرئيسية":
-        st.title("🏠 لوحة التحكم الخاصة بك")
-        st.write(f"أهلاً بك في مساحتك الخاصة داخل موقع **مراية**.")
+    if menu == "لوحة التحكم":
+        st.title("🏠 أهلاً بك في مراية")
+        user_row = users_df[users_df["Login_ID"] == st.session_state.current_user]
         if not user_row.empty:
             c = user_row.iloc[0]["Coins"]
             d = user_row.iloc[0]["Diamonds"]
-            st.info(f"💡 رصيد محفظتك الحالي: **{c} كوينز** | **{d} ماسات**")
-        
-    elif menu == "الجلسات النفسية (الثيرابست)":
-        st.title("🤖 جلسة الدعم النفسي الذكي")
-        st.write("مساحتك الفردية الخاصة جداً. البوت هنا يتذكر تفاصيل جلستك السابقة.")
-        st.text_area("تحدث مع الثيرابست الخاص بك...", placeholder="اكتب ما يدور في ذهنك بحرية تامة...")
-        if st.button("إرسال الرسالة"):
-            st.info("جارٍ حفظ الذاكرة ومعالجة الرد النفسي...")
+            st.info(f"💰 محفظتك: **{c} كوينز** | 💎 **{d} ماسات**")
             
-    elif menu == "المجتمع والجلسات الجماعية":
-        st.title("👥 الغرف الصوتية الجماعية الآمنة")
-        st.write("انضم بـ (فيك أكونت) للجلسات الصوتية التفاعلية مع سرية هويتك المطلقة.")
-        st.warning("قريباً: تفعيل غرف الفويس الجماعية.")
+    elif menu == "إدارة المنصة (الأونر) ⚙️" and is_owner:
+        st.title("⚙️ لوحة تحكم المالك (طارق)")
+        st.dataframe(users_df.drop(columns=["Password"]))
         
-    elif menu == "المتجر والألعاب (الكوينز والماس)":
-        st.title("🎮 المتجر وألعاب الحظ والتفاعل")
-        st.write("استمتع بألعاب الروليت والبوكر لكسب الماسات، أو تسوق الإطارات والدخلات المتحركة!")
+        st.subheader("شحن رصيد مستخدم")
+        t_id = st.text_input("معرف المستخدم (Login ID):")
+        c_add = st.number_input("الكوينز:", min_value=0, value=100)
+        d_add = st.number_input("الماسات:", min_value=0, value=50)
         
-    elif menu == "لوحة تحكم الأونر ⚙️" and is_owner:
-        st.title("⚙️ لوحة تحكم الأونر المطلقة (طارق)")
-        st.write("من هنا يمكنك التحكم الكامل بالموقع، شحن الأرصدة للأعضاء، وإدارة الهدايا.")
-        
-        st.subheader("👥 قائمة المستخدمين المسجلين في المنصة")
-        # إخفاء خانة كلمة المرور المشفرة من الجدول لأسباب أمنية حقيقية
-        safe_df = users_df.drop(columns=["Password"])
-        st.dataframe(safe_df)
-        
-        st.subheader("💰 شحن رصيد أو إرسال هدايا لمستخدم")
-        target_id = st.text_input("أدخل معرف المستخدم المراد شحنه (Login ID):")
-        add_coins = st.number_input("عدد الكوينز للإضافة:", min_value=0, value=100)
-        add_diamonds = st.number_input("عدد الماسات للإضافة:", min_value=0, value=50)
-        
-        if st.button("تنفيذ الشحن والإهداء"):
-            if target_id in users_df["Login_ID"].values:
-                users_df.loc[users_df["Login_ID"] == target_id, "Coins"] += add_coins
-                users_df.loc[users_df["Login_ID"] == target_id, "Diamonds"] += add_diamonds
+        if st.button("تأكيد الشحن"):
+            if t_id in users_df["Login_ID"].values:
+                users_df.loc[users_df["Login_ID"] == t_id, "Coins"] += c_add
+                users_df.loc[users_df["Login_ID"] == t_id, "Diamonds"] += d_add
                 users_df.to_csv(USERS_FILE, index=False)
-                st.success(f"تم شحن المستخدم {target_id} بنجاح بـ {add_coins} كوينز و {add_diamonds} ماسات! ✨")
+                st.success("تم الشحن بنجاح!")
             else:
-                st.error("معرف المستخدم غير موجود في النظام.")
+                st.error("المستخدم غير موجود.")
