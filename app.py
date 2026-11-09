@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم وتظبيط القائمة الجانبية (Sidebar) والخطوط لتكون واضحة وفخمة
+# تخصيص التصميم وتظبيط القائمة الجانبية (Sidebar) والمربعات بدقة متناهية
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار */
@@ -24,13 +24,13 @@ st.markdown("""
     .main { background-color: #0b0f19; color: #ffffff; }
     .stApp { background: linear-gradient(135deg, #070913 0%, #0f172a 50%, #1e1b4b 100%); color: #ffffff; }
     
-    /* --- تنسيق القائمة الجانبية (Sidebar) لتكون واضحة ومميزة --- */
+    /* --- تنسيق القائمة الجانبية (Sidebar) --- */
     section[data-testid="stSidebar"] {
         background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%) !important;
         border-left: 1px solid rgba(139, 92, 246, 0.3);
     }
     
-    /* جعل كل النصوص والعناصر داخل القائمة الجانبية واضحة بلون أبيض وبارز */
+    /* جعل النصوص والعناصر داخل القائمة الجانبية واضحة وبارزة */
     section[data-testid="stSidebar"] p, 
     section[data-testid="stSidebar"] span, 
     section[data-testid="stSidebar"] label, 
@@ -39,6 +39,18 @@ st.markdown("""
         color: #f8fafc !important;
         font-size: 19px !important;
         font-weight: 600 !important;
+    }
+    
+    /* إصلاح رسائل التنبيه والنجاح داخل السايدبار لتكون بخلفية داكنة وكلام واضح */
+    section[data-testid="stSidebar"] div[data-baseweb="notification"],
+    section[data-testid="stSidebar"] .stSuccess {
+        background-color: rgba(30, 41, 59, 0.9) !important;
+        border: 1px solid #34d399 !important;
+        color: #ffffff !important;
+    }
+    section[data-testid="stSidebar"] .stSuccess p {
+        color: #34d399 !important;
+        font-weight: 700 !important;
     }
     
     /* تكبير وتوضيح الخطوط في المنصة ككل */
