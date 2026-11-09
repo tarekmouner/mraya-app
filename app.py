@@ -11,13 +11,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# تخصيص ثيم الألوان وإلغاء اللون الأبيض تماماً من الأزرار وتوحيد الهوية البصرية
+# تخصيص ثيم الألوان وإلغاء أي لون أبيض في الأزرار نهائياً
 st.markdown("""
     <style>
     .main { background-color: #0b0f19; color: #f8fafc; }
     .stApp { background: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #0f172a 100%); color: #ffffff; }
     
-    /* تعديل الأزرار لمنع ظهور اللون الأبيض نهائياً وتخصيص ألوان متناسقة نيون/بنفسجي */
     .stButton>button {
         background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
         color: #ffffff !important;
@@ -112,13 +111,13 @@ if "view" not in st.session_state:
 # --- 1. الصفحة الرئيسية التسويقية الكاملة (Landing Page) ---
 if not st.session_state.logged_in and st.session_state.view == "landing":
     
-    # الشريط العلوي مع اللوجو الجديد (الصورة الأساسية)
+    # الشريط العلوي مع اللوجو الأساسي (الصورة الفخمة)
     col_logo, col_space, col_auth = st.columns([4, 4, 2])
     with col_logo:
         if os.path.exists("logo.png"):
-            st.image("logo.png", width=280)
+            st.image("logo.png", width=250)
         else:
-            st.markdown("<h2 style='color: #38bdf8;'>🪞 مــرايــا | MIRAYA</h2>", unsafe_allow_html=True)
+            st.warning("⚠️ يرجى رفع صورة logo.png في مستودع GitHub")
             
     with col_auth:
         c1, c2 = st.columns(2)
@@ -133,7 +132,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # عرض اللوجو/البانر الأساسي الضخم في واجهة الموقع (نفس الصورة الجديدة)
+    # عرض البانر التسويقي الضخم في واجهة الموقع (الصورة الفخمة)
     if os.path.exists("logo.png"):
         st.markdown('<div class="hero-banner-container">', unsafe_allow_html=True)
         st.image("logo.png", use_container_width=True)
@@ -142,13 +141,6 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
         st.markdown('<div class="hero-banner-container">', unsafe_allow_html=True)
         st.image("banner.png", use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
-    else:
-        st.markdown("""
-            <div class="hero-banner-container">
-                <h1 style='font-size: 42px; font-weight: 900; margin-bottom: 15px; color: #ffffff;'>احكي. عبّر. اكتشف. وتطوّر.[cite: 5]</h1>
-                <p style='font-size: 19px; color: #cbd5e1;'>مرحبًا بك في مرايا، مساحة رقمية صُممت لتكون أقرب مكان يمكنك اللجوء إليه[cite: 5].</p>
-            </div>
-        """, unsafe_allow_html=True)
     
     # أزرار التوجيه السريع
     col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
@@ -169,8 +161,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     st.markdown("""
         <div class="content-card" style="text-align: center;">
             <p style="font-size: 18px; color: #e2e8f0; line-height: 1.8; margin: 0;">
-                لاننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا[cite: 5]. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج[cite: 5].<br>
-                <b>لهذا لم نصمم مرايا لتكون مجرد نافذة محادثة، بل تجربة متكاملة تمنحك خيارات متعددة للتواصل والتعبير والتطور[cite: 5].</b>
+                لاننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج.<br>
+                <b>لهذا لم نصمم مرايا لتكون مجرد نافذة محادثة، بل تجربة متكاملة تمنحك خيارات متعددة للتواصل والتعبير والتطور.</b>
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -181,10 +173,10 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
         st.markdown("""
             <div class="content-card">
                 <ul style='color: #cbd5e1; font-size: 16px; line-height: 2; list-style-type: none; padding: 0;'>
-                    <li>🔹 مساحة شخصية مستقلة لكل مستخدم[cite: 5].</li>
-                    <li>🔹 جلسات فردية خاصة مصممة حولك[cite: 5].</li>
-                    <li>🔹 محادثات كتابية، صوتية، ومرئية متطورة[cite: 5].</li>
-                    <li>🔹 مساعد ذكي يتذكر سياق محادثاتك السابقة[cite: 5].</li>
+                    <li>🔹 مساحة شخصية مستقلة لكل مستخدم.</li>
+                    <li>🔹 جلسات فردية خاصة مصممة حولك.</li>
+                    <li>🔹 محادثات كتابية، صوتية، ومرئية متطورة.</li>
+                    <li>🔹 مساعد ذكي يتذكر سياق محادثاتك السابقة.</li>
                 </ul>
             </div>
         """, unsafe_allow_html=True)
@@ -192,10 +184,10 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
         st.markdown("""
             <div class="content-card">
                 <ul style='color: #cbd5e1; font-size: 16px; line-height: 2; list-style-type: none; padding: 0;'>
-                    <li>🔹 إمكانية اختيار المشاركة المجتمعية أو البقاء بمفردك[cite: 5].</li>
-                    <li>🔹 نظام عضويات ومزايا قابل للتخصيص[cite: 5].</li>
-                    <li>🔹 تجربة شخصية قابلة للتطوير والتغيير[cite: 5].</li>
-                    <li>🔹 مكافآت، هدايا، وفعاليات تفاعلية[cite: 5].</li>
+                    <li>🔹 إمكانية اختيار المشاركة المجتمعية أو البقاء بمفردك.</li>
+                    <li>🔹 نظام عضويات ومزايا قابل للتخصيص.</li>
+                    <li>🔹 تجربة شخصية قابلة للتطوير والتغيير.</li>
+                    <li>🔹 مكافآت، هدايا، وفعاليات تفاعلية.</li>
                 </ul>
             </div>
         """, unsafe_allow_html=True)
@@ -209,7 +201,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             <div class="content-card">
                 <h3 style='color: #38bdf8;'>🧘 جلسات فردية</h3>
                 <p style='color: #94a3b8; font-size: 15px; line-height: 1.7;'>
-                    كل شخص مختلف، وكل تجربة تستحق الاهتمام[cite: 5]. ابدأ جلسة فردية خاصة بك ومشاركة ما تشعر به ومناقشة تحدياتك في سرية تامة[cite: 5].
+                    كل شخص مختلف، وكل تجربة تستحق الاهتمام. ابدأ جلسة فردية خاصة بك ومشاركة ما تشعر به ومناقشة تحدياتك في سرية تامة.
                 </p>
             </div>
         """, unsafe_allow_html=True)
@@ -218,7 +210,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             <div class="content-card">
                 <h3 style='color: #34d399;'>🎙️ طرق تواصل متعددة</h3>
                 <p style='color: #94a3b8; font-size: 15px; line-height: 1.7;'>
-                    <b>كتابية:</b> اكتب أفكارك بحرية[cite: 5].<br><b>صوتية:</b> تحدث بصوتك لتجربة طبيعية[cite: 5].<br><b>مرئية:</b> تواصل مرئي ضمن التجارب المدعومة[cite: 5].
+                    <b>كتابية:</b> اكتب أفكارك بحرية.<br><b>صوتية:</b> تحدث بصوتك لتجربة طبيعية.<br><b>مرئية:</b> تواصل مرئي ضمن التجارب المدعومة.
                 </p>
             </div>
         """, unsafe_allow_html=True)
@@ -227,7 +219,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             <div class="content-card">
                 <h3 style='color: #a78bfa;'>🧠 ذاكرة ذكية</h3>
                 <p style='color: #94a3b8; font-size: 15px; line-height: 1.7;'>
-                    لا تبدأ من الصفر أبداً[cite: 5]. ذاكرتك الشخصية تساعد المساعد الذكي على استيعاب السياق السابق والأهداف والتحديات[cite: 5].
+                    لا تبدأ من الصفر أبداً. ذاكرتك الشخصية تساعد المساعد الذكي على استيعاب السياق السابق والأهداف والتحديات.
                 </p>
             </div>
         """, unsafe_allow_html=True)
@@ -235,9 +227,9 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     # مجتمع مراية
     st.markdown("""
         <div class="content-card" style="border-right: 6px solid #34d399; margin-top: 20px;">
-            <h3 style='color: #34d399; margin-top: 0;'>👥 مجتمع مراية | لست مضطرًا للبقاء وحدك[cite: 5]</h3>
+            <h3 style='color: #34d399; margin-top: 0;'>👥 مجتمع مراية | لست مضطرًا للبقاء وحدك</h3>
             <p style='color: #cbd5e1; font-size: 16px; line-height: 1.8;'>
-                توفير تجربة مجتمعية اختيارية تتيح لك المشاركة في جلسات جماعية صوتية مع أشخاص آخرين باستخدام <b>هويات مستعارة</b>[cite: 5]. مشاركة اختيارية بالكامل، لا اسم حقيقي يظهر، لا تظهر جلساتك الفردية أبداً، مع نظام بلاغات ومراجعة صارم[cite: 5].
+                توفير تجربة مجتمعية اختيارية تتيح لك المشاركة في جلسات جماعية صوتية مع أشخاص آخرين باستخدام <b>هويات مستعارة</b>. مشاركة اختيارية بالكامل، لا اسم حقيقي يظهر، لا تظهر جلساتك الفردية أبداً، مع نظام بلاغات ومراجعة صارم.
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -249,7 +241,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             <div class="content-card">
                 <h3 style='color: #fbbf24;'>🎨 شخصيتك الرقمية والمتجر</h3>
                 <p style='color: #94a3b8; font-size: 15px; line-height: 1.7;'>
-                    طور مظهر هويتك بإطارات ثابتة ومتحركة، أشكال وألوان مميزة للأسماء، تصاميم معرفات ID، وخلفيات شخصية ومؤثرات صوتية وبصرية[cite: 5].
+                    طور مظهر هويتك بإطارات ثابتة ومتحركة، أشكال وألوان مميزة للأسماء، تصاميم معرفات ID، وخلفيات شخصية ومؤثرات صوتية وبصرية.
                 </p>
             </div>
         """, unsafe_allow_html=True)
@@ -258,9 +250,9 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             <div class="content-card">
                 <h3 style='color: #f472b6;'>🎁 الهدايا ونظام العملات</h3>
                 <p style='color: #94a3b8; font-size: 15px; line-height: 1.7;'>
-                    أرسل هدية لأي صديق بمعرفه الفريد لتظهر في لوحة أكثر الأصدقاء كرمًا[cite: 5].<br>
-                    <b>الكوينز (COINS):</b> للشحن والمزايا المدفوعة[cite: 5].<br>
-                    <b>الماسات (DIAMONDS):</b> مكاسب الفعاليات والأنشطة[cite: 5].
+                    أرسل هدية لأي صديق بمعرفه الفريد لتظهر في لوحة أكثر الأصدقاء كرمًا.<br>
+                    <b>الكوينز (COINS):</b> للشحن والمزايا المدفوعة.<br>
+                    <b>الماسات (DIAMONDS):</b> مكاسب الفعاليات والأنشطة.
                 </p>
             </div>
         """, unsafe_allow_html=True)
@@ -270,9 +262,9 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
         <div class="content-card" style="background: rgba(15, 23, 42, 0.9); border-left: 6px solid #38bdf8;">
             <h3 style='color: #ffffff; margin-top: 0;'>🛡️ الأمان والخصوصية والرؤية</h3>
             <p style='color: #cbd5e1; font-size: 16px; line-height: 1.8;'>
-                <b>رؤيتنا:</b> أن تصبح مراية مساحة رقمية رائدة تمنح الإنسان فرصة أفضل للتعبير عن نفسه وفهم مشاعره[cite: 5].<br>
-                <b>رسالتنا:</b> توفير تجربة تجمع بين الذكاء الاصطناعي والتكنولوجيا والتواصل الإنساني ببيئة تراعي الخصوصية التامة[cite: 5].<br>
-                نحن نؤمن أن الثقة أساس المشاعر؛ حسابات مستقلة، معرفات فريدة، وفصل تام لبيانات الجلسات الشخصية[cite: 5].
+                <b>رؤيتنا:</b> أن تصبح مراية مساحة رقمية رائدة تمنح الإنسان فرصة أفضل للتعبير عن نفسه وفهم مشاعره.<br>
+                <b>رسالتنا:</b> توفير تجربة تجمع بين الذكاء الاصطناعي والتكنولوجيا والتواصل الإنساني ببيئة تراعي الخصوصية التامة.<br>
+                نحن نؤمن أن الثقة أساس المشاعر؛ حسابات مستقلة، معرفات فريدة، وفصل تام لبيانات الجلسات الشخصية.
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -281,17 +273,17 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     st.markdown("<h2 class='section-title'>الأسئلة الشائعة</h2>", unsafe_allow_html=True)
     
     with st.expander("❓ هل استخدام مراية مجاني؟"):
-        st.write("تتيح مراية عددًا من الجلسات المجانية الأولية، وبعد استهلاكها يمكنك اختيار إحدى الباقات المتاحة أو استخدام الرصيد المؤهل لفتح جلسات إضافية[cite: 5].")
+        st.write("تتيح مراية عددًا من الجلسات المجانية الأولية، وبعد استهلاكها يمكنك اختيار إحدى الباقات المتاحة أو استخدام الرصيد المؤهل لفتح جلسات إضافية.")
     with st.expander("❓ هل يجب عليّ المشاركة في الجلسات الجماعية؟"):
-        st.write("لا. الجلسات الفردية هي الأساس، والمشاركة المجتمعية اختيارية بالكامل[cite: 5].")
+        st.write("لا. الجلسات الفردية هي الأساس، والمشاركة المجتمعية اختيارية بالكامل.")
     with st.expander("❓ هل أستطيع التحدث بدلًا من الكتابة؟"):
-        st.write("نعم، تتضمن التجربة إمكانية المحادثات الصوتية، مع إمكانية دعم الفيديو وفق الخطة والقدرات المتاحة[cite: 5].")
+        st.write("نعم، تتضمن التجربة إمكانية المحادثات الصوتية، مع إمكانية دعم الفيديو وفق الخطة والقدرات المتاحة.")
     with st.expander("❓ هل يتذكر المساعد الذكي محادثاتي السابقة؟"):
-        st.write("نعم، يستفيد من الذاكرة الشخصية المرتبطة بحسابك، وفق إعدادات الموافقة والاحتفاظ بالبيانات[cite: 5].")
+        st.write("نعم، يستفيد من الذاكرة الشخصية المرتبطة بحسابك، وفق إعدادات الموافقة والاحتفاظ بالبيانات.")
     with st.expander("❓ هل يستطيع الآخرون رؤية جلساتي؟"):
-        st.write("لا تظهر الجلسات الفردية للمستخدمين الآخرين إطلاقاً[cite: 5]. وتُدار صلاحيات الوصول وفق سياسة الخصوصية[cite: 5].")
+        st.write("لا تظهر الجلسات الفردية للمستخدمين الآخرين إطلاقاً. وتُدار صلاحيات الوصول وفق سياسة الخصوصية.")
     with st.expander("❓ هل مراية بديل عن الطبيب النفسي؟"):
-        st.write("مراية منصة للدعم والمساندة الرقمية باستخدام الذكاء الاصطناعي، وليست بديلًا عن التشخيص أو العلاج لدى متخصص مؤهل[cite: 5]. وفي حالات الطوارئ أو خطر إيذاء النفس يجب التواصل مع خدمات الطوارئ أو مختص بشري فورًا[cite: 5].")
+        st.write("مراية منصة للدعم والمساندة الرقمية باستخدام الذكاء الاصطناعي، وليست بديلًا عن التشخيص أو العلاج لدى متخصص مؤهل. وفي حالات الطوارئ أو خطر إيذاء النفس يجب التواصل مع خدمات الطوارئ أو مختص بشري فورًا.")
 
     st.markdown("<br>", unsafe_allow_html=True)
     
