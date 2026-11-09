@@ -15,7 +15,7 @@ pip install -r requirements.txt
 Set environment variables before first run. On Windows PowerShell:
 ```powershell
 $env:MIRAYA_OWNER_LOGIN="tarek"
-$env:MIRAYA_OWNER_INITIAL_PASSWORD="Use-A-Unique-Password-At-Least-16-Chars"
+$env:MIRAYA_OWNER_INITIAL_PASSWORD="159019"
 ```
 Never use the old hard-coded owner password from the CSV prototype.
 Initialize database
