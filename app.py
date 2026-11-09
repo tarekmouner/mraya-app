@@ -11,55 +11,68 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# تخصيص ثيم الألوان وإلغاء أي لون أبيض في الأزرار نهائياً
+# تخصيص ثيم مريح جداً للعين (ألوان داكنة ناعمة، خطوط واضحة وكبيرة، وأزرار متناسقة)
 st.markdown("""
     <style>
-    .main { background-color: #0b0f19; color: #f8fafc; }
-    .stApp { background: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #0f172a 100%); color: #ffffff; }
+    /* خلفية هادئة ومريحة للعين تماماً */
+    .main { background-color: #0f172a; color: #e2e8f0; }
+    .stApp { background: linear-gradient(135deg, #090d16 0%, #111827 505, #0f172a 100%); color: #f1f5f9; }
     
+    /* تكبير وتوضيح الخطوط العامة */
+    body, p, span, li, label {
+        font-size: 18px !important;
+        color: #cbd5e1 !important;
+        line-height: 1.8 !important;
+    }
+    
+    /* الأزرار بلون هادئ وراقي ومريح للعين (بدون فاقع وبدون أبيض) */
     .stButton>button {
-        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+        background: linear-gradient(135deg, #1e40af 0%, #6d28d9 100%) !important;
         color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
         border-radius: 12px !important;
         font-weight: 700 !important;
+        font-size: 16px !important;
+        padding: 10px 24px !important;
         transition: all 0.3s ease !important;
     }
     .stButton>button:hover {
-        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
-        color: #f3f4f6 !important;
-        border-color: #38bdf8 !important;
-        box-shadow: 0 0 15px rgba(56, 189, 248, 0.5) !important;
-    }
-    .stButton>button:focus {
+        background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%) !important;
         color: #ffffff !important;
+        border-color: #60a5fa !important;
+        box-shadow: 0 0 12px rgba(96, 165, 250, 0.3) !important;
     }
 
+    /* كروت محتوى مريحة للعين بخلفية داكنة ناعمة وحدود خفيفة */
+    .content-card {
+        background-color: rgba(30, 41, 59, 0.6);
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        margin-bottom: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(8px);
+    }
+    
+    /* عناوين واضحة وبألوان مريحة غير مزعجة */
+    .section-title {
+        color: #60a5fa;
+        font-weight: 900;
+        font-size: 28px !important;
+        text-align: center;
+        margin-top: 50px;
+        margin-bottom: 25px;
+    }
+    
+    /* صندوق البانر العلوي */
     .hero-banner-container {
         text-align: center;
-        padding: 15px;
-        background: rgba(15, 23, 42, 0.85);
+        padding: 20px;
+        background: rgba(15, 23, 42, 0.9);
         border-radius: 24px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        border: 1px solid rgba(139, 92, 246, 0.3);
-        margin-bottom: 30px;
-    }
-    .content-card {
-        background-color: rgba(30, 41, 59, 0.75);
-        padding: 30px;
-        border-radius: 18px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        margin-bottom: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(10px);
-    }
-    .section-title {
-        color: #38bdf8;
-        font-weight: 900;
-        text-align: center;
-        margin-top: 40px;
-        margin-bottom: 20px;
-        text-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        border: 1px solid rgba(109, 40, 217, 0.3);
+        margin-bottom: 35px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -111,13 +124,13 @@ if "view" not in st.session_state:
 # --- 1. الصفحة الرئيسية التسويقية الكاملة (Landing Page) ---
 if not st.session_state.logged_in and st.session_state.view == "landing":
     
-    # الشريط العلوي مع اللوجو الأساسي (الصورة الفخمة)
+    # الشريط العلوي مع اللوجو الفخم الخاص بك
     col_logo, col_space, col_auth = st.columns([4, 4, 2])
     with col_logo:
         if os.path.exists("logo.png"):
-            st.image("logo.png", width=250)
+            st.image("logo.png", width=300)
         else:
-            st.warning("⚠️ يرجى رفع صورة logo.png في مستودع GitHub")
+            st.warning("⚠️ يرجى التأكد من رفع صورة logo.png في مستودع GitHub")
             
     with col_auth:
         c1, c2 = st.columns(2)
@@ -132,14 +145,10 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
                 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # عرض البانر التسويقي الضخم في واجهة الموقع (الصورة الفخمة)
+    # عرض الصورة الأساسية كبانر تسويقي فخم في واجهة الموقع
     if os.path.exists("logo.png"):
         st.markdown('<div class="hero-banner-container">', unsafe_allow_html=True)
         st.image("logo.png", use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-    elif os.path.exists("banner.png"):
-        st.markdown('<div class="hero-banner-container">', unsafe_allow_html=True)
-        st.image("banner.png", use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
     
     # أزرار التوجيه السريع
@@ -160,8 +169,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     st.markdown("<h2 class='section-title'>لماذا مرايا؟</h2>", unsafe_allow_html=True)
     st.markdown("""
         <div class="content-card" style="text-align: center;">
-            <p style="font-size: 18px; color: #e2e8f0; line-height: 1.8; margin: 0;">
-                لاننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج.<br>
+            <p style="font-size: 20px !important; color: #f1f5f9 !important; line-height: 1.9; margin: 0;">
+                لاننا نعلم أن الحديث عن الأمور الشخصية ليس سهلًا دائمًا. أحيانًا تحتاج إلى الكتابة بدلًا من الكلام، وأحيانًا تفضل التحدث بصوتك، وأحيانًا لا تريد سوى أن تجد مساحة تستطيع فيها التعبير عن نفسك دون الشعور بالإحراج.<br><br>
                 <b>لهذا لم نصمم مرايا لتكون مجرد نافذة محادثة، بل تجربة متكاملة تمنحك خيارات متعددة للتواصل والتعبير والتطور.</b>
             </p>
         </div>
@@ -172,7 +181,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with col_m1:
         st.markdown("""
             <div class="content-card">
-                <ul style='color: #cbd5e1; font-size: 16px; line-height: 2; list-style-type: none; padding: 0;'>
+                <ul style='color: #e2e8f0; font-size: 18px !important; line-height: 2.2; list-style-type: none; padding: 0;'>
                     <li>🔹 مساحة شخصية مستقلة لكل مستخدم.</li>
                     <li>🔹 جلسات فردية خاصة مصممة حولك.</li>
                     <li>🔹 محادثات كتابية، صوتية، ومرئية متطورة.</li>
@@ -183,7 +192,7 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with col_m2:
         st.markdown("""
             <div class="content-card">
-                <ul style='color: #cbd5e1; font-size: 16px; line-height: 2; list-style-type: none; padding: 0;'>
+                <ul style='color: #e2e8f0; font-size: 18px !important; line-height: 2.2; list-style-type: none; padding: 0;'>
                     <li>🔹 إمكانية اختيار المشاركة المجتمعية أو البقاء بمفردك.</li>
                     <li>🔹 نظام عضويات ومزايا قابل للتخصيص.</li>
                     <li>🔹 تجربة شخصية قابلة للتطوير والتغيير.</li>
@@ -199,8 +208,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with t1:
         st.markdown("""
             <div class="content-card">
-                <h3 style='color: #38bdf8;'>🧘 جلسات فردية</h3>
-                <p style='color: #94a3b8; font-size: 15px; line-height: 1.7;'>
+                <h3 style='color: #60a5fa; font-size: 22px !important; margin-bottom: 15px;'>🧘 جلسات فردية</h3>
+                <p style='color: #cbd5e1; font-size: 17px !important; line-height: 1.8;'>
                     كل شخص مختلف، وكل تجربة تستحق الاهتمام. ابدأ جلسة فردية خاصة بك ومشاركة ما تشعر به ومناقشة تحدياتك في سرية تامة.
                 </p>
             </div>
@@ -208,8 +217,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with t2:
         st.markdown("""
             <div class="content-card">
-                <h3 style='color: #34d399;'>🎙️ طرق تواصل متعددة</h3>
-                <p style='color: #94a3b8; font-size: 15px; line-height: 1.7;'>
+                <h3 style='color: #34d399; font-size: 22px !important; margin-bottom: 15px;'>🎙️ طرق تواصل متعددة</h3>
+                <p style='color: #cbd5e1; font-size: 17px !important; line-height: 1.8;'>
                     <b>كتابية:</b> اكتب أفكارك بحرية.<br><b>صوتية:</b> تحدث بصوتك لتجربة طبيعية.<br><b>مرئية:</b> تواصل مرئي ضمن التجارب المدعومة.
                 </p>
             </div>
@@ -217,8 +226,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with t3:
         st.markdown("""
             <div class="content-card">
-                <h3 style='color: #a78bfa;'>🧠 ذاكرة ذكية</h3>
-                <p style='color: #94a3b8; font-size: 15px; line-height: 1.7;'>
+                <h3 style='color: #a78bfa; font-size: 22px !important; margin-bottom: 15px;'>🧠 ذاكرة ذكية</h3>
+                <p style='color: #cbd5e1; font-size: 17px !important; line-height: 1.8;'>
                     لا تبدأ من الصفر أبداً. ذاكرتك الشخصية تساعد المساعد الذكي على استيعاب السياق السابق والأهداف والتحديات.
                 </p>
             </div>
@@ -227,8 +236,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     # مجتمع مراية
     st.markdown("""
         <div class="content-card" style="border-right: 6px solid #34d399; margin-top: 20px;">
-            <h3 style='color: #34d399; margin-top: 0;'>👥 مجتمع مراية | لست مضطرًا للبقاء وحدك</h3>
-            <p style='color: #cbd5e1; font-size: 16px; line-height: 1.8;'>
+            <h3 style='color: #34d399; font-size: 22px !important; margin-top: 0; margin-bottom: 15px;'>👥 مجتمع مراية | لست مضطرًا للبقاء وحدك</h3>
+            <p style='color: #e2e8f0; font-size: 18px !important; line-height: 1.9;'>
                 توفير تجربة مجتمعية اختيارية تتيح لك المشاركة في جلسات جماعية صوتية مع أشخاص آخرين باستخدام <b>هويات مستعارة</b>. مشاركة اختيارية بالكامل، لا اسم حقيقي يظهر، لا تظهر جلساتك الفردية أبداً، مع نظام بلاغات ومراجعة صارم.
             </p>
         </div>
@@ -239,8 +248,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with c_s1:
         st.markdown("""
             <div class="content-card">
-                <h3 style='color: #fbbf24;'>🎨 شخصيتك الرقمية والمتجر</h3>
-                <p style='color: #94a3b8; font-size: 15px; line-height: 1.7;'>
+                <h3 style='color: #fbbf24; font-size: 22px !important; margin-bottom: 15px;'>🎨 شخصيتك الرقمية والمتجر</h3>
+                <p style='color: #cbd5e1; font-size: 17px !important; line-height: 1.8;'>
                     طور مظهر هويتك بإطارات ثابتة ومتحركة، أشكال وألوان مميزة للأسماء، تصاميم معرفات ID، وخلفيات شخصية ومؤثرات صوتية وبصرية.
                 </p>
             </div>
@@ -248,8 +257,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
     with c_s2:
         st.markdown("""
             <div class="content-card">
-                <h3 style='color: #f472b6;'>🎁 الهدايا ونظام العملات</h3>
-                <p style='color: #94a3b8; font-size: 15px; line-height: 1.7;'>
+                <h3 style='color: #f472b6; font-size: 22px !important; margin-bottom: 15px;'>🎁 الهدايا ونظام العملات</h3>
+                <p style='color: #cbd5e1; font-size: 17px !important; line-height: 1.8;'>
                     أرسل هدية لأي صديق بمعرفه الفريد لتظهر في لوحة أكثر الأصدقاء كرمًا.<br>
                     <b>الكوينز (COINS):</b> للشحن والمزايا المدفوعة.<br>
                     <b>الماسات (DIAMONDS):</b> مكاسب الفعاليات والأنشطة.
@@ -259,9 +268,9 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
 
     # الأمان والرؤية والرسالة
     st.markdown("""
-        <div class="content-card" style="background: rgba(15, 23, 42, 0.9); border-left: 6px solid #38bdf8;">
-            <h3 style='color: #ffffff; margin-top: 0;'>🛡️ الأمان والخصوصية والرؤية</h3>
-            <p style='color: #cbd5e1; font-size: 16px; line-height: 1.8;'>
+        <div class="content-card" style="background: rgba(15, 23, 42, 0.95); border-left: 6px solid #60a5fa;">
+            <h3 style='color: #ffffff; font-size: 22px !important; margin-top: 0; margin-bottom: 15px;'>🛡️ الأمان والخصوصية والرؤية</h3>
+            <p style='color: #e2e8f0; font-size: 18px !important; line-height: 1.9;'>
                 <b>رؤيتنا:</b> أن تصبح مراية مساحة رقمية رائدة تمنح الإنسان فرصة أفضل للتعبير عن نفسه وفهم مشاعره.<br>
                 <b>رسالتنا:</b> توفير تجربة تجمع بين الذكاء الاصطناعي والتكنولوجيا والتواصل الإنساني ببيئة تراعي الخصوصية التامة.<br>
                 نحن نؤمن أن الثقة أساس المشاعر؛ حسابات مستقلة، معرفات فريدة، وفصل تام لبيانات الجلسات الشخصية.
@@ -295,8 +304,8 @@ if not st.session_state.logged_in and st.session_state.view == "landing":
             st.rerun()
 
     st.markdown("<br><hr>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #38bdf8; font-weight: bold;'>MIRAYA — Your Space. Your Story. Your Reflection.</p>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b; font-size: 13px;'>جميع الحقوق محفوظة منصة مراية © 2026</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #60a5fa; font-weight: bold;'>MIRAYA — Your Space. Your Story. Your Reflection.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>جميع الحقوق محفوظة منصة مراية © 2026</p>", unsafe_allow_html=True)
 
 # --- 2. صفحة تسجيل الدخول ---
 elif not st.session_state.logged_in and st.session_state.view == "login":
@@ -306,7 +315,7 @@ elif not st.session_state.logged_in and st.session_state.view == "login":
     
     col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
     with col_l2:
-        st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🔑 تسجيل الدخول إلى مراية</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: #60a5fa;'>🔑 تسجيل الدخول إلى مراية</h2>", unsafe_allow_html=True)
         login_input = st.text_input("معرف مراية (Login ID) أو البريد الإلكتروني:")
         login_pass = st.text_input("كلمة المرور:", type="password")
         
@@ -335,7 +344,7 @@ elif not st.session_state.logged_in and st.session_state.view == "register":
     
     col_r1, col_r2, col_r3 = st.columns([1, 2, 1])
     with col_r2:
-        st.markdown("<h2 style='text-align: center; color: #38bdf8;'>✨ إنشاء حساب جديد في مراية</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: #60a5fa;'>✨ إنشاء حساب جديد في مراية</h2>", unsafe_allow_html=True)
         full_name = st.text_input("الاسم الحقيقي أو المستعار:")
         contact_info = st.text_input("البريد الإلكتروني أو رقم الهاتف:")
         new_pass = st.text_input("كلمة المرور السرية:", type="password")
