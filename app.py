@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تخصيص التصميم والـ CSS الساحق للقضاء على أي مشاكل بصرية
+# تخصيص التصميم والـ CSS الشامل للقضاء النهائي على أي خلفية بيضاء أو أوتوفيل
 st.markdown("""
     <style>
     /* فرض اتجاه اللغة العربية من اليمين لليسار لكافة العناصر */
@@ -41,7 +41,7 @@ st.markdown("""
         font-weight: 600 !important;
     }
     
-    /* تنسيق صندوق حساب الأونر في السايدبار ليكون داكن وواضح[cite: 5, 6] */
+    /* صندوق حساب الأونر في السايدبار */
     section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] div.stSuccess,
     section[data-testid="stSidebar"] .stAlert,
     section[data-testid="stSidebar"] div[data-baseweb="notification"] {
@@ -57,8 +57,8 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* --- تنسيق مربعات الإدخال (Text/Number Inputs) بشكل احترافي وواضح --- */
-    .stTextInput input, .stNumberInput input, .stPasswordInput input {
+    /* --- القضاء على الأوتوفيل الأبيض وخلفيات مربعات الإدخال نهائياً --- */
+    input, textarea, select {
         background-color: #1e293b !important;
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
@@ -66,10 +66,38 @@ st.markdown("""
         border-radius: 12px !important;
         font-size: 20px !important;
         font-weight: 700 !important;
-        padding: 12px 15px !important;
     }
 
-    /* إخفاء النصوص الإرشادية المزعجة لمنع التداخل تماماً[cite: 3, 5] */
+    /* منع المتصفح من تلوين حقول الحفظ التلقائي باللون الأبيض */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
+        -webkit-text-fill-color: #ffffff !important;
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+    }
+
+    div[data-baseweb="input"], div[data-baseweb="base-input"] {
+        background-color: #1e293b !important;
+        border-radius: 12px !important;
+        border: 2px solid #38bdf8 !important;
+        color: #ffffff !important;
+    }
+    
+    div[data-baseweb="input"] input, div[data-baseweb="base-input"] input {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+
+    /* إخفاء أيقونة إظهار كلمة المرور البيضاء المزعجة أو توحيد خلفيتها */
+    button[kind="header"] {
+        background-color: transparent !important;
+    }
+
+    /* إخفاء النص الإرشادي الافتراضي لمنع التداخل */
     .stTextInput small, .stNumberInput small, .stPasswordInput small {
         display: none !important;
     }
@@ -160,14 +188,74 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# حقن كود جافاسكريبت لمنع أي تداخل نهائياً في الحقول وتنظيف النصوص الإرشادية
+# حقن كود جافاسكريبت متطور لإخفاء النص الافتراضي وتتبع حقول الإدخال
 components.html("""
     <script>
+    const doc = window.parent.document;
+    
+    const style = doc.createElement('style');
+    style.innerHTML = `
+        .custom-floating-hint {
+            position: absolute;
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid #38bdf8;
+            z-index: 99999;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            display: none;
+        }
+    `;
+    if (!doc.getElementById('floating-hint-style')) {
+        style.id = 'floating-hint-style';
+        doc.head.appendChild(style);
+    }
+
+    function setupSmartInputs() {
+        const inputs = doc.querySelectorAll('input[type="text"], input[type="password"], input[type="number"]');
+        inputs.forEach(input => {
+            if (input.dataset.smartBound) return;
+            input.dataset.smartBound = 'true';
+
+            const container = input.closest('.stTextInput, .stNumberInput, .stPasswordInput');
+            if (container) {
+                const helper = container.querySelector('small');
+                if (helper) helper.style.display = 'none';
+            }
+
+            let hint = doc.createElement('div');
+            hint.className = 'custom-floating-hint';
+            hint.innerText = 'اضغط Enter للتطبيق (Press Enter)';
+            doc.body.appendChild(hint);
+
+            input.addEventListener('focus', () => {
+                const rect = input.getBoundingClientRect();
+                hint.style.top = (rect.top + window.parent.scrollY - 32) + 'px';
+                hint.style.left = (rect.left + window.parent.scrollX) + 'px';
+                hint.style.display = 'block';
+            });
+
+            input.addEventListener('blur', () => {
+                hint.style.display = 'none';
+            });
+            
+            input.addEventListener('input', () => {
+                const rect = input.getBoundingClientRect();
+                hint.style.top = (rect.top + window.parent.scrollY - 32) + 'px';
+                hint.style.left = (rect.left + window.parent.scrollX) + 'px';
+            });
+        });
+    }
+
     const observer = new MutationObserver(() => {
-        const helps = window.parent.document.querySelectorAll('.stTextInput small, .stNumberInput small, .stPasswordInput small');
-        helps.forEach(el => el.style.display = 'none');
+        setupSmartInputs();
     });
-    observer.observe(window.parent.document.body, { childList: true, subtree: true });
+    observer.observe(doc.body, { childList: true, subtree: true });
+    setupSmartInputs();
     </script>
 """, height=0)
 
